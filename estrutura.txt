@@ -1,0 +1,47 @@
+project/
+│
+├── index.html
+├── login.html
+├── dashboard.html
+│
+├── assets/
+│   ├── img/
+│   └── icons/
+│
+├── css/
+│   └── style.css
+│
+├── js/
+│   │
+│   ├── config/
+│   │   └── config.js
+│   │
+│   ├── api/
+│   │   ├── api.js
+│   │   ├── produtos.js
+│   │   ├── vendas.js
+│   │   └── usuarios.js
+│   │
+│   ├── services/
+│   │   ├── authService.js
+│   │   ├── storageService.js
+│   │   └── syncService.js
+│   │
+│   ├── components/
+│   │   ├── modal.js
+│   │   ├── toast.js
+│   │   ├── loading.js
+│   │   └── navbar.js
+│   │
+│   ├── pages/
+│   │   ├── login.js
+│   │   ├── dashboard.js
+│   │   ├── estoque.js
+│   │   └── vendas.js
+│   │
+│   └── utils/
+│       ├── format.js
+│       ├── helpers.js
+│       └── validators.js
+│
+└── README.md
