@@ -14,8 +14,10 @@ export const Routes = {
 
 };
 
-export function navegar(rota){
+export const go = (page) => window.location.href = Routes[page];
 
-    window.location.href = rota;
+export function back(){
+
+    window.history.back();
 
 }
