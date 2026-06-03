@@ -6,6 +6,10 @@ export const Routes = {
 
     clientes: '/clientes.html',
 
+    pagamentos: '/payments.html',
+
+    concluido: '/concluido.html',
+
     pedidos: '/pedidos.html',
 
     categorias: '/categorias.html',
@@ -20,4 +24,8 @@ export function back(){
 
     window.history.back();
 
+}
+
+export function goto(n){
+    history.go(n)
 }

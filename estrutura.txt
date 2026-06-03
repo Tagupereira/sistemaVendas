@@ -45,3 +45,13 @@ project/
 │       └── validators.js
 │
 └── README.md
+
+
+COMMITS
+
+feat      -> nova funcionalidade
+fix       -> correção de bug
+refactor  -> reorganização sem alterar comportamento
+style     -> CSS/Tailwind/Layout
+docs      -> documentação
+chore     -> tarefas gerais/configuração

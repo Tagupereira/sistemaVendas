@@ -2,127 +2,117 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <title>Produtos</title>
+  <title>Produtos</title>
 </head>
 
 <body class="bg-slate-50">
 
-    <!-- Header -->
-    <header class="relative h-40 overflow-hidden">
+  <!-- Header -->
+  <header class="relative h-40 overflow-hidden">
 
-        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+    <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
 
-            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z">
-            </path>
+      <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
 
-        </svg>
+    </svg>
 
-        <div class="relative z-10 px-6 pt-12">
+    <div class="relative z-10 px-6 pt-12 flex gap-4 items-center">
+      <span id="back" class="material-symbols-outlined text-3xl text-white font-bold">keyboard_return</span>
+      <h1 class="text-3xl font-bold text-white">Produtos</h1>
+    </div>
 
-            <h1 class="text-3xl font-bold text-white">
-                Produtos
-            </h1>
+  </header>
 
-            <!-- <p class="text-blue-100">
-                Gerencie seus produtos
-            </p> -->
+  <main class="px-5 -mt-4">
 
-        </div>
+    <!-- Busca -->
+    <div class="bg-white rounded-2xl shadow p-4">
 
-    </header>
-
-    <main class="px-5 -mt-4">
-
-        <!-- Busca -->
-        <div class="bg-white rounded-2xl shadow p-4">
-
-            <input id="pesquisa" type="text" placeholder="Pesquisar produto..."
-                class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
-
-        </div>
-
-        <!-- Botão Novo -->
-        <button class="w-full mt-4 bg-blue-600 text-white py-3 rounded-full font-medium shadow">
-
-            + Novo Produto
-
-        </button>
-
-        <!-- Lista -->
-        <div id="listaProdutos" class="mt-6 space-y-4">
-
-        </div>
-
-    </main>
-    <div
-  id="carrinho"
-  class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-all duration-300">
-
-  <!-- Cabeçalho sempre visível -->
-  <div
-    id="toggleCarrinho"
-    class="flex justify-between items-center p-4 cursor-pointer">
-
-    <div class="flex items-center gap-2">
-
-      <span id="resumoCarrinho">
-        0 itens
-      </span>
+      <input id="pesquisa" type="text" placeholder="Pesquisar produto..."
+        class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
 
     </div>
 
-    <div>
+    <!-- Botão Novo -->
+    <button class="w-full mt-4 bg-blue-600 text-white py-3 rounded-full font-medium shadow">
 
-      <span id="totalMiniCarrinho">
-        R$ 0,00
-      </span>
+      + Novo Produto
 
-      <span id="iconeCarrinho">
-        ▲
-      </span>
+    </button>
 
-    </div>
+    <!-- Lista -->
+    <div id="listaProdutos" class="mt-6 mb-20 pb-20 space-y-4"></div>
 
-  </div>
+  </main>
 
-  <!-- Conteúdo -->
-  <div
-    id="conteudoCarrinho"
-    class="hidden border-t p-4">
+  <div id="carrinho"
+    class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-all duration-300">
 
-    <div id="listaCarrinho"></div>
+    <!-- Cabeçalho sempre visível -->
+    <div id="toggleCarrinho" class="flex justify-between items-center p-4 cursor-pointer">
 
-    <div class="mt-4 border-t pt-4">
+      <div class="flex items-center gap-2">
 
-      <div class="flex justify-between font-bold">
-
-        <span>Total</span>
-
-        <span id="totalCarrinho">
-          R$ 0,00
+        <span id="resumoCarrinho">
+          0 itens
         </span>
 
       </div>
 
-      <button
-        class="w-full mt-4 bg-blue-600 text-white py-3 rounded-2xl">
+      <div class="flex gap-4">
 
-        Finalizar Pedido
+        <span id="totalMiniCarrinho">
+          R$ 0,00
+        </span>
+        
+        <span id="iconeCarrinho" >
+          <svg xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 transition-transform duration-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
 
-      </button>
+              <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+
+      </div>
 
     </div>
 
+    <!-- Conteúdo -->
+    <div id="conteudoCarrinho" class="flex flex-col border-t overflow-hidden max-h-0 opacity-0 transition-all duration-300 p-0">
+
+      <div id="listaCarrinho" class="flex-1 overflow-y-auto pr-2"></div>
+
+      <div class=" mt-4 border-t pt-4 sticky bottom-0 bg-white ">
+
+        <div class="flex justify-between font-bold">
+
+          <span>Total</span>
+
+          <span id="totalCarrinho">R$ 0,00</span>
+
+        </div>
+
+        <button id="finalizarPedido" class=" w-full mt-4 bg-blue-600 text-white py-3 rounded-2xl">Finalizar Pedido</button>
+      
+      </div>
+
+    </div>
+  
   </div>
 
-</div>
-
-    <script type="module" src="./js/pages/produtos.page.js"></script>
+  <script type="module" src="./js/pages/produtos.page.js"></script>
 
 </body>
 
