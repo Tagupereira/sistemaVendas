@@ -1,6 +1,10 @@
 import { go, goto } from "../routes/routes.js";
-import { getResumoPedido } from "../services/carrinho.service.js";
-import { validarCarrinho, validaCompra } from "../guards/cart.guard.js";
+import { validarCarrinho } from "../guards/cart.guard.js";
+import { paymentAPI } from '../api/payments.api.js';
+import { adicionarPagamento, removerPagamento, getPagamentos, getTotalPago, getValorRestante, salvarPagamentos, getVenda, carregarPagamentos, limparPagamentos } from "../services/payments.service.js";
+import { toast } from "../components/toast.component.js";
+
+let tiposPagamentos = [];
 
 const carrinho = validarCarrinho();
 
@@ -13,43 +17,35 @@ if(carrinho === false){
 const confirmar = document.getElementById("btnConfirmarVenda");
 const valorTotal = document.getElementById("valorTotal");
 
-confirmar.addEventListener("click",()=>{
+confirmar.addEventListener("click", async()=>{
 
-    const resumoStatus = JSON.parse(localStorage.getItem("resumoPedido"));
-    
-    resumoStatus.status = 1;
+   
+    if(getValorRestante() > 0){
 
-    localStorage.setItem("resumoPedido",JSON.stringify(resumoStatus))
-    
-    go("concluido")
+        const msg = "Pagamento incompleto";
+        const cor = "error";
+         toast(msg, cor);
+
+        return;
+
+    }
+
+   await salvarVenda();
 })
 
 document.getElementById("back").addEventListener("click",()=>{
-  goto(-1);
+  go("produtos");
 })
-
-let lista;
 
 function listaResumo(){
 
-    const lista =
-        JSON.parse(
-            localStorage.getItem(
-                "resumoPedido"
-            )
-        );
+    const lista = JSON.parse(localStorage.getItem("resumoPedido"));
 
-    const listaItens =
-        document.getElementById(
-            "listaItens"
-        );
+    const listaItens = document.getElementById("listaItens");
 
     listaItens.innerHTML = '';
 
-    animarValor(
-        valorTotal,
-        lista.total
-    );
+    animarValor(valorTotal, lista.total);
 
     lista.itens.forEach(item => {
 
@@ -100,4 +96,383 @@ function animarValor(elemento, valorFinal, duracao = 1000) {
 
 }
 
-listaResumo();
+async function carregarTiposPagamento() {
+
+    const icones = {
+        pix: 'qr_code',
+        dinheiro: 'payments',
+        credito: 'credit_card',
+        debito: 'account_balance_wallet',
+        pendente: 'schedule'
+    };
+
+    const response = await paymentAPI.listarTipos();
+
+    const container = document.getElementById('tiposPagamento');
+
+    container.innerHTML = '';
+
+    response.tipos.forEach(tipo => {
+
+        container.innerHTML += `
+            <button class=" tipo-pagamento flex flex-col items-center justify-center gap-2 h-28 border-2 border-slate-200 rounded-2xl bg-white shadow-sm transition hover:shadow-md" data-id="${tipo.id}">
+
+                <span class="material-symbols-outlined text-4xl">
+                    ${icones[tipo.tipo_pagamento]}
+                </span>
+
+                <span class="font-semibold text-sm uppercase">
+                    ${tipo.tipo_pagamento}
+                </span>
+
+            </button>
+        `;
+    });
+
+    tiposPagamentos = response.tipos;
+    iniciarEventosPagamento();
+}
+
+function iniciarEventosPagamento() {
+
+    document.querySelectorAll('.tipo-pagamento').forEach(card => {
+
+        card.addEventListener('click', () => {
+
+            document.querySelectorAll('.tipo-pagamento').forEach(c => {
+
+                c.classList.remove(
+                    'border-green-500',
+                    'bg-green-50',
+                    'text-green-700'
+                );
+
+            });
+
+            card.classList.add(
+                'border-green-500',
+                'bg-green-50',
+                'text-green-700'
+            );
+                
+            const tipo =
+                tiposPagamentos.find(
+                    t => t.id == card.dataset.id
+                );
+
+            
+            const pagamentoSelecionado =  tiposPagamentos.find(tipo => tipo.id == card.dataset.id);
+
+            abrirModalPagamento(tipo);            
+            atualizarResumoPagamento();
+
+        }
+
+
+        );
+
+    });
+}
+
+function atualizarResumoPagamento(){
+
+    const pagamentos = getPagamentos();
+
+    const container = document.getElementById('listaPagamentos');
+    
+    container.innerHTML = '';
+
+    pagamentos.forEach((pagamento,index) => {
+
+        container.innerHTML += `
+
+            <div class="flex justify-between items-center pl-3 pr-3 rounded-xl">
+
+                <div class="w-full mr-5 flex flex-rown bg-slate-50 justify-between items-center">
+
+                    <div class="font-medium">
+
+                        ${pagamento.tipo.toUpperCase()}
+
+                    </div>
+
+                    <div class="text-sm text-slate-500">
+
+                        ${pagamento.valor.toLocaleString(
+                            'pt-BR',
+                            {
+                                style:'currency',
+                                currency:'BRL'
+                            }
+                        )}
+
+                    </div>
+
+                </div>
+
+                <button class="removerPagamento text-red-500" data-index="${index}">
+                    ✕
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+    atualizarTotais();
+
+}
+
+function atualizarTotais(){
+
+    const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
+
+    const totalPedido = resumoPedido.total;
+
+    const totalPago = getTotalPago();
+
+    const restante = totalPedido - totalPago;
+
+    document.getElementById('valorPago').textContent = totalPago.toLocaleString('pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    );
+
+    document.getElementById('valorRestante').textContent =restante.toLocaleString('pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    );
+
+    validarPagamento();
+
+}
+
+function validarPagamento(){
+
+    const restante = getValorRestante();
+
+    const btn = document.getElementById('btnConfirmarVenda');
+
+    if(restante === 0){
+
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+
+        return;
+    }
+
+    btn.disabled = true;
+
+    btn.classList.add('opacity-50');
+
+}
+
+document.getElementById('listaPagamentos').addEventListener('click', (e) => {
+
+    if(e.target.classList.contains('removerPagamento')){
+
+        removerPagamento(Number(e.target.dataset.index));
+
+    }
+
+    atualizarResumoPagamento();
+
+});
+
+async function salvarVenda(){
+
+    try {
+
+        const venda = getVenda(document.getElementById('nomeCliente').value);
+
+        await paymentAPI.salvarVenda(venda);
+
+        limparPagamentos();
+
+        go("concluido");
+
+    } catch(error){
+
+        console.error(error);
+
+        const msg = "Erro ao registrar venda";
+        const cor = "error";
+        toast(msg, cor);
+
+    }
+}
+
+let pagamentoSelecionado = null;
+
+function abrirModalPagamento(tipo){
+
+    pagamentoSelecionado = tipo;
+
+    const restante = getValorRestante();
+
+    document.getElementById(
+        'tituloPagamento'
+    ).textContent =
+        `Pagamento - ${tipo.tipo_pagamento}`;
+
+    document.getElementById(
+        'valorPagamento'
+    ).value =
+        restante.toFixed(2);
+
+    const boxTroco =
+        document.getElementById(
+            'trocoPagamento'
+        );
+
+    document.getElementById(
+        'modalPagamento'
+    ).classList.remove(
+        'hidden'
+    );
+
+}
+
+document.getElementById('confirmarPagamento').addEventListener('click', () => {
+
+    const valor = Number(document.getElementById('valorPagamento').value);
+
+    const restante = getValorRestante();
+
+    if(valor <= 0){
+
+        toast(
+            'Valor inválido',
+            'warning'
+        );
+
+        return;
+    }
+
+    if(
+        pagamentoSelecionado.tipo_pagamento !== 'dinheiro' &&
+        valor > restante
+    ){
+
+        toast(
+            'Valor maior que o restante',
+            'warning'
+        );
+
+        return;
+    }
+        
+
+    adicionarPagamento(
+        pagamentoSelecionado,
+        valor
+    );
+
+    atualizarResumoPagamento();
+
+    fecharModalPagamento();
+
+});
+
+function fecharModalPagamento(){
+
+   document.getElementById(
+        'modalPagamento'
+    ).classList.add(
+        'hidden'
+    );
+
+    document.getElementById(
+        'trocoPagamento'
+    ).classList.add(
+        'hidden'
+    );
+
+}
+
+document.getElementById(
+    'cancelarPagamento'
+).addEventListener(
+    'click',
+    fecharModalPagamento
+);
+
+function atualizarTroco(){
+
+    if(
+        !pagamentoSelecionado ||
+        pagamentoSelecionado.tipo_pagamento !== 'dinheiro'
+    ){
+        return;
+    }
+
+    const recebido = Number(
+        document.getElementById(
+            'valorPagamento'
+        ).value
+    );
+
+    const restante =
+        getValorRestante();
+
+    const troco =
+        recebido - restante;
+
+    const boxTroco =
+        document.getElementById(
+            'trocoPagamento'
+        );
+
+    if(troco > 0){
+
+        boxTroco.textContent =
+            `Troco: ${troco.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )}`;
+
+        boxTroco.classList.remove(
+            'hidden'
+        );
+
+    }else{
+
+        boxTroco.classList.add(
+            'hidden'
+        );
+
+    }
+
+}
+
+
+
+
+
+function init(){
+
+    carregarPagamentos();
+
+    listaResumo();
+
+    carregarTiposPagamento();
+
+    atualizarResumoPagamento();
+
+    document
+        .getElementById('valorPagamento')
+        .addEventListener(
+            'input',
+            atualizarTroco
+        );
+}
+
+init();
