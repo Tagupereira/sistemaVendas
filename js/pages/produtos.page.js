@@ -1,11 +1,12 @@
 import { ProdutoAPI } from '../api/produtos.api.js';
 import { iniciarCarrinho, carregarCarrinho, atualizarCarrinhoUI, adicionarCarrinho} from '../services/carrinho.service.js';
 import { go, goto } from '../routes/routes.js';
+import { indicator } from "../services/indicator.service.js";
 
 document.getElementById("back").addEventListener("click",()=>{
   go("login");
 })
-const indResp = document.getElementById("indResp");
+
 
 let produtos = [];
 
@@ -16,15 +17,12 @@ async function carregarProdutos() {
   container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando Lista...</div>';
 
   const response = await ProdutoAPI.listar();
-    console.log(response);
-
-  if(response.success){
-    indResp.classList.remove("bg-blue-300");
-    indResp.classList.add("bg-[#0BFF65]");
-  }else{
-    indResp.classList.remove("bg-blue-300");
-    indResp.classList.add("bg-red-400");
+  
+  
+  if(!response.success){
+    
     container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Erro ao carregar...</div>';
+    return
   }
 
   produtos = response.produtos;
@@ -128,7 +126,20 @@ document.getElementById('pesquisa').addEventListener('input', (e) => {
   
 });
 
-carregarCarrinho();
-iniciarCarrinho();
-atualizarCarrinhoUI();
-carregarProdutos();
+function init(){
+
+  indicator();
+  carregarProdutos();
+  carregarCarrinho();
+  iniciarCarrinho();
+  atualizarCarrinhoUI();
+
+};
+
+setInterval(() => {
+
+  indicator();   
+
+}, 10000);
+
+init();

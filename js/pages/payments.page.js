@@ -3,6 +3,9 @@ import { validarCarrinho } from "../guards/cart.guard.js";
 import { paymentAPI } from '../api/payments.api.js';
 import { adicionarPagamento, removerPagamento, getPagamentos, getTotalPago, getValorRestante, salvarPagamentos, getVenda, carregarPagamentos, limparPagamentos } from "../services/payments.service.js";
 import { toast } from "../components/toast.component.js";
+import { indicator } from "../services/indicator.service.js";
+import { vendasAPI } from "../api/vendas.api.js";
+import { API_URL } from "../api/api.js";
 
 let tiposPagamentos = [];
 
@@ -130,6 +133,7 @@ async function carregarTiposPagamento() {
     });
 
     tiposPagamentos = response.tipos;
+
     iniciarEventosPagamento();
 }
 
@@ -286,13 +290,26 @@ document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 
 async function salvarVenda(){
 
+    const venda = getVenda(document.getElementById('nomeCliente').value);
+
+    localStorage.setItem('ultimaVenda', JSON.stringify(venda));
+       
     try {
+               
+        const response = await vendasAPI.salvar(venda);
+        console.log(response);
+        
+        if(!response.success){
 
-        const venda = getVenda(document.getElementById('nomeCliente').value);
-
-        await paymentAPI.salvarVenda(venda);
-
+            throw new Error(
+                'Erro ao salvar venda'
+            );
+        }
         limparPagamentos();
+        
+        localStorage.removeItem(
+            'ultimaVenda'
+        );
 
         go("concluido");
 
@@ -300,11 +317,12 @@ async function salvarVenda(){
 
         console.error(error);
 
-        const msg = "Erro ao registrar venda";
-        const cor = "error";
+        const msg = 'Venda salva localmente. Será enviada depois.';
+        const cor = "warning";
         toast(msg, cor);
 
     }
+    
 }
 
 let pagamentoSelecionado = null;
@@ -395,12 +413,7 @@ function fecharModalPagamento(){
 
 }
 
-document.getElementById(
-    'cancelarPagamento'
-).addEventListener(
-    'click',
-    fecharModalPagamento
-);
+document.getElementById('cancelarPagamento').addEventListener('click',fecharModalPagamento);
 
 function atualizarTroco(){
 
@@ -453,11 +466,9 @@ function atualizarTroco(){
 
 }
 
-
-
-
-
 function init(){
+    
+    indicator();
 
     carregarPagamentos();
 
@@ -465,14 +476,15 @@ function init(){
 
     carregarTiposPagamento();
 
-    atualizarResumoPagamento();
+    atualizarResumoPagamento();  
 
-    document
-        .getElementById('valorPagamento')
-        .addEventListener(
-            'input',
-            atualizarTroco
-        );
+    document.getElementById('valorPagamento').addEventListener('input', atualizarTroco);
+
 }
+setInterval(() => {
+
+    indicator();    
+
+}, 10000);
 
 init();

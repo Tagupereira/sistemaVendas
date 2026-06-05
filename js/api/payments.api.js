@@ -1,4 +1,4 @@
-import { API_URL } from '../api/api.js';
+import { API_URL } from './api.js';
 
 export const paymentAPI = {
 
@@ -8,8 +8,7 @@ export const paymentAPI = {
             await fetch(
                 `${API_URL}?action=listarTiposPagamento`
             );
-            console.log(response);
-            
+                        
         return await response.json();
 
     }

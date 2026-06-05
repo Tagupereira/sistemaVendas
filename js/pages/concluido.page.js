@@ -18,8 +18,12 @@ if(carrinho === false){
 const retornar = document.getElementById("btnNovoPedido");
 
 retornar.addEventListener("click",()=>{
+    
     go("produtos")
-    //goto(-2);
+    
     localStorage.removeItem("carrinho");
     localStorage.removeItem("resumoPedido");
+    localStorage.removeItem("pagamentos");
+    localStorage.removeItem("ultimaVenda");
+
 })
