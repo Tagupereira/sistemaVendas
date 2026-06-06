@@ -15,29 +15,29 @@ export const vendasAPI = {
     // }
     async salvar(venda){
 
-    const vendaJson =
-        encodeURIComponent(
-            JSON.stringify(venda)
-        );
+        const vendaJson =
+            encodeURIComponent(
+                JSON.stringify(venda)
+            );
 
-    const url =
-        `${API_URL}?action=salvarVenda&venda=${vendaJson}`;
+        const url =
+            `${API_URL}?action=salvarVenda&venda=${vendaJson}`;
 
-    console.log(url);
+        console.log(url);
 
-    const response =
-        await fetch(url);
+        const response =
+            await fetch(url);
 
-    console.log(response);
+        console.log(response);
 
-    const texto =
-        await response.text();
+        const texto =
+            await response.text();
 
-    console.log(texto);
+        console.log(texto);
 
-    return JSON.parse(texto);
+        return JSON.parse(texto);
 
-}
+    }
 }
 
 // export const vendasAPI = {

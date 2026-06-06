@@ -2,11 +2,11 @@ import { ProdutoAPI } from '../api/produtos.api.js';
 import { iniciarCarrinho, carregarCarrinho, atualizarCarrinhoUI, adicionarCarrinho} from '../services/carrinho.service.js';
 import { go, goto } from '../routes/routes.js';
 import { indicator } from "../services/indicator.service.js";
+import { paymentAPI } from '../api/payments.api.js';
 
 document.getElementById("back").addEventListener("click",()=>{
   go("login");
 })
-
 
 let produtos = [];
 
@@ -82,8 +82,6 @@ function renderizarProdutos(produtos) {
 
       const itemId = Number(btn.dataset.id);
       const itemCart = produtos.find(produto => produto.id === itemId);
-      console.log(itemCart);
-
       adicionarCarrinho(itemCart);
 
     });
@@ -96,7 +94,6 @@ btnFinalizarPedido.addEventListener("click", ()=>{
 
     go("pagamentos");
 })
-
 
 function normalizar(texto) {
   return texto
@@ -126,6 +123,16 @@ document.getElementById('pesquisa').addEventListener('input', (e) => {
   
 });
 
+async function listarPagamentos(){
+  const tipos = {}
+  const response = await paymentAPI.listarTipos();
+
+  tipos.payments = response.tipos;
+
+  localStorage.setItem("payments", JSON.stringify(tipos));
+  
+}
+
 function init(){
 
   indicator();
@@ -133,6 +140,7 @@ function init(){
   carregarCarrinho();
   iniciarCarrinho();
   atualizarCarrinhoUI();
+  listarPagamentos();
 
 };
 

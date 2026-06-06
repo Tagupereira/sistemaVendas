@@ -1,18 +1,18 @@
 import { go, goto } from "../routes/routes.js";
-import { validarCarrinho } from "../guards/cart.guard.js";
-import { paymentAPI } from '../api/payments.api.js';
+import { validarPaginaPagamento } from "../guards/cart.guard.js";
 import { adicionarPagamento, removerPagamento, getPagamentos, getTotalPago, getValorRestante, salvarPagamentos, getVenda, carregarPagamentos, limparPagamentos } from "../services/payments.service.js";
 import { toast } from "../components/toast.component.js";
 import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
 import { API_URL } from "../api/api.js";
+import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 
 let tiposPagamentos = [];
 
-const carrinho = validarCarrinho();
+const carrinho = validarPaginaPagamento();
 
 if(carrinho === false){
-    
+        
     go("produtos");
 
 }
@@ -109,13 +109,13 @@ async function carregarTiposPagamento() {
         pendente: 'schedule'
     };
 
-    const response = await paymentAPI.listarTipos();
-
+    const payments = JSON.parse(localStorage.getItem("payments")); 
+    
     const container = document.getElementById('tiposPagamento');
 
     container.innerHTML = '';
 
-    response.tipos.forEach(tipo => {
+    payments.payments.forEach(tipo => {
 
         container.innerHTML += `
             <button class=" tipo-pagamento flex flex-col items-center justify-center gap-2 h-28 border-2 border-slate-200 rounded-2xl bg-white shadow-sm transition hover:shadow-md" data-id="${tipo.id}">
@@ -132,7 +132,7 @@ async function carregarTiposPagamento() {
         `;
     });
 
-    tiposPagamentos = response.tipos;
+    tiposPagamentos = payments.payments;
 
     iniciarEventosPagamento();
 }
@@ -166,7 +166,7 @@ function iniciarEventosPagamento() {
 
             
             const pagamentoSelecionado =  tiposPagamentos.find(tipo => tipo.id == card.dataset.id);
-
+               
             abrirModalPagamento(tipo);            
             atualizarResumoPagamento();
 
@@ -224,7 +224,7 @@ function atualizarResumoPagamento(){
 
     });
 
-    atualizarTotais();
+    atualizarTotais();  
 
 }
 
@@ -252,27 +252,43 @@ function atualizarTotais(){
         }
     );
 
+     if(totalPedido-totalPago < 0){
+            document.getElementById("tituloTroco").innerText = "Troco";
+        }else{document.getElementById("tituloTroco").innerText = "Restante";}
+
     validarPagamento();
 
 }
 
 function validarPagamento(){
 
-    const restante = getValorRestante();
+    const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
+
+    const totalPedido = resumoPedido.total;
+
+    const totalPago = getTotalPago();
 
     const btn = document.getElementById('btnConfirmarVenda');
 
-    if(restante === 0){
+    if(totalPago >= totalPedido){
+       
+        if(totalPedido-totalPago < 0){
+            document.getElementById("tituloTroco").innerText = "Troco";
+        }else{
+            document.getElementById("tituloTroco").innerText = "Restante";
+        }
 
         btn.disabled = false;
         btn.classList.remove('opacity-50');
+
+
 
         return;
     }
 
     btn.disabled = true;
-
     btn.classList.add('opacity-50');
+
 
 }
 
@@ -289,27 +305,36 @@ document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 });
 
 async function salvarVenda(){
+    
+    showLoading();
 
     const venda = getVenda(document.getElementById('nomeCliente').value);
+    const pedido = {};
 
     localStorage.setItem('ultimaVenda', JSON.stringify(venda));
        
     try {
                
         const response = await vendasAPI.salvar(venda);
-        console.log(response);
-        
+                
         if(!response.success){
 
             throw new Error(
                 'Erro ao salvar venda'
             );
         }
-        limparPagamentos();
         
-        localStorage.removeItem(
-            'ultimaVenda'
-        );
+        
+        pedido.numPedido = response.pedido;
+        pedido.status = 1;
+        pedido.carrinho = 1;
+          
+        localStorage.setItem("pedido", JSON.stringify(pedido));
+    
+        limparPagamentos();
+        localStorage.removeItem("carrinho");
+        localStorage.removeItem("resumoPedido");
+        localStorage.removeItem("ultimaVenda");
 
         go("concluido");
 
@@ -317,6 +342,8 @@ async function salvarVenda(){
 
         console.error(error);
 
+        hideLoading();
+        
         const msg = 'Venda salva localmente. Será enviada depois.';
         const cor = "warning";
         toast(msg, cor);
@@ -413,10 +440,11 @@ function fecharModalPagamento(){
 
 }
 
-document.getElementById('cancelarPagamento').addEventListener('click',fecharModalPagamento);
+document.getElementById('cancelarPagamento').addEventListener('click', fecharModalPagamento);
 
 function atualizarTroco(){
 
+        
     if(
         !pagamentoSelecionado ||
         pagamentoSelecionado.tipo_pagamento !== 'dinheiro'

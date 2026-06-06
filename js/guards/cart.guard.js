@@ -1,13 +1,20 @@
 export function validarCarrinho(){
 
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')|| '[]');
+    const carrinho = JSON.parse(localStorage.getItem('pedido')|| '[]');
 
-    return carrinho.length > 0;
+    return carrinho.carrinho > 0;
 
 }
 
 export function validaCompra(){
-    const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
+    const pedido = JSON.parse(localStorage.getItem('pedido')||'[]');
+      
+    return pedido.status === 1;
+}
+export function validarPaginaPagamento(){
 
-    return resumoPedido.status === 1;
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')|| '[]');
+
+    return carrinho.length > 0;
+
 }

@@ -61,7 +61,7 @@
 
             <div class="flex justify-between font-bold">
 
-                <span>Restante</span>
+                <span id="tituloTroco">Restante</span>
 
                 <span id="valorRestante">
                     R$ 0,00
@@ -140,9 +140,7 @@
                 Observação
             </h3>
 
-            <textarea id="observacao" rows="3" placeholder="Observações do pedido..."
-                class="w-full border rounded-2xl p-3 resize-none">
-            </textarea>
+            <textarea id="observacao" rows="3" placeholder="Observações do pedido..." class="w-full border rounded-2xl p-3 resize-none"></textarea>
 
         </div>
 
@@ -180,6 +178,23 @@
             
 
         </div>
+
+    </div>
+
+</div>
+
+<div
+    id="loadingOverlay"
+    class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+
+    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-3">
+
+        <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin">
+        </div>
+
+        <span>
+            Salvando venda...
+        </span>
 
     </div>
 
