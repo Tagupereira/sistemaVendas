@@ -37,37 +37,18 @@ export const vendasAPI = {
 
         return JSON.parse(texto);
 
+    },
+
+    async listar(){
+
+        const response =
+            await fetch(
+                `${API_URL}?action=listarVendas`
+            );
+
+        return await response.json();
+
     }
+    
 }
 
-// export const vendasAPI = {
-
-//     async salvar(venda){
-
-//         const response =
-//             await fetch(
-//                 API_URL,
-//                 {
-//                     method: 'POST',
-
-//                     headers: {
-//                         'Content-Type':
-//                         'application/json'
-//                     },
-
-//                     body: JSON.stringify({
-
-//                         action: 'salvarVenda',
-
-//                         venda
-
-//                     })
-
-//                 }
-//             );
-
-//         return await response.json();
-
-//     }
-
-// }
