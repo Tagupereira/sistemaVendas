@@ -297,7 +297,7 @@ async function compartilharVenda(venda){
     const vendaCompleta = JSON.parse(venda.vendasJson);
 
     const texto = `
-        🍽️ Delícias Fernandes
+        Delícias Fernandes
 
         Pedido #${String(venda.pedido).padStart(4,'0')}
 
