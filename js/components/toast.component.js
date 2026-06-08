@@ -19,8 +19,9 @@ export function toast(
 
     toast.className = `
         fixed
-        top-5
-        right-5
+        top-4
+        left-4
+        right-4
         z-50
         px-5
         py-3
@@ -29,7 +30,7 @@ export function toast(
         shadow-lg
         transition-all
         duration-300
-        translate-x-full
+        -translate-y-full
         ${cores[tipo]}
     `;
 
@@ -40,23 +41,31 @@ export function toast(
     requestAnimationFrame(() => {
 
         toast.classList.remove(
-            'translate-x-full'
+            '-translate-y-full'
         );
 
+        toast.classList.add(
+            'translate-y-0'
+        );
+        
     });
+
+   setTimeout(() => {
+
+    toast.classList.remove(
+        'translate-y-0'
+    );
+
+    toast.classList.add(
+        '-translate-y-full'
+    );
 
     setTimeout(() => {
 
-        toast.classList.add(
-            'translate-x-full'
-        );
+        toast.remove();
 
-        setTimeout(() => {
+    }, 300);
 
-            toast.remove();
-
-        }, 300);
-
-    }, 3000);
+}, 3000);
 
 }
