@@ -215,6 +215,8 @@ function abrirModalVenda(venda){
 
     const vendaCompleta = JSON.parse(venda.vendasJson);
 
+    document.body.classList.add('overflow-hidden');
+
     document.getElementById('modalVenda').classList.remove('hidden');
 
     document.getElementById('modalPedido').textContent = `Pedido #${String(venda.pedido).padStart(4,'0')}`;
@@ -294,27 +296,11 @@ function abrirModalVenda(venda){
 
 async function compartilharVenda(venda){
 
-    const vendaCompleta = JSON.parse(venda.vendasJson);
-
-    const texto = `
-        Delícias Fernandes
-
-        Pedido #${String(venda.pedido).padStart(4,'0')}
-
-        Cliente: ${venda.cliente || 'Sem nome'}
-
-        Itens: ${vendaCompleta.pedido.quantidadeItens}
-
-        Total: R$ ${Number(venda.total).toFixed(2)}
-
-        Obrigado pela preferência!
-    `;
-
     try{
 
         await navigator.share({
             title: `Pedido #${venda.pedido}`,
-            text: texto
+            text: geraCupom(venda)
         });
 
     }catch(error){
@@ -327,10 +313,88 @@ async function compartilharVenda(venda){
 
 }
 
+function geraCupom(venda){
+
+    const vendaCompleta = JSON.parse(venda.vendasJson);
+
+    const dataVenda = new Date(venda.data);
+
+    const data = dataVenda.toLocaleDateString('pt-BR');
+
+    const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+
+    const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
+
+    const itens = vendaCompleta.pedido.itens.map(item =>
+        `🔹 ${item.quantidade}x ${item.nome}
+        Únit: ${item.preco.toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}
+        | Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}`
+
+    ).join('\n\n');
+
+    const pagamentos = vendaCompleta.pagamentos.map(pagamento =>
+
+        `${pagamento.tipo.toUpperCase()}: ${pagamento.valor.toLocaleString(
+            'pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}`
+
+    ).join('\n');
+
+    return `🏢 DELÍCIAS FERNANDES
+
+    📅 ${data}
+    🕒 ${hora}
+    📆 ${diaSemana}
+
+    📄 Pedido #${String(venda.pedido).padStart(4,'0')}
+
+    💳 VALOR DA COMPRA:
+    ${Number(venda.total).toLocaleString(
+        'pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    )}
+
+    📑 ITENS DO PEDIDO:
+
+    ${itens}
+
+    💰 VALOR TOTAL:
+    ${Number(venda.total).toLocaleString(
+        'pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    )}
+
+    💵 FORMAS DE PAGAMENTO:
+
+    ${pagamentos}
+
+    ✨ Obrigado pela preferência!`;
+}
 
 document.getElementById('fecharModalVenda').addEventListener('click',() => {
 
         document.getElementById('modalVenda').classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
 
     }
 );
