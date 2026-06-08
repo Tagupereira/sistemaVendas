@@ -24,6 +24,10 @@ async function carregarVendas(){
     }
 
     vendasCarregadas = response.vendas;
+    vendasCarregadas.sort(
+        (a,b) => new Date(b.data) - new Date(a.data)
+    );
+    
 
     renderizarVendas(vendasCarregadas);
     console.log(vendasCarregadas);
@@ -283,7 +287,7 @@ function abrirModalVenda(venda){
         const msg = 'Compartilhando';
         const cor = "success";
         toast(msg, cor);
-        
+
         compartilharVenda(venda)
     })
 }
