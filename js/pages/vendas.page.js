@@ -28,9 +28,7 @@ async function carregarVendas(){
         (a,b) => new Date(b.data) - new Date(a.data)
     );
     
-
     renderizarVendas(vendasCarregadas);
-    console.log(vendasCarregadas);
     
 }
 
@@ -126,7 +124,6 @@ function renderizarVendas(vendas){
     });
 }
 
-
 function agruparPorData(vendas){
 
     return vendas.reduce((grupo, venda) => {
@@ -204,8 +201,6 @@ document.addEventListener('click', (e) => {
 
         const venda = vendasCarregadas.find(v => v.id == card.dataset.id);
 
-        console.log(venda);
-
         abrirModalVenda(venda);
 
     }
@@ -242,7 +237,7 @@ function abrirModalVenda(venda){
 
             <div class="flex justify-between">
 
-                <span>${item.quantidade}x${item.nome}</span>
+                <span>${item.quantidade}x ${item.nome}</span>
 
                 <span>
                     ${(item.quantidade * item.preco).toLocaleString('pt-BR',
@@ -295,7 +290,7 @@ function abrirModalVenda(venda){
 }
 
 async function compartilharVenda(venda){
-
+    
     try{
 
         await navigator.share({
@@ -305,40 +300,38 @@ async function compartilharVenda(venda){
 
     }catch(error){
 
-        console.log(
-            'Compartilhamento cancelado'
-        );
+        alert(error.message);
+        console.error(error)
 
     }
 
 }
 
 function geraCupom(venda){
-
+    
     const vendaCompleta = JSON.parse(venda.vendasJson);
-
+    
     const dataVenda = new Date(venda.data);
-
+    
     const data = dataVenda.toLocaleDateString('pt-BR');
-
+    
     const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-
+     
     const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
-
+     
     const itens = vendaCompleta.pedido.itens.map(item =>
-        `🔹 ${item.quantidade}x ${item.nome}
-        Únit: ${item.preco.toLocaleString('pt-BR',
+        `- _${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
             {
                 style:'currency',
                 currency:'BRL'
             }
-        )}
-        | Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
+        )}_
+        *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
             {
                 style:'currency',
                 currency:'BRL'
             }
-        )}`
+        )}*`
 
     ).join('\n\n');
 
@@ -353,42 +346,33 @@ function geraCupom(venda){
         )}`
 
     ).join('\n');
+    
 
-    return `🏢 DELÍCIAS FERNANDES
+    const cupom = `
+=========================
+  ✨ DELÍCIAS FERNANDES ✨
+=========================
 
-    📅 ${data}
-    🕒 ${hora}
-    📆 ${diaSemana}
+${diaSemana}, ${data} - ${hora} 
+    
+Pedido: *#${String(venda.pedido).padStart(4,'0')}*
+========================
+*ITENS:*
+${itens}
+========================
+*PAGAMENTO:*
 
-    📄 Pedido #${String(venda.pedido).padStart(4,'0')}
+${pagamentos}
 
-    💳 VALOR DA COMPRA:
-    ${Number(venda.total).toLocaleString(
-        'pt-BR',
-        {
-            style:'currency',
-            currency:'BRL'
-        }
-    )}
+VALOR TOTAL: *${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}*
+========================
 
-    📑 ITENS DO PEDIDO:
+✨ Obrigado pela preferência!
 
-    ${itens}
+Cupom de compra - Não é documento fiscal. `;
 
-    💰 VALOR TOTAL:
-    ${Number(venda.total).toLocaleString(
-        'pt-BR',
-        {
-            style:'currency',
-            currency:'BRL'
-        }
-    )}
+    return cupom;
 
-    💵 FORMAS DE PAGAMENTO:
-
-    ${pagamentos}
-
-    ✨ Obrigado pela preferência!`;
 }
 
 document.getElementById('fecharModalVenda').addEventListener('click',() => {
@@ -403,7 +387,6 @@ async function init(){
 
     indicator();
     await carregarVendas();
-
 
 }
 
