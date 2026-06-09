@@ -300,8 +300,12 @@ async function compartilharVenda(venda){
 
     }catch(error){
 
-        alert(error.message);
+        
         console.error(error)
+        const msg = 'Compartilhamento cancelado';
+        const cor = "warning";
+        toast(msg, cor);
+
 
     }
 
