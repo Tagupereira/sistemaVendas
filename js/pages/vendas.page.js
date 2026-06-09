@@ -290,7 +290,7 @@ function abrirModalVenda(venda){
 }
 
 async function compartilharVenda(venda){
-    alert("teste:", typeof navigator.bluetooth)
+   
     try{
 
         await navigator.share({
