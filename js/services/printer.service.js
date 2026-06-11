@@ -39,7 +39,7 @@ export async function imprimir(texto) {
 
 export function gerarCupomESC(venda){
 
-    export function gerarCupomESC(venda){
+   
 
 const vendaCompleta =
 JSON.parse(
