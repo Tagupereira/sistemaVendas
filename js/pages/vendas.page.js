@@ -2,7 +2,7 @@ import { vendasAPI } from "../api/vendas.api.js";
 import { indicator } from "../services/indicator.service.js";
 import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
-import { conectar, imprimir, gerarCupomESC } from "../services/printer.service.js";
+import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 
 let vendasCarregadas = [];
 let vendaSelecionada = null;
@@ -283,17 +283,19 @@ function abrirModalVenda(venda){
             const cor = "info";
             toast(msg, cor);
 
+            await imprimir(gerarSenhaEvento(venda));
             await imprimir(gerarCupomESC(vendaSelecionada));
 
-        }catch(error){
 
-            const msg = error;
-            const cor = "danger"
+        }catch(error){
+            console.log(error);
+            
+            const msg = "Não foi possivel conectar";
+            const cor = "error"
             toast(msg, cor);
 
         }
         
-
         });
 
     document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
@@ -407,7 +409,6 @@ async function init(){
 
     indicator();
     await carregarVendas();
-
 }
 
 init();

@@ -4,7 +4,7 @@ let printerChar;
 export async function conectar() {
 
     if (printer?.gatt?.connected && printerChar) {
-        return true;
+        return;
     }
 
     const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [0x18F0] });
@@ -18,11 +18,11 @@ export async function conectar() {
     printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
 
     printer = device;
-    
-    return true;
+
+
 }
 
-export function impressoraConectada(){
+export function impressoraConectada() {
 
     return Boolean(
 
@@ -32,25 +32,10 @@ export function impressoraConectada(){
     );
 
 }
-// export async function imprimir(texto) {
 
-//     if (!printerChar) {
+export async function imprimir(texto) {
 
-//         await conectar();
-
-//     }
-
-//     const bytes = new TextEncoder().encode(limparTexto(texto)).buffer;
-
-//     await printerChar.writeValueWithoutResponse(bytes);
-
-//     alert('solicitando impressao')
-
-// }
-
-export async function imprimir(texto){
-
-    if(!printerChar){
+    if (!printerChar) {
 
         await conectar();
 
@@ -66,11 +51,11 @@ export async function imprimir(texto){
 
     const tamanhoBloco = 100;
 
-    for(
+    for (
         let i = 0;
         i < bytes.length;
         i += tamanhoBloco
-    ){
+    ) {
 
         const bloco =
             bytes.slice(
@@ -90,16 +75,16 @@ export async function imprimir(texto){
 
 }
 
-function esperar(ms){
+function esperar(ms) {
 
     return new Promise(
 
         resolve =>
 
-        setTimeout(
-            resolve,
-            ms
-        )
+            setTimeout(
+                resolve,
+                ms
+            )
 
     );
 
@@ -111,7 +96,7 @@ export function gerarCupomESC(venda) {
 
     const dataVenda = new Date(venda.data);
 
-    const data = dataVenda.toLocaleDateString('pt-BR');
+    const data = dataVenda.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
     const hora = dataVenda.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
@@ -123,9 +108,9 @@ export function gerarCupomESC(venda) {
         return (
             alinhar(
 
-                `${item.quantidade}x ${item.nome}`,
+                `${item.quantidade}x ${item.nome.toUpperCase()}`,
 
-                `${total
+                `RS ${total
                     .toFixed(2)
                     .replace('.', ',')}`
 
@@ -148,9 +133,9 @@ export function gerarCupomESC(venda) {
                         p.tipo
                             .toUpperCase(),
 
-                        p.valor
+                        `RS ${p.valor
                             .toFixed(2)
-                            .replace('.', ',')
+                            .replace('.', ',')}`
 
                     )
 
@@ -158,26 +143,23 @@ export function gerarCupomESC(venda) {
             .join('\n');
 
     return (
+        centralizar('DELICIAS FERNANDES') + '\n' +
 
-        'DELICIAS FERNANDES\n' +
-
-        alinhar(
-            data,
-            hora
-        ) +
+        `${data} - ${hora}\n` +
 
         '\n' +
 
+        
         alinhar(
-            'PEDIDO',
-            `#${String(venda.pedido)
+            'PEDIDO:',
+            ` #${String(venda.pedido)
                 .padStart(
                     4,
                     '0'
                 )}`
-        ) +
+        ) + 
 
-        '\n' +
+        '\n' + 
 
         '--------------------------------\n' +
 
@@ -193,24 +175,122 @@ export function gerarCupomESC(venda) {
 
         '--------------------------------\n' +
 
-        alinhar(
+        alinhar('TOTAL', `RS ${Number(venda.total).toFixed(2).replace('.', ',')}`)
+        + '\n\n' +
 
-            'TOTAL',
+        centralizar('CUPOM NAO FISCAL') + '\n' +
 
-            `RS ${Number(
-                venda.total
-            )
-                .toFixed(2)
-                .replace('.', ',')}`
-
-        ) +
-
-        '\n\n' +
-
-        'Obrigado!\n\n\n\n'
+        centralizar('Obrigado pela sua compra!') + '\n\n\n\n'
 
     );
 
+
+}
+
+
+
+export function gerarSenhaEvento(venda) {
+
+    const dataVenda =
+        new Date(
+            venda.data
+        );
+
+    const data =
+        dataVenda
+            .toLocaleDateString(
+                'pt-BR',
+                {
+                    day: '2-digit',
+                    month: '2-digit'
+                }
+            );
+
+    const hora =
+        dataVenda
+            .toLocaleTimeString(
+                'pt-BR',
+                {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }
+            );
+
+    return (
+
+        '\n' +
+
+        centralizar(
+            'DELICIAS FERNANDES'
+        ) +
+
+        '\n' +
+
+        centralizar(
+            'RETIRE NO BALCAO'
+        ) +
+
+        '\n' +
+
+        '--------------------------------\n' +
+
+        '\n' +
+
+        centralizar(
+            'PEDIDO'
+        ) +
+
+        '\n' +
+
+        '\n' +
+
+        centralizar(
+            '################'
+        ) +
+
+        '\n' +
+
+        centralizar(
+            String(
+                venda.pedido
+            )
+                .padStart(
+                    4,
+                    '0'
+                )
+        ) +
+
+        '\n' +
+
+        centralizar(
+            '################'
+        ) +
+
+        '\n' +
+
+        '\n' +
+
+        centralizar(
+            `${data} - ${hora}`
+        ) +
+
+        '\n' +
+
+        '\n' +
+
+        centralizar(
+            'AGUARDE CHAMADA'
+        ) +
+
+        '\n' +
+
+        centralizar(
+            'NO GRUPO'
+        ) +
+
+        '\n\n\n\n'
+
+    );
 
 }
 
@@ -228,7 +308,7 @@ function limparTexto(texto) {
         )
 
         .replace(
-            /[^\w\s.,()-]/g,
+            /[^\w\s.,()\-/#:]/g,
             ''
 
         )
@@ -278,6 +358,42 @@ function alinhar(
         ) +
 
         direita
+
+    );
+
+}
+
+function centralizar(
+    texto,
+    largura = 32
+) {
+
+    texto =
+        String(
+            texto
+        );
+
+    const espacos =
+        Math.max(
+            0,
+            Math.floor(
+                (
+                    largura -
+                    texto.length
+                )
+                / 2
+            )
+        );
+
+    return (
+
+        ' '.repeat(
+            espacos
+        )
+
+        +
+
+        texto
 
     );
 
