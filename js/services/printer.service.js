@@ -3,6 +3,8 @@ let printerChar;
 
 export async function conectar() {
 
+    
+
     if (printerChar) {
         return;
     }
@@ -19,6 +21,8 @@ export async function conectar() {
 
     printer = device;
 
+    alert('conectado')
+
 }
 
 export async function imprimir(texto) {
@@ -32,6 +36,8 @@ export async function imprimir(texto) {
     const bytes = new TextEncoder().encode(texto).buffer;
 
     await printerChar.writeValueWithoutResponse(bytes);
+
+    alert('solicitando impressao')
 
 }
 
