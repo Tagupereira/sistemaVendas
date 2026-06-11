@@ -283,7 +283,7 @@ function abrirModalVenda(venda){
             const cor = "info";
             toast(msg, cor);
 
-            await imprimir(geraCupomESC(vendaSelecionada));
+            await imprimir(gerarCupomESC(vendaSelecionada));
 
         }catch(error){
 
