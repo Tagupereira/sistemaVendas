@@ -411,7 +411,8 @@ document.getElementById('btnBluetooth').addEventListener('click',async () => {
 
         alert("services:", services);
 
-        for(const service of service){
+        for(const services of service){
+
             alert("service", service.uuid);
             const chars = await service.getCharacteristics();
 
