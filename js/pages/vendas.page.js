@@ -280,7 +280,7 @@ function abrirModalVenda(venda){
         const cor = "info";
         toast(msg, cor);
 
-        async ()=>{ await imprimir(gerarCupomESC(venda)) };
+        await imprimir(gerarCupomESC(venda));
 
         });
 
