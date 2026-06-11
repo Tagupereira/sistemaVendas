@@ -396,8 +396,11 @@ document.getElementById('btnBluetooth').addEventListener('click',async () => {
 
         alert(device);
 
-        alert(`Conectado: ${device.name}`
-    );
+        alert(`Conectado: ${device.name}`);
+        
+        const server = await device.gatt.connect();
+        alert(server);
+
 
     }catch(error){
 
