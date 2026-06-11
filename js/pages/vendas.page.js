@@ -392,7 +392,18 @@ document.getElementById('btnBluetooth').addEventListener('click',async () => {
 
     try{
 
-        const device = await navigator.bluetooth.requestDevice({ acceptAllDevices:true });
+        const device = await navigator.bluetooth.requestDevice({ 
+        
+            acceptAllDevices:true,
+        
+            optionalServices:[
+                0x1800,
+                0x1801,
+                0x18F0,
+                'battery_service'
+            ]
+             
+        });
         
         const server = await device.gatt.connect();
         
