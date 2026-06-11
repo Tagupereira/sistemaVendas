@@ -3,6 +3,16 @@ let printerChar;
 
 export async function conectar() {
 
+    alert(
+        JSON.stringify(
+            venda
+        )
+    );
+
+    alert(
+       "chegou aqui"
+    );
+
     if (printerChar) {
         return;
     }
@@ -18,8 +28,6 @@ export async function conectar() {
     printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
 
     printer = device;
-
-    alert('conectado')
 
 }
 
