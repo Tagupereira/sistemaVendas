@@ -392,18 +392,12 @@ async function init(){
     indicator();
     await carregarVendas();
 
-    alert(
-    navigator.bluetooth
-);
+    const device =
+        await navigator.bluetooth.requestDevice({
+            acceptAllDevices:true
+        });
 
-alert(
-    navigator.serial
-);
-
-alert(
-    navigator.usb
-);
-
+    alert(device);
 }
 
 init();
