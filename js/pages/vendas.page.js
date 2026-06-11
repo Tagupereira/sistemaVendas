@@ -390,101 +390,68 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
 
 
 
-document
-.getElementById(
-'btnBluetooth'
-)
-.addEventListener(
-'click',
+document.getElementById('btnBluetooth').addEventListener('click', async ()=>{
 
-async ()=>{
+    try{
 
-try{
+        const device = await navigator.bluetooth.requestDevice({
 
-const device = await navigator.bluetooth.requestDevice({
+        acceptAllDevices:true,
 
-acceptAllDevices:true,
+        optionalServices:[
+        0x1800,
+        0x1801,
+        0x180A,
+        0x18F0,
+        0xFFE0,
+        0xFFE1,
+        0xFFF0,
+        0xFFF1,
+        0xAE30
+        ]
 
-optionalServices:[
-0x1800,
-0x1801,
-0x180A,
-0x18F0,
-0xFFE0,
-0xFFE1,
-0xFFF0,
-0xFFF1,
-0xAE30
-]
+        });
 
-});
+        const server = await device.gatt.connect();
 
-const server = await device.gatt.connect();
+        const services = await server.getPrimaryServices();
 
-const services = await server.getPrimaryServices();
+        const service = services.find( s => s.uuid.includes('18f0'));
 
-const service = services.find( s => s.uuid.includes('18f0'));
+        const chars = await service.getCharacteristics();
 
-const chars = await service.getCharacteristics();
+        const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
 
-const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
+        alert('CHAR OK');
 
-alert('CHAR OK');
+        const encoder = new TextEncoder();
 
-const encoder =
-new TextEncoder();
+        const texto =
 
-const texto =
+        '\x1B\x40'+
+        '\x1B\x61\x01'+
 
-'\x1B\x40'+
-'\x1B\x61\x01'+
+        'DELICIAS FERNANDES\n'+
 
-'DELICIAS FERNANDES\n'+
+        '\x1B\x61\x00'+
 
-'\x1B\x61\x00'+
+        'Pedido #0010\n'+
 
-'Pedido #0010\n'+
+        '\n'+
+        '\n'+
+        '\n';
+        const bytes = encoder.encode(texto).buffer;
 
-'\n'+
-'\n'+
-'\n';
+        await char.writeValueWithoutResponse( bytes );
 
-await char.writeValueWithoutResponse( texto );
-
-alert(
-'ENVIADO');
-
-// for( const service of services ){
-
-// const chars =  await service.getCharacteristics();
-
-// for(const char of chars){
-    
-//     if(char.properties.write || char.properties.writeWithoutResponse){
-//         alert('CANAL ENCONTRADO');
-//     }
-//     const encoder = new TextEncoder();
-//     const data = encoder.encode('\n')
-
-//     await char.writeValueWithoutResponse(
-//         data
-//     );
-
-//     alert('ENVIADO');
-    
-//     return;
-// }
+        alert('ENVIADO');
 
 
-//}
+    }catch(error){
 
-}catch(error){
+        alert(error.message);
 
-alert(
-error.message
-);
-
-}
+    }
 
 });
 
