@@ -407,10 +407,15 @@ await navigator.bluetooth.requestDevice({
 acceptAllDevices:true,
 
 optionalServices:[
-'generic_access',
-'generic_attribute',
-'device_information',
-'battery_service'
+0x1800,
+0x1801,
+0x180A,
+0x18F0,
+0xFFE0,
+0xFFE1,
+0xFFF0,
+0xFFF1,
+0xAE30
 ]
 
 });
@@ -452,13 +457,8 @@ of chars
 ){
 
 alert(
-`Características:
-${chars.length}`
-);
-
-alert(
 `
-CHAR:
+UUID:
 ${char.uuid}
 
 READ:
@@ -467,7 +467,7 @@ ${char.properties.read}
 WRITE:
 ${char.properties.write}
 
-WRITE_NO_RESPONSE:
+WRITE_NO:
 ${char.properties.writeWithoutResponse}
 `
 );
