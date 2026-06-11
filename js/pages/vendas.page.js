@@ -388,45 +388,101 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
 );
 
 
-document.getElementById('btnBluetooth').addEventListener('click',async () => {
 
-    try{
 
-        const device = await navigator.bluetooth.requestDevice({ 
-        
-            acceptAllDevices:true,
-        
-            optionalServices:[
-                'generic_access',
-                'generic_attribute',
-                'device_information',
-                'battery_service'
-            ]
+document
+.getElementById(
+'btnBluetooth'
+)
+.addEventListener(
+'click',
 
-        });
-        
-        const server = await device.gatt.connect();
-        
-        const services = await server.getPrimaryServices();
+async ()=>{
 
-        alert("services:", services);
+try{
 
-        for(const services of service){
+const device =
+await navigator.bluetooth.requestDevice({
 
-            alert("service", service.uuid);
-            const chars = await service.getCharacteristics();
+acceptAllDevices:true,
 
-            alert("chars:", chars);
-
-        }
-
-    }catch(error){
-
-        alert(error);
-
-    }
+optionalServices:[
+'generic_access',
+'generic_attribute',
+'device_information',
+'battery_service'
+]
 
 });
+
+alert(
+`Dispositivo:
+${device.name}`
+);
+
+const server =
+await device.gatt.connect();
+
+alert(
+'Conectado'
+);
+
+const services =
+await server.getPrimaryServices();
+
+alert(
+`Qtd serviços:
+${services.length}`
+);
+
+for(
+const service
+of services
+){
+
+alert(
+`UUID:
+${service.uuid}`
+);
+
+const chars =
+await service.getCharacteristics();
+
+alert(
+`Características:
+${chars.length}`
+);
+
+for(
+const char
+of chars
+){
+
+alert(
+`CHAR:
+${char.uuid}`
+);
+
+}
+
+}
+
+}catch(error){
+
+alert(
+error.message
+);
+
+}
+
+});
+
+
+
+
+
+
+
 
 async function init(){
 
