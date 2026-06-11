@@ -3,16 +3,6 @@ let printerChar;
 
 export async function conectar() {
 
-    alert(
-        JSON.stringify(
-            venda
-        )
-    );
-
-    alert(
-       "chegou aqui"
-    );
-
     if (printerChar) {
         return;
     }
@@ -32,6 +22,9 @@ export async function conectar() {
 }
 
 export async function imprimir(texto) {
+
+    console.log("aqui");
+    
 
     if (!printerChar) {
 
