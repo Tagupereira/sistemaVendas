@@ -393,14 +393,20 @@ document.getElementById('btnBluetooth').addEventListener('click',async () => {
     try{
 
         const device = await navigator.bluetooth.requestDevice({ acceptAllDevices:true });
-
-        alert(device);
-
-        alert(`Conectado: ${device.name}`);
         
         const server = await device.gatt.connect();
-        alert(server);
+        
+        const services = await server.getPrimaryServices();
 
+        alert("services:", services);
+
+        for(const service of service){
+            alert("service", service.uuid);
+            const chars = await service.getCharacteristics();
+
+            alert("chars:", chars);
+
+        }
 
     }catch(error){
 
