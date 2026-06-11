@@ -3,8 +3,6 @@ let printerChar;
 
 export async function conectar() {
 
-    
-
     if (printerChar) {
         return;
     }
