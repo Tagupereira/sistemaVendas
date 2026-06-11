@@ -98,7 +98,11 @@ VALOR TOTAL: ${Number(venda.total).toLocaleString('pt-BR', { style:'currency', c
 
 Obrigado pela preferência!
 
-Cupom de compra - Não é documento fiscal. `;
+Cupom de compra - Não é documento fiscal. \n` +
+
+        '\n\n\n' +
+
+        '\x1D\x56\x41';
 
 
 return cupom;
