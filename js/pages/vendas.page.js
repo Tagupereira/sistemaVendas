@@ -401,8 +401,7 @@ async ()=>{
 
 try{
 
-const device =
-await navigator.bluetooth.requestDevice({
+const device = await navigator.bluetooth.requestDevice({
 
 acceptAllDevices:true,
 
@@ -426,7 +425,8 @@ const services = await server.getPrimaryServices();
 
 for( const service of services ){
 
-const char =  await service.getCharacteristics();
+const chars =  await service.getCharacteristics();
+
 for(const char of chars){
     
     if(char.properties.write || char.properties.whiteWithoutResponse){
