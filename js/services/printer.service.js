@@ -39,69 +39,108 @@ export async function imprimir(texto) {
 
 export function gerarCupomESC(venda){
 
-    const vendaCompleta = JSON.parse(venda.vendasJson);
-    
-    const dataVenda = new Date(venda.data);
-    
-    const data = dataVenda.toLocaleDateString('pt-BR');
-    
-    const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-     
-    const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
-    
-     const itens = vendaCompleta.pedido.itens.map(item =>
-        `- ${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
-            {
-                style:'currency',
-                currency:'BRL'
-            }
-        )}
-        Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
-            {
-                style:'currency',
-                currency:'BRL'
-            }
-        )}`
+    export function gerarCupomESC(venda){
 
-    ).join('\n\n');
+const vendaCompleta =
+JSON.parse(
+venda.vendasJson
+);
 
-    const pagamentos = vendaCompleta.pagamentos.map(pagamento =>
+const dataVenda =
+new Date(
+venda.data
+);
 
-        `${pagamento.tipo.toUpperCase()}: ${pagamento.valor.toLocaleString(
-            'pt-BR',
-            {
-                style:'currency',
-                currency:'BRL'
-            }
-        )}`
+const data =
+dataVenda.toLocaleDateString(
+'pt-BR'
+);
 
-    ).join('\n');
+const hora =
+dataVenda.toLocaleTimeString(
+'pt-BR',
+{
+hour:'2-digit',
+minute:'2-digit'
+}
+);
 
-    const cupom = 
+const dia =
+dataVenda
+.toLocaleDateString(
+'pt-BR',
+{
+weekday:'long'
+}
+)
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'');
 
-    '\x1B\x40'+
+const itens =
+vendaCompleta
+.pedido
+.itens
+.map(item=>{
 
-'\x1B\x61\x01'+
+const total =
+item.preco *
+item.quantidade;
+
+return (
+
+`${item.quantidade}x ${item.nome}\n`+
+
+`Unit RS ${item.preco
+.toFixed(2)
+.replace('.',',')}\n`+
+
+`Total RS ${total
+.toFixed(2)
+.replace('.',',')}\n`
+
+);
+
+})
+.join(
+'\n'
+);
+
+const pagamentos =
+vendaCompleta
+.pagamentos
+.map(
+
+p=>
+
+`${p.tipo.toUpperCase()}
+RS ${p.valor
+.toFixed(2)
+.replace('.',',')}`
+
+)
+.join('\n');
+
+return (
 
 'DELICIAS FERNANDES\n'+
 
-'\x1B\x61\x00'+
+'----------------\n'+
 
-`${diaSemana}\n`+
+`${dia}\n`+
+
 `${data} ${hora}\n\n`+
 
-`PEDIDO:
-#${String(venda.pedido)
+`PEDIDO\n`+
+
+`${String(venda.pedido)
 .padStart(
 4,
 '0'
-)}\n`+
-
-'================\n'+
+)}\n\n`+
 
 'ITENS\n'+
 
-'================\n'+
+'----------------\n'+
 
 itens+
 
@@ -109,30 +148,29 @@ itens+
 
 'PAGAMENTO\n'+
 
-'================\n'+
+'----------------\n'+
 
 pagamentos+
 
 '\n\n'+
 
-`TOTAL\n`+
+'TOTAL\n'+
 
-`RS ${Number(
-venda.total
-)
+`RS ${Number(venda.total)
 .toFixed(2)
 .replace('.',',')}\n`+
 
 '\n'+
 
-'Obrigado!\n'+
+'Obrigado\n'+
 
 'Nao e documento fiscal\n'+
 
-'\n\n\n';
+'\n\n\n'
 
+);
 
-return cupom;
+}
 
 }
 
