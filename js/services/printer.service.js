@@ -3,8 +3,8 @@ let printerChar;
 
 export async function conectar() {
 
-    if (printerChar) {
-        return;
+    if (printer?.gatt?.connected && printerChar) {
+        return true;
     }
 
     const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [0x18F0] });
@@ -18,9 +18,20 @@ export async function conectar() {
     printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
 
     printer = device;
-
+    
+    return true;
 }
 
+export function impressoraConectada(){
+
+    return Boolean(
+
+        printer?.gatt?.connected &&
+        printerChar
+
+    );
+
+}
 // export async function imprimir(texto) {
 
 //     if (!printerChar) {
@@ -196,7 +207,7 @@ export function gerarCupomESC(venda) {
 
         '\n\n' +
 
-        'Obrigado!\n\n'
+        'Obrigado!\n\n\n\n'
 
     );
 
