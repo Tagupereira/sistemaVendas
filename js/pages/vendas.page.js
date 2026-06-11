@@ -421,33 +421,36 @@ optionalServices:[
 
 const server = await device.gatt.connect();
 
-const services = await server.getPrimaryServices();
+const service =
+services.find(
+s => s.uuid.includes('18f0')
+);
 
-for(const service of services){
+const chars =
+await service.getCharacteristics();
 
-    alert(
-        `SERVICE:
-${service.uuid}`
-    );
+const char =
+chars.find(
+c =>
+c.properties.write ||
+c.properties.writeWithoutResponse
+);
 
-    const chars =
-        await service.getCharacteristics();
+alert(
+'CHAR OK'
+);
 
-    for(const char of chars){
+const bytes =
+new Uint8Array([
+10
+]);
 
-        alert(`
-UUID:
-${char.uuid}
+await char.writeValueWithoutResponse(
+bytes
+);
 
-PROPS:
-${JSON.stringify(
-char.properties
-)}
-`);
-
-    }
-
-}
+alert(
+'ENVIADO');
 
 // for( const service of services ){
 
