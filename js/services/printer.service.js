@@ -35,9 +35,6 @@ export function impressoraConectada() {
 
 export async function imprimir(texto) {
 
-    console.log(texto);
-    
-
     if (!printerChar) {
 
         await conectar();
@@ -94,9 +91,7 @@ function esperar(ms) {
 }
 
 export function gerarCupomESC(venda) {
-
-    console.log(venda);
-    
+   
     const vendaCompleta = JSON.parse(venda.vendasJson);
 
     const dataVenda = new Date(venda.data);
