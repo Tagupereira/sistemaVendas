@@ -2,6 +2,7 @@ import { vendasAPI } from "../api/vendas.api.js";
 import { indicator } from "../services/indicator.service.js";
 import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
+import { conectar, imprimir, gerarCupomESC } from "../services/printer.service.js";
 
 let vendasCarregadas = [];
 
@@ -278,7 +279,10 @@ function abrirModalVenda(venda){
         const msg = 'Imprimindo';
         const cor = "info";
         toast(msg, cor);
-    })
+
+        async ()=>{ await imprimir(gerarCupomESC(venda)) };
+
+        });
 
     document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
         const msg = 'Compartilhando';
@@ -387,87 +391,77 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
     }
 );
 
+// script teste de impressao bluetooth
+// document.getElementById('btnBluetooth').addEventListener('click', async ()=>{
+
+//     try{
+
+//         const device = await navigator.bluetooth.requestDevice({
+
+//         acceptAllDevices:true,
+
+//         optionalServices:[
+//         0x1800,
+//         0x1801,
+//         0x180A,
+//         0x18F0,
+//         0xFFE0,
+//         0xFFE1,
+//         0xFFF0,
+//         0xFFF1,
+//         0xAE30
+//         ]
+
+//         });
+
+//         const server = await device.gatt.connect();
+
+//         const services = await server.getPrimaryServices();
+
+//         const service = services.find( s => s.uuid.includes('18f0'));
+
+//         const chars = await service.getCharacteristics();
+
+//         const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
+
+//         alert('CHAR OK');
+
+//         const encoder = new TextEncoder();
+
+//         const texto =
+
+//         '\x1B\x40'+
+//         '\x1B\x61\x01'+
+
+//         'DELICIAS FERNANDES\n'+
+
+//         '\x1B\x61\x00'+
+
+//         'Pedido #0010\n'+
+
+//         '\n'+
+//         '\n'+
+//         '\n';
+//         const bytes = encoder.encode(texto).buffer;
+
+//         await char.writeValueWithoutResponse( bytes );
+
+//         alert('ENVIADO');
 
 
+//     }catch(error){
 
-document.getElementById('btnBluetooth').addEventListener('click', async ()=>{
+//         alert(error.message);
 
-    try{
+//     }
 
-        const device = await navigator.bluetooth.requestDevice({
-
-        acceptAllDevices:true,
-
-        optionalServices:[
-        0x1800,
-        0x1801,
-        0x180A,
-        0x18F0,
-        0xFFE0,
-        0xFFE1,
-        0xFFF0,
-        0xFFF1,
-        0xAE30
-        ]
-
-        });
-
-        const server = await device.gatt.connect();
-
-        const services = await server.getPrimaryServices();
-
-        const service = services.find( s => s.uuid.includes('18f0'));
-
-        const chars = await service.getCharacteristics();
-
-        const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
-
-        alert('CHAR OK');
-
-        const encoder = new TextEncoder();
-
-        const texto =
-
-        '\x1B\x40'+
-        '\x1B\x61\x01'+
-
-        'DELICIAS FERNANDES\n'+
-
-        '\x1B\x61\x00'+
-
-        'Pedido #0010\n'+
-
-        '\n'+
-        '\n'+
-        '\n';
-        const bytes = encoder.encode(texto).buffer;
-
-        await char.writeValueWithoutResponse( bytes );
-
-        alert('ENVIADO');
-
-
-    }catch(error){
-
-        alert(error.message);
-
-    }
-
-});
-
-
-
-
-
-
-
+// });
 
 async function init(){
 
     indicator();
     await carregarVendas();
 
-    
 }
 
 init();
