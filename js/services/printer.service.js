@@ -11,7 +11,7 @@ export async function conectar() {
 
     const server = await device.gatt.connect();
 
-    const service = await server.getPrimaryService( 0x18F0 );
+    const service = await server.getPrimaryService(0x18F0);
 
     const chars = await service.getCharacteristics();
 
@@ -37,78 +37,118 @@ export async function imprimir(texto) {
 
 }
 
-export function gerarCupomESC(venda){
+export function gerarCupomESC(venda) {
 
-const vendaCompleta = JSON.parse( venda.vendasJson );
+    const vendaCompleta = JSON.parse(venda.vendasJson);
 
-const dataVenda = new Date( venda.data );
+    const dataVenda = new Date(venda.data);
 
-const data = dataVenda.toLocaleDateString('pt-BR');
+    const data = dataVenda.toLocaleDateString('pt-BR');
 
-const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    const hora = dataVenda.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-const dia = dataVenda.toLocaleDateString('pt-BR',{weekday:'long'}).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const dia = dataVenda.toLocaleDateString('pt-BR', { weekday: 'long' }).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-const itens = vendaCompleta.pedido.itens.map(item=>{
-    const total = item.preco * item.quantidade;
+    const itens = vendaCompleta.pedido.itens.map(item => {
+        const total = item.preco * item.quantidade;
 
-return (
+        return (
+            alinhar(
 
-    `${item.quantidade}x ${item.nome}\n`+
+                `${item.quantidade}x ${item.nome}`,
 
-    `Unit RS ${item.preco.toFixed(2).replace('.',',')}\n`+
+                `${total
+                    .toFixed(2)
+                    .replace('.', ',')}`
 
-    `Total RS ${total.toFixed(2).replace('.',',')}\n`
+            )
 
-);
+        );
 
-}).join('\n');
+    })
+        .join('\n');
 
-const pagamentos = vendaCompleta.pagamentos.map(p=>`${p.tipo.toUpperCase()}
-    RS ${p.valor.toFixed(2).replace('.',',')}`
-).join('\n');
+    const pagamentos =
+        vendaCompleta
+            .pagamentos
+            .map(
 
-return (
+                p =>
 
-'DELICIAS FERNANDES\n'+
+                    alinhar(
 
-'----------------\n'+
+                        p.tipo
+                            .toUpperCase(),
 
-`${data} ${hora}\n`+
+                        p.valor
+                            .toFixed(2)
+                            .replace('.', ',')
 
-`PEDIDO #${String(venda.pedido).padStart(4,'0')}\n\n`+
+                    )
 
-'ITENS\n'+
+            )
+            .join('\n');
 
-'----------------\n'+
+    return (
 
-itens+
+        'DELICIAS FERNANDES\n' +
 
-'\n----------------\n'+
+        alinhar(
+            data,
+            hora
+        ) +
 
-pagamentos+
+        '\n' +
 
-'\n'+
+        alinhar(
+            'PEDIDO',
+            `#${String(venda.pedido)
+                .padStart(
+                    4,
+                    '0'
+                )}`
+        ) +
 
-`TOTAL RS ${Number(venda.total)
-.toFixed(2)
-.replace('.',',')}\n`+
+        '\n' +
 
-'Obrigado!\n'+
+        '--------------------------------\n' +
 
-'\n'+
+        itens +
 
-'Nao e documento fiscal\n'+
+        '\n' +
 
-'\n\n\n'
+        '--------------------------------\n' +
 
-);
+        pagamentos +
+
+        '\n' +
+
+        '--------------------------------\n' +
+
+        alinhar(
+
+            'TOTAL',
+
+            `RS ${Number(
+                venda.total
+            )
+                .toFixed(2)
+                .replace('.', ',')}`
+
+        ) +
+
+        '\n\n' +
+
+        'Obrigado!\n\n'
+
+    );
+
 
 }
 
 
 
-function limparTexto(texto){
+function limparTexto(texto) {
 
     return texto
 
@@ -134,5 +174,43 @@ function limparTexto(texto){
             '°',
             ''
         );
+
+}
+
+function alinhar(
+    esquerda,
+    direita,
+    largura = 32
+) {
+
+    esquerda =
+        String(
+            esquerda
+        );
+
+    direita =
+        String(
+            direita
+        );
+
+    const espacos =
+        Math.max(
+            1,
+            largura -
+            esquerda.length -
+            direita.length
+        );
+
+    return (
+
+        esquerda +
+
+        ' '.repeat(
+            espacos
+        ) +
+
+        direita
+
+    );
 
 }
