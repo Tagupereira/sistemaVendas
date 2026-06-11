@@ -21,19 +21,76 @@ export async function conectar() {
 
 }
 
-export async function imprimir(texto) {
+// export async function imprimir(texto) {
 
-    if (!printerChar) {
+//     if (!printerChar) {
+
+//         await conectar();
+
+//     }
+
+//     const bytes = new TextEncoder().encode(limparTexto(texto)).buffer;
+
+//     await printerChar.writeValueWithoutResponse(bytes);
+
+//     alert('solicitando impressao')
+
+// }
+
+export async function imprimir(texto){
+
+    if(!printerChar){
 
         await conectar();
 
     }
 
-    const bytes = new TextEncoder().encode(limparTexto(texto)).buffer;
+    const bytes =
+        new TextEncoder()
+            .encode(
+                limparTexto(
+                    texto
+                )
+            );
 
-    await printerChar.writeValueWithoutResponse(bytes);
+    const tamanhoBloco = 100;
 
-    alert('solicitando impressao')
+    for(
+        let i = 0;
+        i < bytes.length;
+        i += tamanhoBloco
+    ){
+
+        const bloco =
+            bytes.slice(
+                i,
+                i + tamanhoBloco
+            );
+
+        await printerChar.writeValueWithoutResponse(
+            bloco.buffer
+        );
+
+        await esperar(
+            80
+        );
+
+    }
+
+}
+
+function esperar(ms){
+
+    return new Promise(
+
+        resolve =>
+
+        setTimeout(
+            resolve,
+            ms
+        )
+
+    );
 
 }
 
