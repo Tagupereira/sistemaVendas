@@ -5,7 +5,7 @@ import { toast } from "../components/toast.component.js";
 import { conectar, imprimir, gerarCupomESC } from "../services/printer.service.js";
 
 let vendasCarregadas = [];
-
+let vendaSelecionada = null;
 document.getElementById("back").addEventListener("click",()=>{
   go("produtos");
 })
@@ -209,6 +209,8 @@ document.addEventListener('click', (e) => {
 
 function abrirModalVenda(venda){
 
+    vendaSelecionada = venda;
+
     const vendaCompleta = JSON.parse(venda.vendasJson);
 
     document.body.classList.add('overflow-hidden');
@@ -276,12 +278,21 @@ function abrirModalVenda(venda){
     });
 
     document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
-        
-        const msg = 'Imprimindo';
-        const cor = "info";
-        toast(msg, cor);
+        try{
+            const msg = 'Imprimindo';
+            const cor = "info";
+            toast(msg, cor);
 
-        await imprimir(geraCupom(venda));
+            await imprimir(geraCupomESC(vendaSelecionada));
+
+        }catch(error){
+
+            const msg = error;
+            const cor = "danger"
+            toast(msg, cor);
+
+        }
+        
 
         });
 
