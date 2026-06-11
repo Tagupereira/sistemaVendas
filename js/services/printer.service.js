@@ -39,31 +39,97 @@ export async function imprimir(texto) {
 
 export function gerarCupomESC(venda){
 
-return (
-        '\x1B\x40' +
+    const vendaCompleta = JSON.parse(venda.vendasJson);
+    
+    const dataVenda = new Date(venda.data);
+    
+    const data = dataVenda.toLocaleDateString('pt-BR');
+    
+    const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+     
+    const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
+    
+     const itens = vendaCompleta.pedido.itens.map(item =>
+        `- _${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}_
+        *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}*`
 
-        '\x1B\x61\x01' +
-        'DELICIAS FERNANDES\n' +
+    ).join('\n\n');
 
-        '\x1B\x61\x00' +
+    const pagamentos = vendaCompleta.pagamentos.map(pagamento =>
 
-        '----------------\n' +
+        `${pagamento.tipo.toUpperCase()}: ${pagamento.valor.toLocaleString(
+            'pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}`
 
-        `PEDIDO #${String(venda.pedido).padStart(4,'0')}\n` +
+    ).join('\n');
 
-        `TOTAL: R$ ${Number(venda.total)
-            .toLocaleString(
-                'pt-BR',
-                {
-                    style:'currency',
-                    currency:'BRL'
-                }
-            )}\n` +
+    const cupom = `
 
-        '\n\n\n' +
+    DELÍCIAS FERNANDES  
 
-        '\x1D\x56\x41'
-    );
+
+${diaSemana}, ${data} - ${hora} 
+    
+Pedido: #${String(venda.pedido).padStart(4,'0')}
+========================
+ITENS:
+${itens}
+========================
+PAGAMENTO:
+
+${pagamentos}
+
+VALOR TOTAL: ${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}
+========================
+
+Obrigado pela preferência!
+
+Cupom de compra - Não é documento fiscal. `;
+
+
+return cupom;
+
+//(
+//         '\x1B\x40' +
+
+//         '\x1B\x61\x01' +
+//         'DELICIAS FERNANDES\n' +
+
+//         '\x1B\x61\x00' +
+
+//         '----------------\n' +
+
+//         `PEDIDO #${String(venda.pedido).padStart(4,'0')}\n` +
+        
+//         `ITENS: \n` +
+
+//         `TOTAL: R$ ${Number(venda.total)
+//             .toLocaleString(
+//                 'pt-BR',
+//                 {
+//                     style:'currency',
+//                     currency:'BRL'
+//                 }
+//             )}\n` +
+
+//         '\n\n\n' +
+
+//         '\x1D\x56\x41'
+//     );
 
 }
 
