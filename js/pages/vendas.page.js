@@ -433,7 +433,7 @@ for(const char of chars){
         alert('CANAL ENCONTRADO');
     }
     const encoder = new TextEncoder();
-    await char.whiteValueWithoutResponse(
+    await char.whiteValue(
         encoder.encode(
             'TESTE\n\n'
         )
