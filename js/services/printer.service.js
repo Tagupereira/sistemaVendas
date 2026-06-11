@@ -172,7 +172,7 @@ pagamentos+
 
 }
 
-}
+
 
 function limparTexto(texto){
 
