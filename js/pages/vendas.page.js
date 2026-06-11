@@ -421,6 +421,8 @@ optionalServices:[
 
 const server = await device.gatt.connect();
 
+const services = await server.getPrimaryServices();
+
 const service =
 services.find(
 s => s.uuid.includes('18f0')
