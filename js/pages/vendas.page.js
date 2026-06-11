@@ -445,8 +445,11 @@ alert(
 ${service.uuid}`
 );
 
-const chars =
-await service.getCharacteristics();
+const chars = await service.getCharacteristics();
+for(
+const char
+of chars
+){
 
 alert(
 `Características:
@@ -469,7 +472,7 @@ ${char.properties.writeWithoutResponse}
 `
 );
 
-}
+}}
 
 }catch(error){
 
