@@ -39,86 +39,34 @@ export async function imprimir(texto) {
 
 export function gerarCupomESC(venda){
 
-   
+const vendaCompleta = JSON.parse( venda.vendasJson );
 
-const vendaCompleta =
-JSON.parse(
-venda.vendasJson
-);
+const dataVenda = new Date( venda.data );
 
-const dataVenda =
-new Date(
-venda.data
-);
+const data = dataVenda.toLocaleDateString('pt-BR');
 
-const data =
-dataVenda.toLocaleDateString(
-'pt-BR'
-);
+const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
-const hora =
-dataVenda.toLocaleTimeString(
-'pt-BR',
-{
-hour:'2-digit',
-minute:'2-digit'
-}
-);
+const dia = dataVenda.toLocaleDateString('pt-BR',{weekday:'long'}).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
-const dia =
-dataVenda
-.toLocaleDateString(
-'pt-BR',
-{
-weekday:'long'
-}
-)
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'');
-
-const itens =
-vendaCompleta
-.pedido
-.itens
-.map(item=>{
-
-const total =
-item.preco *
-item.quantidade;
+const itens = vendaCompleta.pedido.itens.map(item=>{
+    const total = item.preco * item.quantidade;
 
 return (
 
-`${item.quantidade}x ${item.nome}\n`+
+    `${item.quantidade}x ${item.nome}\n`+
 
-`Unit RS ${item.preco
-.toFixed(2)
-.replace('.',',')}\n`+
+    `Unit RS ${item.preco.toFixed(2).replace('.',',')}\n`+
 
-`Total RS ${total
-.toFixed(2)
-.replace('.',',')}\n`
+    `Total RS ${total.toFixed(2).replace('.',',')}\n`
 
 );
 
-})
-.join(
-'\n'
-);
+}).join('\n');
 
-const pagamentos =
-vendaCompleta
-.pagamentos
-.map(
-
-p=>
-
-`${p.tipo.toUpperCase()}
-RS ${p.valor
-.toFixed(2)
-.replace('.',',')}`
-
-)
-.join('\n');
+const pagamentos = vendaCompleta.pagamentos.map(p=>`${p.tipo.toUpperCase()}
+    RS ${p.valor.toFixed(2).replace('.',',')}`
+).join('\n');
 
 return (
 
@@ -126,17 +74,9 @@ return (
 
 '----------------\n'+
 
-`${dia}\n`+
+`${data} ${hora}\n`+
 
-`${data} ${hora}\n\n`+
-
-`PEDIDO\n`+
-
-`${String(venda.pedido)
-.padStart(
-4,
-'0'
-)}\n\n`+
+`PEDIDO #${String(venda.pedido).padStart(4,'0')}\n\n`+
 
 'ITENS\n'+
 
@@ -144,25 +84,19 @@ return (
 
 itens+
 
-'\n'+
-
-'PAGAMENTO\n'+
-
-'----------------\n'+
+'\n----------------\n'+
 
 pagamentos+
 
-'\n\n'+
+'\n'+
 
-'TOTAL\n'+
-
-`RS ${Number(venda.total)
+`TOTAL RS ${Number(venda.total)
 .toFixed(2)
 .replace('.',',')}\n`+
 
-'\n'+
+'Obrigado!\n'+
 
-'Obrigado\n'+
+'\n'+
 
 'Nao e documento fiscal\n'+
 
