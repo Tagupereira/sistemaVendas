@@ -433,11 +433,12 @@ for(const char of chars){
         alert('CANAL ENCONTRADO');
     }
     const encoder = new TextEncoder();
+    const data = encoder.encode('\n')
+
     await char.writeValueWithoutResponse(
-        encoder.encode(
-            'TESTE\n\n'
-        )
+        data
     );
+    
     alert('ENVIADO');
     
     return;
