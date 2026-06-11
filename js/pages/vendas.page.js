@@ -281,7 +281,7 @@ function abrirModalVenda(venda){
         const cor = "info";
         toast(msg, cor);
 
-        await imprimir(gerarCupomESC(venda));
+        await imprimir(geraCupom(venda));
 
         });
 
