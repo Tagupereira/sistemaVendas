@@ -420,59 +420,31 @@ optionalServices:[
 
 });
 
-alert(
-`Dispositivo:
-${device.name}`
-);
+const server = await device.gatt.connect();
 
-const server =
-await device.gatt.connect();
+const services = await server.getPrimaryServices();
 
-alert(
-'Conectado'
-);
+for( const service of services ){
 
-const services =
-await server.getPrimaryServices();
+const char =  await service.getCharacteristics();
+for(const char of chars){
+    
+    if(char.properties.write || char.properties.whiteWithoutResponse){
+        alert('CANAL ENCONTRADO');
+    }
+    const encoder = new TextEncoder();
+    await char.whiteValueWithoutResponse(
+        encoder.encode(
+            'TESTE\n\n'
+        )
+    );
+    alert('ENVIADO');
+    
+    return;
+}
 
-alert(
-`Qtd serviços:
-${services.length}`
-);
 
-for(
-const service
-of services
-){
-
-alert(
-`UUID:
-${service.uuid}`
-);
-
-const chars = await service.getCharacteristics();
-for(
-const char
-of chars
-){
-
-alert(
-`
-UUID:
-${char.uuid}
-
-READ:
-${char.properties.read}
-
-WRITE:
-${char.properties.write}
-
-WRITE_NO:
-${char.properties.writeWithoutResponse}
-`
-);
-
-}}
+}
 
 }catch(error){
 
