@@ -423,29 +423,55 @@ const server = await device.gatt.connect();
 
 const services = await server.getPrimaryServices();
 
-for( const service of services ){
+for(const service of services){
 
-const chars =  await service.getCharacteristics();
-
-for(const char of chars){
-    
-    if(char.properties.write || char.properties.writeWithoutResponse){
-        alert('CANAL ENCONTRADO');
-    }
-    const encoder = new TextEncoder();
-    const data = encoder.encode('\n')
-
-    await char.writeValueWithoutResponse(
-        data
+    alert(
+        `SERVICE:
+${service.uuid}`
     );
-    
-    alert('ENVIADO');
-    
-    return;
+
+    const chars =
+        await service.getCharacteristics();
+
+    for(const char of chars){
+
+        alert(`
+UUID:
+${char.uuid}
+
+PROPS:
+${JSON.stringify(
+char.properties
+)}
+`);
+
+    }
+
 }
 
+// for( const service of services ){
 
-}
+// const chars =  await service.getCharacteristics();
+
+// for(const char of chars){
+    
+//     if(char.properties.write || char.properties.writeWithoutResponse){
+//         alert('CANAL ENCONTRADO');
+//     }
+//     const encoder = new TextEncoder();
+//     const data = encoder.encode('\n')
+
+//     await char.writeValueWithoutResponse(
+//         data
+//     );
+
+//     alert('ENVIADO');
+    
+//     return;
+// }
+
+
+//}
 
 }catch(error){
 
