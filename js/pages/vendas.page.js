@@ -387,17 +387,32 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
     }
 );
 
+
+document.getElementById('btnBluetooth').addEventListener('click',async () => {
+
+    try{
+
+        const device = await navigator.bluetooth.requestDevice({ acceptAllDevices:true });
+
+        alert(device);
+
+        alert(`Conectado: ${device.name}`
+    );
+
+    }catch(error){
+
+        alert(error);
+
+    }
+
+});
+
 async function init(){
 
     indicator();
     await carregarVendas();
 
-    const device =
-        await navigator.bluetooth.requestDevice({
-            acceptAllDevices:true
-        });
-
-    alert(device);
+    
 }
 
 init();
