@@ -14,7 +14,7 @@ export const vendasAPI = {
 
     // }
     async salvar(venda){
-
+       
         const vendaJson =
             encodeURIComponent(
                 JSON.stringify(venda)
@@ -23,18 +23,12 @@ export const vendasAPI = {
         const url =
             `${API_URL}?action=salvarVenda&venda=${vendaJson}`;
 
-        console.log(url);
-
         const response =
             await fetch(url);
 
-        console.log(response);
-
         const texto =
             await response.text();
-
-        console.log(texto);
-
+            
         return JSON.parse(texto);
 
     },

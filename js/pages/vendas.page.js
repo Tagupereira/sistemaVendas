@@ -283,7 +283,9 @@ function abrirModalVenda(venda){
             const cor = "info";
             toast(msg, cor);
 
-            await imprimir(gerarSenhaEvento(venda));
+            //await imprimir(gerarSenhaEvento(venda));
+            console.log(vendaSelecionada);
+            
             await imprimir(gerarCupomESC(vendaSelecionada));
 
 

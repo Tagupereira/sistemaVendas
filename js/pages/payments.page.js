@@ -6,8 +6,10 @@ import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
 import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 
 let tiposPagamentos = [];
+
 
 const carrinho = validarPaginaPagamento();
 
@@ -312,19 +314,29 @@ async function salvarVenda(){
     const pedido = {};
 
     localStorage.setItem('ultimaVenda', JSON.stringify(venda));
+    const localVenda = localStorage.setItem('ultimaVenda', JSON.stringify(venda));
+    
+    const ultimaVenda = JSON.parse(localStorage.getItem('ultimaVenda'));
        
     try {
                
         const response = await vendasAPI.salvar(venda);
-                
+                     
         if(!response.success){
 
             throw new Error(
                 'Erro ao salvar venda'
             );
         }
-        
-        
+                
+        const vendaCupom = {
+            "pedido": response.pedido,
+            "data": ultimaVenda.data
+        }
+
+                
+        await imprimir(gerarSenhaEvento(vendaCupom));
+
         pedido.numPedido = response.pedido;
         pedido.status = 1;
         pedido.carrinho = 1;
@@ -336,7 +348,7 @@ async function salvarVenda(){
         localStorage.removeItem("resumoPedido");
         localStorage.removeItem("ultimaVenda");
 
-        go("concluido");
+        //go("concluido");
 
     } catch(error){
 
