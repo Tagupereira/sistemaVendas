@@ -453,17 +453,21 @@ alert(
 ${chars.length}`
 );
 
-for(
-const char
-of chars
-){
-
 alert(
-`CHAR:
-${char.uuid}`
-);
+`
+CHAR:
+${char.uuid}
 
-}
+READ:
+${char.properties.read}
+
+WRITE:
+${char.properties.write}
+
+WRITE_NO_RESPONSE:
+${char.properties.writeWithoutResponse}
+`
+);
 
 }
 
