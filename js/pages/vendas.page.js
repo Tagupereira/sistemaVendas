@@ -429,11 +429,11 @@ const chars =  await service.getCharacteristics();
 
 for(const char of chars){
     
-    if(char.properties.write || char.properties.whiteWithoutResponse){
+    if(char.properties.write || char.properties.writeWithoutResponse){
         alert('CANAL ENCONTRADO');
     }
     const encoder = new TextEncoder();
-    await char.whiteValue(
+    await char.writeValueWithoutResponse(
         encoder.encode(
             'TESTE\n\n'
         )
