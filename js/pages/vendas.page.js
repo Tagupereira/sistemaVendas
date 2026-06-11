@@ -423,33 +423,33 @@ const server = await device.gatt.connect();
 
 const services = await server.getPrimaryServices();
 
-const service =
-services.find(
-s => s.uuid.includes('18f0')
-);
+const service = services.find( s => s.uuid.includes('18f0'));
 
-const chars =
-await service.getCharacteristics();
+const chars = await service.getCharacteristics();
 
-const char =
-chars.find(
-c =>
-c.properties.write ||
-c.properties.writeWithoutResponse
-);
+const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
 
-alert(
-'CHAR OK'
-);
+alert('CHAR OK');
 
-const bytes =
-new Uint8Array([
-10
-]);
+const encoder =
+new TextEncoder();
 
-await char.writeValueWithoutResponse(
-bytes
-);
+const texto =
+
+'\x1B\x40'+
+'\x1B\x61\x01'+
+
+'DELICIAS FERNANDES\n'+
+
+'\x1B\x61\x00'+
+
+'Pedido #0010\n'+
+
+'\n'+
+'\n'+
+'\n';
+
+await char.writeValueWithoutResponse( texto );
 
 alert(
 'ENVIADO');
