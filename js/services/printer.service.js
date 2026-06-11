@@ -23,16 +23,13 @@ export async function conectar() {
 
 export async function imprimir(texto) {
 
-    console.log("aqui");
-    
-
     if (!printerChar) {
 
         await conectar();
 
     }
 
-    const bytes = new TextEncoder().encode(texto).buffer;
+    const bytes = new TextEncoder().encode(limparTexto(texto)).buffer;
 
     await printerChar.writeValueWithoutResponse(bytes);
 
@@ -67,5 +64,28 @@ return (
 
         '\x1D\x56\x41'
     );
+
+}
+
+function limparTexto(texto){
+
+    return texto
+
+        .normalize('NFD')
+
+        .replace(
+            /[\u0300-\u036f]/g,
+            ''
+        )
+
+        .replaceAll(
+            'R$',
+            'RS'
+        )
+
+        .replaceAll(
+            '°',
+            ''
+        );
 
 }
