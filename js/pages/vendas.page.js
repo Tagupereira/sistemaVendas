@@ -392,70 +392,72 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
 );
 
 // script teste de impressao bluetooth
-// document.getElementById('btnBluetooth').addEventListener('click', async ()=>{
+document.getElementById('btnBluetooth').addEventListener('click', async ()=>{
 
-//     try{
+    async ()=>{ await imprimir(gerarCupomESC(venda)) };
 
-//         const device = await navigator.bluetooth.requestDevice({
+    // try{
 
-//         acceptAllDevices:true,
+    //     const device = await navigator.bluetooth.requestDevice({
 
-//         optionalServices:[
-//         0x1800,
-//         0x1801,
-//         0x180A,
-//         0x18F0,
-//         0xFFE0,
-//         0xFFE1,
-//         0xFFF0,
-//         0xFFF1,
-//         0xAE30
-//         ]
+    //     acceptAllDevices:true,
 
-//         });
+    //     optionalServices:[
+    //     0x1800,
+    //     0x1801,
+    //     0x180A,
+    //     0x18F0,
+    //     0xFFE0,
+    //     0xFFE1,
+    //     0xFFF0,
+    //     0xFFF1,
+    //     0xAE30
+    //     ]
 
-//         const server = await device.gatt.connect();
+    //     });
 
-//         const services = await server.getPrimaryServices();
+    //     const server = await device.gatt.connect();
 
-//         const service = services.find( s => s.uuid.includes('18f0'));
+    //     const services = await server.getPrimaryServices();
 
-//         const chars = await service.getCharacteristics();
+    //     const service = services.find( s => s.uuid.includes('18f0'));
 
-//         const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
+    //     const chars = await service.getCharacteristics();
 
-//         alert('CHAR OK');
+    //     const char = chars.find( c =>c.properties.write || c.properties.writeWithoutResponse );
 
-//         const encoder = new TextEncoder();
+    //     alert('CHAR OK');
 
-//         const texto =
+    //     const encoder = new TextEncoder();
 
-//         '\x1B\x40'+
-//         '\x1B\x61\x01'+
+    //     const texto =
 
-//         'DELICIAS FERNANDES\n'+
+    //     '\x1B\x40'+
+    //     '\x1B\x61\x01'+
 
-//         '\x1B\x61\x00'+
+    //     'DELICIAS FERNANDES\n'+
 
-//         'Pedido #0010\n'+
+    //     '\x1B\x61\x00'+
 
-//         '\n'+
-//         '\n'+
-//         '\n';
-//         const bytes = encoder.encode(texto).buffer;
+    //     'Pedido #0010\n'+
 
-//         await char.writeValueWithoutResponse( bytes );
+    //     '\n'+
+    //     '\n'+
+    //     '\n';
+    //     const bytes = encoder.encode(texto).buffer;
 
-//         alert('ENVIADO');
+    //     await char.writeValueWithoutResponse( bytes );
+
+    //     alert('ENVIADO');
 
 
-//     }catch(error){
+    // }catch(error){
 
-//         alert(error.message);
+    //     alert(error.message);
 
-//     }
+    // }
 
-// });
+});
 
 async function init(){
 
