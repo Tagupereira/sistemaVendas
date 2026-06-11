@@ -392,6 +392,18 @@ async function init(){
     indicator();
     await carregarVendas();
 
+    alert(
+    navigator.bluetooth
+);
+
+alert(
+    navigator.serial
+);
+
+alert(
+    navigator.usb
+);
+
 }
 
 init();
