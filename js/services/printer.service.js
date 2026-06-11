@@ -50,18 +50,18 @@ export function gerarCupomESC(venda){
     const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
     
      const itens = vendaCompleta.pedido.itens.map(item =>
-        `- _${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
+        `- ${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
             {
                 style:'currency',
                 currency:'BRL'
             }
-        )}_
-        *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
+        )}
+        Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
             {
                 style:'currency',
                 currency:'BRL'
             }
-        )}*`
+        )}`
 
     ).join('\n\n');
 
@@ -77,63 +77,62 @@ export function gerarCupomESC(venda){
 
     ).join('\n');
 
-    const cupom = `
+    const cupom = 
 
-    DELÍCIAS FERNANDES  
+    '\x1B\x40'+
 
+'\x1B\x61\x01'+
 
-${diaSemana}, ${data} - ${hora} 
-    
-Pedido: #${String(venda.pedido).padStart(4,'0')}
-========================
-ITENS:
-${itens}
-========================
-PAGAMENTO:
+'DELICIAS FERNANDES\n'+
 
-${pagamentos}
+'\x1B\x61\x00'+
 
-VALOR TOTAL: ${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}
-========================
+`${diaSemana}\n`+
+`${data} ${hora}\n\n`+
 
-Obrigado pela preferência!
+`PEDIDO:
+#${String(venda.pedido)
+.padStart(
+4,
+'0'
+)}\n`+
 
-Cupom de compra - Não é documento fiscal. \n` +
+'================\n'+
 
-        '\n\n\n' +
+'ITENS\n'+
 
-        '\x1D\x56\x41';
+'================\n'+
+
+itens+
+
+'\n'+
+
+'PAGAMENTO\n'+
+
+'================\n'+
+
+pagamentos+
+
+'\n\n'+
+
+`TOTAL\n`+
+
+`RS ${Number(
+venda.total
+)
+.toFixed(2)
+.replace('.',',')}\n`+
+
+'\n'+
+
+'Obrigado!\n'+
+
+'Nao e documento fiscal\n'+
+
+'\n\n\n';
 
 
 return cupom;
-
-//(
-//         '\x1B\x40' +
-
-//         '\x1B\x61\x01' +
-//         'DELICIAS FERNANDES\n' +
-
-//         '\x1B\x61\x00' +
-
-//         '----------------\n' +
-
-//         `PEDIDO #${String(venda.pedido).padStart(4,'0')}\n` +
-        
-//         `ITENS: \n` +
-
-//         `TOTAL: R$ ${Number(venda.total)
-//             .toLocaleString(
-//                 'pt-BR',
-//                 {
-//                     style:'currency',
-//                     currency:'BRL'
-//                 }
-//             )}\n` +
-
-//         '\n\n\n' +
-
-//         '\x1D\x56\x41'
-//     );
 
 }
 
@@ -146,6 +145,12 @@ function limparTexto(texto){
         .replace(
             /[\u0300-\u036f]/g,
             ''
+        )
+
+        .replace(
+            /[^\w\s.,()-]/g,
+            ''
+
         )
 
         .replaceAll(
