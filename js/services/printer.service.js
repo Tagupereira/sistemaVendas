@@ -1,24 +1,110 @@
 let printer;
 let printerChar;
+let printerDevice;
+
+// export async function conectar() {
+
+    
+//     if(printerDevice?.gatt?.connected){
+//         return;
+//     }
+
+//     if (printer?.gatt?.connected && printerChar) {
+//         return;
+//     }
+
+
+//     const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [0x18F0] });
+
+//     printerDevice = device;
+
+//     const server = await device.gatt.connect();
+
+//     const service = await server.getPrimaryService(0x18F0);
+
+//     const chars = await service.getCharacteristics();
+
+//     printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
+
+//     printer = device;
+
+
+// }
 
 export async function conectar() {
 
-    if (printer?.gatt?.connected && printerChar) {
+    // 1. se já tem tudo pronto, ok
+    if (
+        printerDevice &&
+        printerChar &&
+        printerDevice.gatt?.connected
+    ) {
         return;
     }
 
-    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [0x18F0] });
+    // 2. se já tem device mas caiu conexão → reconecta direto
+    if (printerDevice) {
 
-    const server = await device.gatt.connect();
+        try {
 
-    const service = await server.getPrimaryService(0x18F0);
+            const server =
+                await printerDevice.gatt.connect();
 
-    const chars = await service.getCharacteristics();
+            const service =
+                await server.getPrimaryService(0x18F0);
 
-    printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
+            const chars =
+                await service.getCharacteristics();
+
+            printerChar =
+                chars.find(c =>
+                    c.properties.write ||
+                    c.properties.writeWithoutResponse
+                );
+
+            printer =
+                printerDevice;
+
+            return;
+
+        } catch (e) {
+
+            // se falhar, limpa tudo e recria
+            printerDevice = null;
+            printerChar = null;
+
+        }
+
+    }
+
+    // 3. primeira conexão (abre popup só 1x)
+    const device =
+        await navigator.bluetooth.requestDevice({
+
+            acceptAllDevices: true,
+
+            optionalServices: [0x18F0]
+
+        });
+
+    printerDevice = device;
+
+    const server =
+        await device.gatt.connect();
+
+    const service =
+        await server.getPrimaryService(0x18F0);
+
+    const chars =
+        await service.getCharacteristics();
+
+    printerChar =
+        chars.find(c =>
+            c.properties.write ||
+            c.properties.writeWithoutResponse
+        );
 
     printer = device;
-
 
 }
 
