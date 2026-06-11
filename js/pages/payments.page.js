@@ -348,7 +348,7 @@ async function salvarVenda(){
         localStorage.removeItem("resumoPedido");
         localStorage.removeItem("ultimaVenda");
 
-        //go("concluido");
+        go("concluido");
 
     } catch(error){
 
