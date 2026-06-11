@@ -275,7 +275,8 @@ function abrirModalVenda(venda){
         `;
     });
 
-    document.getElementById("btnImprimirVenda").addEventListener("click",() => {
+    document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
+        
         const msg = 'Imprimindo';
         const cor = "info";
         toast(msg, cor);
