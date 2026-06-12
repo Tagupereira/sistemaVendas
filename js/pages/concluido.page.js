@@ -47,7 +47,7 @@ btnPrint.addEventListener("click", async ()=>{
     if(etapa === 1){
 
          console.log(etapa);
-        //await imprimir(gerarSenhaEvento(venda));
+        await imprimir(gerarSenhaEvento(venda));
 
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
 
