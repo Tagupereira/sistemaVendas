@@ -55,6 +55,10 @@ btnPrint.addEventListener("click", async ()=>{
         return;
     }
     venda.vendasJson = recebeVendaJson.vendasJson;
+    venda.total = recebeVendaJson.total;
+
+    console.log(venda);
+    
     
     await imprimir(gerarCupomESC(venda));
 
