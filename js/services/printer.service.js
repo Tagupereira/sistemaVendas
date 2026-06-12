@@ -161,7 +161,6 @@ export function impressoraConectada() {
 
 export async function imprimir(texto) {
 
-    alert('DEVICE:',printerDevice);
     // SEMPRE valida conexão
     await conectar();
 

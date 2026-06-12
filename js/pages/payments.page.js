@@ -327,8 +327,7 @@ async function salvarVenda(){
         pedido.status = 1;
         pedido.carrinho = 1;
         pedido.data = venda.data
-
-                  
+                          
         localStorage.setItem("pedido", JSON.stringify(pedido));
     
         limparPagamentos();

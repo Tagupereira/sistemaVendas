@@ -1,9 +1,13 @@
 import { go, goto ,back } from "../routes/routes.js";
 import { validarCarrinho, validaCompra } from "../guards/cart.guard.js";
 import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
+import { vendasAPI } from "../api/vendas.api.js";
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
+let etapa = 1;
+
+let vendasCarregadas = [];
 
 if(carrinho === false){
     
@@ -18,21 +22,53 @@ if(carrinho === false){
         goto(-1);
     }
 }
+
+async function carregarVendas(venda){
+
+    const response = await vendasAPI.listar();                 
+
+    vendasCarregadas = response.vendas;
+        
+    const vendaA = vendasCarregadas.find(v => v.id == venda.id );
+    
+    localStorage.setItem("vendaJson", JSON.stringify(vendaA));
+    
+}
+
+
 const btnPrint = document.getElementById("btnImprimir");
 
 btnPrint.addEventListener("click", async ()=>{
     
     const venda = JSON.parse(localStorage.getItem('pedido'))
-        
-    await imprimir(gerarSenhaEvento(venda));
+    carregarVendas(venda);
+    const recebeVendaJson = JSON.parse(localStorage.getItem('vendaJson'))
+
+    if(etapa === 1){
+
+         console.log(etapa);
+        //await imprimir(gerarSenhaEvento(venda));
+
+        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
+
+        etapa = 2;
+        return;
+    }
+    venda.vendasJson = recebeVendaJson.vendasJson;
     
-    console.log(venda);
+    await imprimir(gerarCupomESC(venda));
+
+    document.getElementById("btnImprimir")   
+
+    console.log(etapa);
     
 })
+
 
 function init(){
 
     
+
     const retornar = document.getElementById("btnNovoPedido");
 
     const pedido = JSON.parse(localStorage.getItem("pedido"));
