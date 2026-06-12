@@ -1,149 +1,151 @@
 let printerDevice = null;
 let printerChar = null;
-let printer = null;
 
 export async function conectar() {
 
-    // 1. se já tem tudo pronto na memória da página atual, ok
+    // Já conectado
     if (
-        printerDevice && printerChar
+        printerDevice?.gatt?.connected &&
+        printerChar
+    ) {
+        return;
+    }
+
+    // Já tem device em memória
+    if (
+        printerDevice
     ) {
 
         try {
 
-            await printerDevice.gatt.connect();
-
-            return;
-
-        } catch {
-
-            printerDevice = null;
-            printerChar = null;
-
-        }
-
-    }
-
-    // [NOVO] 2. Se mudou de página e as variáveis sumiram, tenta recuperar o histórico
-    if (!printerDevice) {
-        try {
-            // Pede ao navegador a lista de aparelhos já autorizados antes
-            const devices = await navigator.bluetooth.getDevices();
-            
-            const device = devices.find( d => d.name === 'MPT-II' );
-
-            if (device) {
-
-                printerDevice = device;
-
-            }
-
-        } catch (e) {
-            console.warn("Erro ao buscar histórico de dispositivos:", e);
-        }
-    }
-
-    // 3. se já tem o device (seja da memória ou do histórico do getDevices) → conecta direto
-    if (printerDevice) {
-        try {
             const server =
                 await printerDevice.gatt.connect();
 
             const service =
-                await server.getPrimaryService(0x18F0);
+                await server.getPrimaryService(
+                    0x18F0
+                );
 
             const chars =
                 await service.getCharacteristics();
 
             printerChar =
-                chars.find(c =>
-                    c.properties.write ||
-                    c.properties.writeWithoutResponse
-                );
+                chars.find(
 
-            printer =
-                printerDevice;
+                    c =>
+
+                        c.properties.write ||
+
+                        c.properties.writeWithoutResponse
+
+                );
 
             return;
 
         } catch (e) {
-            // se falhar (ex: impressora desligou), limpa tudo para forçar o pop-up
-            printerDevice = null;
-            printerChar = null;
+
+            console.log(
+                'reconectando...'
+            );
+
+            printerDevice =
+                null;
+
+            printerChar =
+                null;
+
         }
+
     }
 
-    // 4. Primeira conexão da vida (abre popup só se não houver histórico)
-    const device =
+    // PRIMEIRA conexão (popup)
+    printerDevice =
         await navigator.bluetooth.requestDevice({
+
             acceptAllDevices: true,
-            optionalServices: [0x18F0]
+
+            optionalServices: [
+
+                0x18F0
+
+            ]
+
         });
 
-    printerDevice = device;
-
     const server =
-        await device.gatt.connect();
+        await printerDevice.gatt.connect();
 
     const service =
-        await server.getPrimaryService(0x18F0);
+        await server.getPrimaryService(
+            0x18F0
+        );
 
     const chars =
         await service.getCharacteristics();
 
     printerChar =
-        chars.find(c =>
-            c.properties.write ||
-            c.properties.writeWithoutResponse
+        chars.find(
+
+            c =>
+
+                c.properties.write ||
+
+                c.properties.writeWithoutResponse
+
         );
 
-    printer = device;
 }
-// export async function conectar() {
-
-    
-//     if(printerDevice?.gatt?.connected){
-//         return;
-//     }
-
-//     if (printer?.gatt?.connected && printerChar) {
-//         return;
-//     }
 
 
-//     const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [0x18F0] });
 
-//     printerDevice = device;
-
-//     const server = await device.gatt.connect();
-
-//     const service = await server.getPrimaryService(0x18F0);
-
-//     const chars = await service.getCharacteristics();
-
-//     printerChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
-
-//     printer = device;
-
-
-// }
+// let printerDevice = null;
+// let printerChar = null;
+// let printer = null;
 
 // export async function conectar() {
 
-//     // 1. se já tem tudo pronto, ok
+//     // 1. se já tem tudo pronto na memória da página atual, ok
 //     if (
-//         printerDevice &&
-//         printerChar &&
-//         printerDevice.gatt?.connected
+//         printerDevice && printerChar
 //     ) {
-//         return;
-//     }
-
-//     // 2. se já tem device mas caiu conexão → reconecta direto
-//     if (printerDevice) {
 
 //         try {
 
+//             await printerDevice.gatt.connect();
+
+//             return;
+
+//         } catch {
+
+//             printerDevice = null;
+//             printerChar = null;
+
+//         }
+
+//     }
+
+//     // [NOVO] 2. Se mudou de página e as variáveis sumiram, tenta recuperar o histórico
+//     if (!printerDevice) {
+//         try {
+//             // Pede ao navegador a lista de aparelhos já autorizados antes
+//             const devices = await navigator.bluetooth.getDevices();
+            
+//             const device = devices.find( d => d.name === 'MPT-II' );
+
+//             if (device) {
+
+//                 printerDevice = device;
+
+//             }
+
+//         } catch (e) {
+//             console.warn("Erro ao buscar histórico de dispositivos:", e);
+//         }
+//     }
+
+//     // 3. se já tem o device (seja da memória ou do histórico do getDevices) → conecta direto
+//     if (printerDevice) {
+//         try {
 //             const server =
 //                 await printerDevice.gatt.connect();
 
@@ -165,23 +167,17 @@ export async function conectar() {
 //             return;
 
 //         } catch (e) {
-
-//             // se falhar, limpa tudo e recria
+//             // se falhar (ex: impressora desligou), limpa tudo para forçar o pop-up
 //             printerDevice = null;
 //             printerChar = null;
-
 //         }
-
 //     }
 
-//     // 3. primeira conexão (abre popup só 1x)
+//     // 4. Primeira conexão da vida (abre popup só se não houver histórico)
 //     const device =
 //         await navigator.bluetooth.requestDevice({
-
 //             acceptAllDevices: true,
-
 //             optionalServices: [0x18F0]
-
 //         });
 
 //     printerDevice = device;
@@ -202,8 +198,8 @@ export async function conectar() {
 //         );
 
 //     printer = device;
-
 // }
+
 
 
 export function impressoraConectada() {
