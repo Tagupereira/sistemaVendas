@@ -1,5 +1,6 @@
 import { go, goto ,back } from "../routes/routes.js";
 import { validarCarrinho, validaCompra } from "../guards/cart.guard.js";
+import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
@@ -17,6 +18,12 @@ if(carrinho === false){
         goto(-1);
     }
 }
+const btnPrint = document.getElementById("btnImprimir");
+
+btnPrint.addEventListener("click", async ()=>{
+    const venda = JSON.parse(localStorage.getItem('pedido'))
+    await imprimir(gerarSenhaEvento(venda));
+})
 
 function init(){
 
@@ -28,7 +35,7 @@ function init(){
     const pedidoNumber = "#"+(`${pedido.numPedido}`).padStart(4, '0');
     const statusTitle = "Pedido Concluído";
     const statusSubTitle = "Pedido criado com sucesso";
-    localStorage.removeItem("pedido");
+    //localStorage.removeItem("pedido");
 
     if(pedido){
     console.log(pedido);

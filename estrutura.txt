@@ -55,3 +55,7 @@ refactor  -> reorganização sem alterar comportamento
 style     -> CSS/Tailwind/Layout
 docs      -> documentação
 chore     -> tarefas gerais/configuração
+
+
+document.getElementById("composer-submit-button").removeAttribute('disabled')
+document.getElementById("composer-submit-button").removeAttribute('disabled')
