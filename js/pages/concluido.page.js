@@ -99,6 +99,7 @@ function init(){
     
         go("produtos")
         localStorage.removeItem("pedido");
+        localStorage.removeItem("vendaJson");
 
     })
 }
