@@ -12,7 +12,9 @@ document.getElementById("back").addEventListener("click",()=>{
 })
 
 let produtos = [];
+const user = JSON.parse(localStorage.getItem('usuario'));
 
+document.getElementById('bemvindo').textContent=`Olá ${user.user.toUpperCase()}`
 async function carregarProdutos() {
 
   const container = document.getElementById('listaProdutos');
@@ -34,10 +36,8 @@ async function carregarProdutos() {
 }
 
 function renderizarProdutos(produtos) {
-  //console.log("response: ", produtos);
-
+ 
   const container = document.getElementById('listaProdutos');
-
 
   container.innerHTML = '';
 
