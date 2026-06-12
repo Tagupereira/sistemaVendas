@@ -6,11 +6,22 @@ export async function conectar() {
 
     // 1. se já tem tudo pronto na memória da página atual, ok
     if (
-        printerDevice &&
-        printerChar &&
-        printerDevice.gatt?.connected
+        printerDevice && printerChar
     ) {
-        return;
+
+        try {
+
+            await printerDevice.gatt.connect();
+
+            return;
+
+        } catch {
+
+            printerDevice = null;
+            printerChar = null;
+
+        }
+
     }
 
     // [NOVO] 2. Se mudou de página e as variáveis sumiram, tenta recuperar o histórico
@@ -19,10 +30,14 @@ export async function conectar() {
             // Pede ao navegador a lista de aparelhos já autorizados antes
             const devices = await navigator.bluetooth.getDevices();
             
-            // Se encontrou algum dispositivo no histórico, usa ele
-            if (devices.length > 0) {
-                printerDevice = devices[0]; 
+            const device = devices.find( d => d.name === 'MPT-II' );
+
+            if (device) {
+
+                printerDevice = device;
+
             }
+
         } catch (e) {
             console.warn("Erro ao buscar histórico de dispositivos:", e);
         }
@@ -202,13 +217,52 @@ export function impressoraConectada() {
 
 }
 
+// export async function imprimir(texto) {
+
+//     if (!printerChar) {
+
+//         await conectar();
+
+//     }
+
+//     const bytes =
+//         new TextEncoder()
+//             .encode(
+//                 limparTexto(
+//                     texto
+//                 )
+//             );
+
+//     const tamanhoBloco = 100;
+
+//     for (
+//         let i = 0;
+//         i < bytes.length;
+//         i += tamanhoBloco
+//     ) {
+
+//         const bloco =
+//             bytes.slice(
+//                 i,
+//                 i + tamanhoBloco
+//             );
+
+//         await printerChar.writeValueWithoutResponse(
+//             bloco.buffer
+//         );
+
+//         await esperar(
+//             80
+//         );
+
+//     }
+
+// }
+
 export async function imprimir(texto) {
 
-    if (!printerChar) {
-
-        await conectar();
-
-    }
+    // SEMPRE valida conexão
+    await conectar();
 
     const bytes =
         new TextEncoder()
@@ -218,7 +272,8 @@ export async function imprimir(texto) {
                 )
             );
 
-    const tamanhoBloco = 100;
+    const tamanhoBloco =
+        100;
 
     for (
         let i = 0;
@@ -232,9 +287,10 @@ export async function imprimir(texto) {
                 i + tamanhoBloco
             );
 
-        await printerChar.writeValueWithoutResponse(
-            bloco.buffer
-        );
+        await printerChar
+            .writeValueWithoutResponse(
+                bloco
+            );
 
         await esperar(
             80
