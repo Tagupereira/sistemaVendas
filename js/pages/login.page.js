@@ -21,7 +21,7 @@ async function login() {
 
     const password = document.getElementById('password').value;
 
-    const res = await fetch(`${API_URL}?action=login&user=${encodeURIComponent(user)}&password=${encodeURIComponent(password)}`);
+    const res = await fetch(`${API_URL}?action=login&user=${encodeURIComponent(user).toLowerCase()}&password=${encodeURIComponent(password)}`);
 
     const data = await res.json();
     

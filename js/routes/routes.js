@@ -11,10 +11,13 @@ export const Routes = {
     concluido: '/concluido.html',
 
     pedidos: '/pedidos.html',
+    
+    vendas: '/vendas.html',
 
     categorias: '/categorias.html',
 
     configuracoes: '/configuracoes.html'
+
 
 };
 

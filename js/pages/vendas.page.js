@@ -4,6 +4,7 @@ import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 import { auth } from '../guards/auth.guard.js';
+import { excluir } from "../services/crud.service.js";
 
 auth();
 
@@ -13,6 +14,7 @@ document.getElementById("back").addEventListener("click",()=>{
   go("produtos");
 })
 
+const usuario = JSON.parse( localStorage.getItem('usuario'));
 const container = document.getElementById('listaVendas');
 
 container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando Vendas...</div>';
@@ -309,6 +311,13 @@ function abrirModalVenda(venda){
         toast(msg, cor);
 
         compartilharVenda(venda)
+    })
+
+    document.getElementById("btnExcluirVenda").addEventListener("click", ()=>{
+       
+        
+        excluir(venda.id)
+        
     })
 }
 
