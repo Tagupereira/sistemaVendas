@@ -3,6 +3,9 @@ import { indicator } from "../services/indicator.service.js";
 import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
+import { auth } from '../guards/auth.guard.js';
+
+auth();
 
 let vendasCarregadas = [];
 let vendaSelecionada = null;

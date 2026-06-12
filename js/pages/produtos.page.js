@@ -3,6 +3,9 @@ import { iniciarCarrinho, carregarCarrinho, atualizarCarrinhoUI, adicionarCarrin
 import { go, goto } from '../routes/routes.js';
 import { indicator } from "../services/indicator.service.js";
 import { paymentAPI } from '../api/payments.api.js';
+import { auth } from '../guards/auth.guard.js';
+
+auth();
 
 document.getElementById("back").addEventListener("click",()=>{
   go("login");

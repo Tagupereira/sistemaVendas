@@ -6,6 +6,9 @@ import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
 import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { auth } from '../guards/auth.guard.js';
+
+auth();
 
 let tiposPagamentos = [];
 

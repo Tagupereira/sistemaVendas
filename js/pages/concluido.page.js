@@ -2,6 +2,9 @@ import { go, goto ,back } from "../routes/routes.js";
 import { validarCarrinho, validaCompra } from "../guards/cart.guard.js";
 import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
+import { auth } from '../guards/auth.guard.js';
+
+auth();
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
@@ -46,7 +49,6 @@ btnPrint.addEventListener("click", async ()=>{
 
     if(etapa === 1){
 
-         console.log(etapa);
         await imprimir(gerarSenhaEvento(venda));
 
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
@@ -56,15 +58,10 @@ btnPrint.addEventListener("click", async ()=>{
     }
     venda.vendasJson = recebeVendaJson.vendasJson;
     venda.total = recebeVendaJson.total;
-
-    console.log(venda);
-    
     
     await imprimir(gerarCupomESC(venda));
 
-    document.getElementById("btnImprimir")   
-
-    console.log(etapa);
+    localStorage.removeItem('vendaJson');
     
 })
 
