@@ -36,7 +36,7 @@ function init(){
 
     console.log(pedido);
     
-    const pedidoNumber = "#"+(`${pedido.numPedido}`).padStart(4, '0');
+    const pedidoNumber = "#"+(`${pedido.pedido}`).padStart(4, '0');
     const statusTitle = "Pedido Concluído";
     const statusSubTitle = "Pedido criado com sucesso";
     //localStorage.removeItem("pedido");
