@@ -77,7 +77,8 @@ export async function conectar() {
     const device =
         await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
-            optionalServices: [0x18F0]
+            //optionalServices: [0x18F0]
+            optionalServices: ['e7810a71-73ae-499d-8c15-faa9aef0c3f2']
         });
 
     printerDevice = device;
@@ -86,7 +87,9 @@ export async function conectar() {
         await device.gatt.connect();
 
     const service =
-        await server.getPrimaryService(0x18F0);
+        await server.getPrimaryService('e7810a71-73ae-499d-8c15-faa9aef0c3f2');
+    // const service =
+    //     await server.getPrimaryService(0x18F0);
 
     const chars =
         await service.getCharacteristics();
