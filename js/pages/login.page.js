@@ -4,7 +4,7 @@ import { conectar } from "../services/printer.service.js";
 const btnLogin = document.getElementById('btnLogin');
 
 btnLogin.addEventListener('click', async () => {
-    await conectar()
+    await conectar();
     go('produtos');
 
 });
