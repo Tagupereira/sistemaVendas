@@ -2,6 +2,7 @@ let printerDevice = null;
 let printerChar = null;
 let printer = null;
 
+
 export async function conectar() {
 
     // 1. se já tem tudo pronto na memória da página atual, ok
@@ -160,6 +161,7 @@ export function impressoraConectada() {
 
 export async function imprimir(texto) {
 
+    alert('DEVICE:',printerDevice);
     // SEMPRE valida conexão
     await conectar();
 
