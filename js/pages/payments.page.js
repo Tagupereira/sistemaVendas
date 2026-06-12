@@ -323,7 +323,7 @@ async function salvarVenda(){
         }
                       
         pedido.id = response.idVenda,
-        pedido.numPedido = response.pedido;
+        pedido.pedido = response.pedido;
         pedido.status = 1;
         pedido.carrinho = 1;
         pedido.data = venda.data

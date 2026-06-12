@@ -22,7 +22,9 @@ const btnPrint = document.getElementById("btnImprimir");
 
 btnPrint.addEventListener("click", async ()=>{
     const venda = JSON.parse(localStorage.getItem('pedido'))
-    await imprimir(gerarSenhaEvento(venda));
+    // await imprimir(gerarSenhaEvento(venda));
+    console.log(venda);
+    
 })
 
 function init(){
@@ -32,6 +34,8 @@ function init(){
 
     const pedido = JSON.parse(localStorage.getItem("pedido"));
 
+    console.log(pedido);
+    
     const pedidoNumber = "#"+(`${pedido.numPedido}`).padStart(4, '0');
     const statusTitle = "Pedido Concluído";
     const statusSubTitle = "Pedido criado com sucesso";
