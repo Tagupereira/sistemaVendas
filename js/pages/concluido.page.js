@@ -21,8 +21,13 @@ if(carrinho === false){
 const btnPrint = document.getElementById("btnImprimir");
 
 btnPrint.addEventListener("click", async ()=>{
+    
     const venda = JSON.parse(localStorage.getItem('pedido'))
+    
+    alert('DEVICE:',printerDevice);
+    
     await imprimir(gerarSenhaEvento(venda));
+    
     console.log(venda);
     
 })
