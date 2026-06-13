@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
 
   <title>Produtos</title>
@@ -22,7 +23,8 @@
     </svg>
 
     <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
-      <span id="back" class="material-symbols-outlined text-3xl text-white font-bold">keyboard_return</span>
+      <span id="btnMenu" class="material-symbols-outlined text-3xl text-white ">menu </span>
+
       <h1 class="text-3xl font-bold text-white">Produtos</h1>
       <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
     </div>
@@ -33,7 +35,7 @@
     <!-- Busca -->
     <span id="bemvindo" class="m-2"></span>
     <div class="bg-white rounded-2xl shadow p-4">
-      
+
       <input id="pesquisa" type="text" placeholder="Pesquisar produto..."
         class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
 
@@ -70,19 +72,12 @@
         <span id="totalMiniCarrinho">
           R$ 0,00
         </span>
-        
-        <span id="iconeCarrinho" >
-          <svg xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 transition-transform duration-300"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
 
-              <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7" />
+        <span id="iconeCarrinho">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-300" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </span>
 
@@ -91,7 +86,8 @@
     </div>
 
     <!-- Conteúdo -->
-    <div id="conteudoCarrinho" class="flex flex-col border-t overflow-hidden max-h-0 opacity-0 transition-all duration-300 p-0">
+    <div id="conteudoCarrinho"
+      class="flex flex-col border-t overflow-hidden max-h-0 opacity-0 transition-all duration-300 p-0">
 
       <div id="listaCarrinho" class="flex-1 overflow-y-auto pr-2"></div>
 
@@ -105,15 +101,100 @@
 
         </div>
 
-        <button id="finalizarPedido" class=" w-full mt-4 bg-blue-600 text-white py-3 rounded-2xl">Finalizar Pedido</button>
-      
+        <button id="finalizarPedido" class=" w-full mt-4 bg-blue-600 text-white py-3 rounded-2xl">Finalizar
+          Pedido</button>
+
       </div>
 
     </div>
-  
+
+  </div>
+
+  <div id="menuOverlay"></div>
+
+  <div id="menuLateral">
+    <div class="flex justify-between items-center ">
+      <span class="ml-5 text-2xl font-semibold">
+        Menu de Gestão
+      </span>
+      <span id="fechar" class="w-10 m-5 flex justify-center items-center font-bold material-symbols-outlined"> close </span>
+    </div>
+
+    <hr>
+
+    <div class="p-5 flex items-center">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <span class="ml-2 text-2xl font-bold">Produtos</span>
+    </div>
+
+    <div class="p-5 flex items-center">
+      <span class="material-symbols-outlined">point_of_sale</span>
+      <span class="ml-2 text-2xl font-bold">Minhas vendas</span>
+    </div>
+
+    <div class="p-5 flex items-center">
+      <span class="material-symbols-outlined">description</span>
+      <span class="ml-2 text-2xl font-bold">Relatorios</span>
+    </div>
+    
+    <div class="p-5 flex items-center">
+      <span class="material-symbols-outlined">credit_card_clock</span>
+      <span class="ml-2 text-2xl font-bold">Pendentes</span>
+    </div>
+
+    <div class="p-5 flex items-center">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="ml-2 text-2xl font-bold">Configurações</span>
+    </div>
+   
+
+    <div id="back" class="p-5 flex items-center">
+      <span class="material-symbols-outlined">exit_to_app</span>
+      <span class="ml-2 text-2xl font-bold">Sair</span>
+    </div>
+
   </div>
 
   <script type="module" src="./js/pages/produtos.page.js"></script>
+  <script>
+    const btn = document.getElementById('btnMenu');
+
+    const menu = document.getElementById('menuLateral');
+
+    const overlay = document.getElementById('menuOverlay');
+
+    const btnFechar = document.getElementById('fechar');
+
+    btn.addEventListener('click', abrirMenu);
+
+    overlay.addEventListener('click', fecharMenu);
+
+    btnFechar.addEventListener('click', fecharMenu);
+
+    function abrirMenu() {
+
+      menu.classList.add(
+        'aberto'
+      );
+
+      overlay.classList.add(
+        'aberto'
+      );
+
+    }
+
+    function fecharMenu() {
+
+      menu.classList.remove(
+        'aberto'
+      );
+
+      overlay.classList.remove(
+        'aberto'
+      );
+
+    }
+  </script>
 
 </body>
 
