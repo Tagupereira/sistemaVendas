@@ -114,7 +114,7 @@ border-t border-gray-200 transition-all duration-300">
   <div id="menuOverlay"></div>
 
   <div id="menuLateral" class="flex justify-between">
-    <div>
+    <div class="flex flex-col h-[100%]">
       <div class="flex justify-between items-center">
         <span class="ml-5 text-2xl font-semibold">
           Menu de Gestão
@@ -125,35 +125,36 @@ border-t border-gray-200 transition-all duration-300">
       <hr>
   
       <div class="mt-5">
-        <div id="pageProdutos" data-page="produtos" class="p-5 flex items-center">
+        <div id="pageProdutos" data-page="produtos" class="p-3 flex items-center">
           <span class="material-symbols-outlined text-blue-500">inventory_2</span>
           <span class="ml-2 text-2xl font-semibold">Produtos</span>
         </div>
 
-        <div id="pageVenda" data-page="vendas" class="p-5 flex items-center">
+        <div id="pageVenda" data-page="vendas" class="p-3 flex items-center">
           <span class="material-symbols-outlined text-purple-500">point_of_sale</span>
           <span class="ml-2 text-2xl font-semibold">Minhas vendas</span>
         </div>
 
-        <div id="pageRelatorios" data-page="relatorios" class="p-5 flex items-center">
+        <div id="pageRelatorios" data-page="relatorios" class="p-3 flex items-center">
           <span class="material-symbols-outlined text-green-500">description</span>
           <span class="ml-2 text-2xl font-semibold">Relatorios</span>
         </div>
         
-        <div id="pagePendentes" data-page="pendentes" class="p-5 flex items-center">
+        <div id="pagePendentes" data-page="pendentes" class="p-3 flex items-center">
           <span class="material-symbols-outlined text-red-500">credit_card_clock</span>
           <span class="ml-2 text-2xl font-semibold">Pendentes</span>
         </div>
 
-        <div id="pageConfig" data-page="configuracoes" class="p-5 flex items-center">
+        <div id="pageConfig" data-page="configuracoes" class="p-3 flex items-center">
           <span class="material-symbols-outlined text-orange-500">settings</span>
           <span class="ml-2 text-2xl font-semibold">Configurações</span>
         </div>
       
-        <div id="back" class="p-5 flex items-center">
+      </div>
+
+      <div id="back" class="p-3 flex items-center mt-[auto]">
           <span class="material-symbols-outlined text-gray-500">exit_to_app</span>
           <span class="ml-2 text-2xl font-semibold ">Sair</span>
-        </div>
       </div>
     </div>
    
