@@ -4,6 +4,7 @@ import { go, goto } from '../routes/routes.js';
 import { indicator } from "../services/indicator.service.js";
 import { paymentAPI } from '../api/payments.api.js';
 import { auth } from '../guards/auth.guard.js';
+import { toast } from '../components/toast.component.js';
 
 auth();
 
@@ -15,6 +16,7 @@ let produtos = [];
 const user = JSON.parse(localStorage.getItem('usuario'));
 
 document.getElementById('bemvindo').textContent=`Olá ${user.user.toUpperCase()}`
+
 async function carregarProdutos() {
 
   const container = document.getElementById('listaProdutos');
@@ -80,18 +82,51 @@ function renderizarProdutos(produtos) {
 
   adicionarItem.forEach(btn => {
 
-
     btn.addEventListener("click", () => {
-
       const itemId = Number(btn.dataset.id);
       const itemCart = produtos.find(produto => produto.id === itemId);
-      adicionarCarrinho(itemCart);
+      
+      modalObs(itemCart);
 
     });
   });
   
 }
 
+function modalObs(item){
+
+  document.getElementById("obsProduto").value = "";
+
+  const modalObs = document.getElementById("modalObs");
+  modalObs.classList.remove("hidden");
+  
+  const confirmarObs = document.getElementById("confirmarObs");
+  const cancelarObs = document.getElementById("cancelarObs");
+
+  confirmarObs.onclick=()=>{
+
+    const inputObs = document.getElementById("obsProduto").value.trim();
+       
+    item.observacao = inputObs;
+    
+    modalObs.classList.add("hidden");
+
+    adicionarCarrinho(item);
+
+    toast(`item ${item.nome} adicionado`, "success");
+
+  }
+
+  cancelarObs.onclick=()=>{
+    
+    modalObs.classList.add("hidden");
+
+    toast("item cancelado", "info");
+
+  }
+
+
+}
 const btnFinalizarPedido = document.getElementById("finalizarPedido");
 btnFinalizarPedido.addEventListener("click", ()=>{
 
@@ -135,7 +170,6 @@ async function listarPagamentos(){
   localStorage.setItem("payments", JSON.stringify(tipos));
   
 }
-
 
 const btn = document.getElementById('btnMenu');
 

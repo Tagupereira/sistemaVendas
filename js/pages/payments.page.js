@@ -63,11 +63,15 @@ function listaResumo(){
                 </span>
 
                 <span>
-                    ${(item.preco * item.quantidade)
-                        .toFixed(2)}
-                </span>
+                    ${(item.preco * item.quantidade).toFixed(2)}
+                </span> 
+
+                
 
             </div>
+            ${item.observacao?`<p class="text-gray-500 text-sm">${item.observacao}</p>`:''}
+            
+            <hr>
         `;
 
     });

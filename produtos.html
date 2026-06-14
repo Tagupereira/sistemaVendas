@@ -163,6 +163,40 @@ border-t border-gray-200 transition-all duration-300">
     </div>
   </div>
 
+<!-- MODAL OBSERVAÇÃO -->
+  <div id="modalObs" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
+  
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+  
+      <div class="text-center">
+  
+        <h2 class=" text-2xl font-bold">
+          Adicionar ao pedido
+        </h2>
+   
+      </div>
+  
+      <textarea id="obsProduto" placeholder="Observação (opcional)" class="mt-6 w-full border rounded-2xl p-4 min-h-[60px] outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+  
+      <div class=" flex justify-end gap-3 mt-6">
+
+        <button id="cancelarObs" class=" px-5 py-3 rounded-xl bg-gray-500 text-white">
+  
+          cancelar
+  
+        </button>
+        <button id="confirmarObs" class=" px-5 py-3 rounded-xl bg-blue-500 text-white">
+  
+          Avançar
+  
+        </button>
+  
+      </div>
+  
+    </div>
+  
+  </div>
+
   <script type="module" src="./js/pages/produtos.page.js"></script>
  
 </body>

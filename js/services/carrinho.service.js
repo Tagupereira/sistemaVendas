@@ -12,7 +12,7 @@ export function getCarrinho() {
 export function adicionarCarrinho(produto) {
 
     const item = carrinho.find(
-        p => p.id == produto.id
+        p => p.id == produto.id && (p.observacao || '') === (produto.observacao || '')
     );
 
     if(item){
@@ -276,6 +276,8 @@ export function getResumoPedido() {
 
         nome: item.nome,
 
+        observacao: item.observacao,
+        
         quantidade: item.quantidade,
 
         preco: item.preco,
