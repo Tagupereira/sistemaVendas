@@ -39,7 +39,7 @@ async function carregarVendas(){
 }
 
 function renderizarVendas(vendas){
-
+       
     const agrupadas = agruparPorData(vendas);
 
     container.innerHTML = '';
@@ -172,7 +172,8 @@ document.getElementById('buscarVenda').addEventListener('input', (e) => {
     const filtradas = vendasCarregadas.filter(venda => {
 
     const vendaCompleta = JSON.parse(venda.vendasJson);
-
+        console.log(vendaCompleta);
+        
     const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'parcial' : vendaCompleta.pagamentos[0].tipo;
     
     const dataFormatada = new Date(venda.data).toLocaleDateString('pt-BR',

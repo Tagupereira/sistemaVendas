@@ -54,7 +54,8 @@
   </main>
 
   <div id="carrinho"
-    class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-all duration-300">
+    class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.15)]
+border-t border-gray-200 transition-all duration-300">
 
     <!-- Cabeçalho sempre visível -->
     <div id="toggleCarrinho" class="flex justify-between items-center p-4 cursor-pointer">
@@ -112,90 +113,57 @@
 
   <div id="menuOverlay"></div>
 
-  <div id="menuLateral">
-    <div class="flex justify-between items-center ">
-      <span class="ml-5 text-2xl font-semibold">
-        Menu de Gestão
-      </span>
-      <span id="fechar" class="w-10 m-5 flex justify-center items-center font-bold material-symbols-outlined"> close </span>
-    </div>
+  <div id="menuLateral" class="flex justify-between">
+    <div>
+      <div class="flex justify-between items-center">
+        <span class="ml-5 text-2xl font-semibold">
+          Menu de Gestão
+        </span>
+        <span id="fechar" class="w-10 m-5 flex justify-center items-center font-bold material-symbols-outlined"> close </span>
+      </div>
 
-    <hr>
+      <hr>
+  
+      <div class="mt-5">
+        <div id="pageProdutos" data-page="produtos" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-blue-500">inventory_2</span>
+          <span class="ml-2 text-2xl font-semibold">Produtos</span>
+        </div>
 
-    <div class="p-5 flex items-center">
-      <span class="material-symbols-outlined">inventory_2</span>
-      <span class="ml-2 text-2xl font-bold">Produtos</span>
-    </div>
+        <div id="pageVenda" data-page="vendas" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-purple-500">point_of_sale</span>
+          <span class="ml-2 text-2xl font-semibold">Minhas vendas</span>
+        </div>
 
-    <div class="p-5 flex items-center">
-      <span class="material-symbols-outlined">point_of_sale</span>
-      <span class="ml-2 text-2xl font-bold">Minhas vendas</span>
-    </div>
+        <div id="pageRelatorios" data-page="relatorios" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-green-500">description</span>
+          <span class="ml-2 text-2xl font-semibold">Relatorios</span>
+        </div>
+        
+        <div id="pagePendentes" data-page="pendentes" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-red-500">credit_card_clock</span>
+          <span class="ml-2 text-2xl font-semibold">Pendentes</span>
+        </div>
 
-    <div class="p-5 flex items-center">
-      <span class="material-symbols-outlined">description</span>
-      <span class="ml-2 text-2xl font-bold">Relatorios</span>
-    </div>
-    
-    <div class="p-5 flex items-center">
-      <span class="material-symbols-outlined">credit_card_clock</span>
-      <span class="ml-2 text-2xl font-bold">Pendentes</span>
-    </div>
-
-    <div class="p-5 flex items-center">
-      <span class="material-symbols-outlined">settings</span>
-      <span class="ml-2 text-2xl font-bold">Configurações</span>
+        <div id="pageConfig" data-page="configuracoes" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-orange-500">settings</span>
+          <span class="ml-2 text-2xl font-semibold">Configurações</span>
+        </div>
+      
+        <div id="back" class="p-5 flex items-center">
+          <span class="material-symbols-outlined text-gray-500">exit_to_app</span>
+          <span class="ml-2 text-2xl font-semibold ">Sair</span>
+        </div>
+      </div>
     </div>
    
-
-    <div id="back" class="p-5 flex items-center">
-      <span class="material-symbols-outlined">exit_to_app</span>
-      <span class="ml-2 text-2xl font-bold">Sair</span>
+    <div class="p-5 flex justify-center items-center text-sm">
+      Desenvolvido com <span class="material-symbols-outlined ml-2 mr-2 text-orange-900">coffee</span> por <strong class="ml-2">Tiago Pereira</strong>
     </div>
-
   </div>
 
   <script type="module" src="./js/pages/produtos.page.js"></script>
-  <script>
-    const btn = document.getElementById('btnMenu');
-
-    const menu = document.getElementById('menuLateral');
-
-    const overlay = document.getElementById('menuOverlay');
-
-    const btnFechar = document.getElementById('fechar');
-
-    btn.addEventListener('click', abrirMenu);
-
-    overlay.addEventListener('click', fecharMenu);
-
-    btnFechar.addEventListener('click', fecharMenu);
-
-    function abrirMenu() {
-
-      menu.classList.add(
-        'aberto'
-      );
-
-      overlay.classList.add(
-        'aberto'
-      );
-
-    }
-
-    function fecharMenu() {
-
-      menu.classList.remove(
-        'aberto'
-      );
-
-      overlay.classList.remove(
-        'aberto'
-      );
-
-    }
-  </script>
-
+ 
 </body>
 
 </html>

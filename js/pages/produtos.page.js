@@ -136,6 +136,50 @@ async function listarPagamentos(){
   
 }
 
+
+const btn = document.getElementById('btnMenu');
+
+const menu = document.getElementById('menuLateral');
+
+const overlay = document.getElementById('menuOverlay');
+
+const btnFechar = document.getElementById('fechar');
+
+btn.addEventListener('click', abrirMenu);
+
+overlay.addEventListener('click', fecharMenu);
+
+btnFechar.addEventListener('click', fecharMenu);
+
+function abrirMenu() {
+
+  menu.classList.add('aberto');
+
+  overlay.classList.add('aberto');
+
+}
+
+function fecharMenu() {
+
+  menu.classList.remove('aberto');
+
+  overlay.classList.remove('aberto');
+
+}
+
+document.querySelectorAll('[data-page]')
+  .forEach(item => {item.addEventListener('click', () => {
+      
+      const page = item.dataset.page;
+
+      menu.classList.remove('aberto');
+      go(page);
+
+    }
+  );
+});
+
+
 function init(){
 
   indicator();
