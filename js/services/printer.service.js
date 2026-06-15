@@ -229,7 +229,7 @@ export function gerarCupomESC(venda) {
 
     const itens = vendaCompleta.pedido.itens.map(item => {
         const total = item.preco * item.quantidade;
-
+        const obs = item.observacao;       
         return (
             alinhar(
 
@@ -240,11 +240,13 @@ export function gerarCupomESC(venda) {
                     .replace('.', ',')}`
 
             )
+            +
+
+            (item.observacao?`\n OBS: ${item.observacao}` : '' )
 
         );
 
-    })
-        .join('\n');
+    }).join('\n\n');
 
     const pagamentos =
         vendaCompleta
@@ -267,6 +269,8 @@ export function gerarCupomESC(venda) {
             )
             .join('\n');
 
+            console.log(vendaCompleta);
+            
     return (
         centralizar('DELICIAS FERNANDES') + '\n' +
 
@@ -291,6 +295,7 @@ export function gerarCupomESC(venda) {
         itens +
 
         '\n' +
+      
 
         '--------------------------------\n' +
 

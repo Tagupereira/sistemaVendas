@@ -49,8 +49,10 @@ btnPrint.addEventListener("click", async ()=>{
 
     if(etapa === 1){
 
-        await imprimir(gerarSenhaEvento(venda));
+        //await imprimir(gerarSenhaEvento(venda));
 
+        
+        
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
 
         etapa = 2;
@@ -59,16 +61,16 @@ btnPrint.addEventListener("click", async ()=>{
     venda.vendasJson = recebeVendaJson.vendasJson;
     venda.total = recebeVendaJson.total;
     
-    await imprimir(gerarCupomESC(venda));
+    //await imprimir(gerarCupomESC(venda));
 
+    console.log(gerarCupomESC(venda));
+    
     localStorage.removeItem('vendaJson');
     
 })
 
 
 function init(){
-
-    
 
     const retornar = document.getElementById("btnNovoPedido");
 

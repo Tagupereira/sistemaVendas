@@ -4,7 +4,6 @@ let carrinhoAberto = false;
 const btnFinalizar = document.getElementById('finalizarPedido');
 const icone = document.getElementById('iconeCarrinho');
 
-
 export function getCarrinho() {
     return carrinho;
 }
@@ -32,7 +31,6 @@ export function adicionarCarrinho(produto) {
 
     atualizarCarrinhoUI();
    
-
 }
 
 export function salvarCarrinho() {
@@ -127,7 +125,7 @@ export function atualizarCarrinhoUI() {
 
                 <button
                     class="menos w-8 h-8 rounded-full bg-red-500 text-white"
-                    data-id="${item.id}">
+                    data-id="${item.idCarrinho}">
 
                     -
 
@@ -139,7 +137,7 @@ export function atualizarCarrinhoUI() {
 
                 <button
                     class="mais w-8 h-8 rounded-full bg-green-500 text-white"
-                    data-id="${item.id}">
+                    data-id="${item.idCarrinho}">
 
                     +
 
@@ -170,14 +168,18 @@ export function atualizarCarrinhoUI() {
 }
 
 export function aumentarQuantidade(id){
-
+    
+    console.log("id",id);
+    
     const item = carrinho.find(
-        p => p.id === id
+        p => p.idCarrinho === id
     );
-
+        
+    console.log("item: ",item);
+    
     if(item){
 
-        item.quantidade++;
+       item.quantidade++;
 
     }
     salvarCarrinho();
@@ -188,7 +190,7 @@ export function aumentarQuantidade(id){
 export function diminuirQuantidade(id){
 
     const item = carrinho.find(
-        p => p.id === id
+        p => p.idCarrinho === id
     );
 
     if(!item) return;
@@ -198,7 +200,7 @@ export function diminuirQuantidade(id){
     if(item.quantidade <= 0){
 
         carrinho = carrinho.filter(
-            p => p.id !== id
+            p => p.idCarrinho !== id
         );
         
     }
@@ -230,20 +232,12 @@ export function iniciarCarrinho() {
 
         if(e.target.classList.contains('mais')){
 
-            aumentarQuantidade(
-                Number(
-                    e.target.dataset.id
-                )
-            );
+            aumentarQuantidade(e.target.dataset.id);
         }
 
         if(e.target.classList.contains('menos')){
 
-            diminuirQuantidade(
-                Number(
-                    e.target.dataset.id
-                )
-            );
+            diminuirQuantidade(e.target.dataset.id);
         }
 
     });

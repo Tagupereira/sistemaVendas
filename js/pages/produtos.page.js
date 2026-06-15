@@ -106,7 +106,7 @@ function modalObs(item){
   confirmarObs.onclick=()=>{
 
     const inputObs = document.getElementById("obsProduto").value.trim();
-       
+    item.idCarrinho = crypto.randomUUID(),   
     item.observacao = inputObs;
     
     modalObs.classList.add("hidden");
