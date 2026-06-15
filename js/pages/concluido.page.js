@@ -52,7 +52,7 @@ btnPrint.addEventListener("click", async ()=>{
         document.getElementById("btnImprimir").textContent = "Aguarde..."
         document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
         toast('Solicitando impressao', 'info')
-        //await imprimir(gerarSenhaEvento(venda));
+        await imprimir(gerarSenhaEvento(venda));
 
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
         document.getElementById("btnImprimir").removeAttribute('disabled')
