@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Análise de vendas
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- CONTAINER -->
+
+    <div>
+
+        <!-- HEADER -->
+          <header class="relative h-40 overflow-hidden">
+
+        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z">
+            </path>
+
+        </svg>
+
+         <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
+
+            <span id="back" class="material-symbols-outlined text-3xl text-white font-bold">keyboard_return</span>
+
+            <h1 class="text-3xl font-bold text-white">Análise</h1>
+
+            <!-- <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div> -->
+            
+        </div>
+
+    </header>
+
+        <!-- FILTROS -->
+
+        <div class=" p-5 grid grid-cols-2 gap-3 ">
+
+            <button class=" periodo bg-blue-500 text-white rounded-2xl p-4 " data-periodo="hoje">
+
+                Hoje
+
+            </button>
+
+            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="ontem">
+
+                Ontem
+
+            </button>
+
+            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="semana">
+
+                Semana
+
+            </button>
+
+            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="mes">
+
+                Mês
+
+            </button>
+
+            <button class=" periodo bg-white rounded-2xl shadow-md p-4 col-span-2 " data-periodo="ano">
+
+                Ano
+
+            </button>
+
+        </div>
+
+        <!-- RESUMO -->
+
+        <div class="px-5">
+
+            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+
+                <h2 class=" text-2xl font-bold mb-6 ">
+
+                    Resumo
+
+                </h2>
+
+                <div class=" flex justify-between mb-5 ">
+
+                    <span>
+
+                        Pedidos
+
+                    </span>
+
+                    <span id="totalPedidos" class=" font-bold text-xl ">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class=" flex justify-between mb-5 ">
+
+                    <span>
+
+                        Recebido
+
+                    </span>
+
+                    <span id="totalRecebido" class=" font-bold text-green-600 text-xl ">
+
+                        R$ 0,00
+
+                    </span>
+
+                </div>
+
+                <div class=" flex justify-between ">
+
+                    <span>
+
+                        Ticket Médio
+
+                    </span>
+
+                    <span id="ticketMedio" class=" font-bold text-xl ">
+
+                        R$ 0,00
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FORMAS PAGAMENTO -->
+
+        <div class="p-5">
+
+            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+
+                <h2 class=" text-2xl font-bold mb-6 ">
+
+                    Formas de Pagamento
+
+                </h2>
+
+                <div id="formasPagamento" class=" space-y-4 ">
+
+                    <div class=" flex justify-between ">
+
+                        <span>
+
+                            PIX
+
+                        </span>
+
+                        <span>
+
+                            R$ 0,00
+
+                        </span>
+
+                    </div>
+
+                    <div class=" flex justify-between ">
+
+                        <span>
+
+                            Débito
+
+                        </span>
+
+                        <span>
+
+                            R$ 0,00
+
+                        </span>
+
+                    </div>
+
+                    <div class=" flex justify-between ">
+
+                        <span>
+
+                            Dinheiro
+
+                        </span>
+
+                        <span>
+
+                            R$ 0,00
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TOP PRODUTOS -->
+
+        <div class="px-5 pb-8">
+
+            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+
+                <h2 class=" text-2xl font-bold mb-6 ">
+
+                    Produtos Mais Vendidos
+
+                </h2>
+
+                <div id="topProdutos" class=" space-y-3 ">
+
+                    <div>
+
+                        Sem dados
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="../js/pages/analise.page.js"></script>
+
+</body>
+
+</html>

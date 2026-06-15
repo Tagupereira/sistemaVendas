@@ -1,13 +1,12 @@
 import { API_URL } from "../api/api.js";
 import { toast } from "../components/toast.component.js";
 import { go } from "../routes/routes.js";
+import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 
 export async function excluir(id) {
 
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const tipoUser = usuario.tipo
-    console.log(id);
-    console.log(tipoUser);
     
     // valida admin
     if (usuario?.tipo !== 'administrador') {
@@ -27,13 +26,13 @@ export async function excluir(id) {
         return;
 
     }
-    
-    document.getElementById("btnExcluirVenda")
+    showLoading();
+
+    document.getElementById("btnExcluirVenda").setAttribute("disabled","disabled")
+
     const res = await fetch(`${API_URL}?action=excluirVenda&id=${id}&tipo=${tipoUser}`);
     const data = await res.json();
-    console.log(data);
-    console.log(res);
-    
+        
     if (data.success) {
 
         toast(
@@ -45,9 +44,8 @@ export async function excluir(id) {
         return;
 
     }
-
-    console.log(data.message);
     
+    document.getElementById("btnExcluirVenda").removeAttribute("disabled")
     toast(
         'Erro ao excluir',
         'error'

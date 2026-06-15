@@ -4,13 +4,11 @@ export const Routes = {
 
     produtos: '/produtos.html',
 
-    clientes: '/clientes.html',
-
     pagamentos: '/payments.html',
 
-    concluido: '/concluido.html',
+    analiseVendas: '/analiseVendas.html',
 
-    pedidos: '/pedidos.html',
+    concluido: '/concluido.html',
     
     vendas: '/vendas.html',
 

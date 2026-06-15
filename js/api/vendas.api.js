@@ -2,17 +2,6 @@ import { API_URL } from "./api.js";
 
 export const vendasAPI = {
 
-    // async salvar(venda){
-
-    //     const vendaJson = encodeURIComponent(JSON.stringify(venda));
-
-    //     const response = await fetch(
-    //             `${API_URL}?action=salvarVenda&venda=${vendaJson}`
-    //         );
-
-    //     return await response.json();
-
-    // }
     async salvar(venda){
        
         const vendaJson =
