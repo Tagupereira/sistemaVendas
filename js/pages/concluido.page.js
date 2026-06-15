@@ -50,9 +50,9 @@ btnPrint.addEventListener("click", async ()=>{
     if(etapa === 1){
 
         document.getElementById("btnImprimir").textContent = "Aguarde..."
-        document.getElementById("btnImprimir").setAttribute('disabled')
+        document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
         toast('Solicitando impressao', 'info')
-        await imprimir(gerarSenhaEvento(venda));
+        //await imprimir(gerarSenhaEvento(venda));
 
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
         document.getElementById("btnImprimir").removeAttribute('disabled')
@@ -65,13 +65,13 @@ btnPrint.addEventListener("click", async ()=>{
 
     toast('Solicitando impressao', 'info')
 
-    document.getElementById("btnImprimir").setAttribute('disabled')
+    document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
     document.getElementById("btnImprimir").textContent = "Aguarde..."
     
     await imprimir(gerarCupomESC(venda));
 
     document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
-    document.getElementById("btnImprimir").removeAttribute('disabled')
+    document.getElementById("btnImprimir").removeAttribute("disabled")
     
     localStorage.removeItem('vendaJson');
     
