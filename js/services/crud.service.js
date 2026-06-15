@@ -27,7 +27,8 @@ export async function excluir(id) {
         return;
 
     }
-
+    
+    document.getElementById("btnExcluirVenda")
     const res = await fetch(`${API_URL}?action=excluirVenda&id=${id}&tipo=${tipoUser}`);
     const data = await res.json();
     console.log(data);
