@@ -3,7 +3,11 @@
 
     "short_name": "Delícias",
 
-    "start_url": "/index.html",
+    "id":"./",
+
+    "scope":"./",
+
+    "start_url":"./",
 
     "display": "standalone",
 

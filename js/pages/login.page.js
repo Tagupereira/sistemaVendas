@@ -53,15 +53,32 @@ async function login() {
 
 if('serviceWorker' in navigator){
 
-    window.addEventListener('load', ()=>{
-        navigator.serviceWorker.register('./sw.js').then(()=>{
+    window.addEventListener('load', async()=>{
+        const reg = await navigator.serviceWorker.register('./sw.js');
+        
+        reg.addEventListener('updatefound',()=>{
+            
+            const worker = reg.installing;
+            worker.addEventListener('statechange',()=>{
+                
+                if(worker.state === 'installed' && navigator.serviceWorker.controller){
+                    confirm('Nova versão disponível. Atualizar?');
 
-            console.log('PWA ativo');
+                    if(atualizar){
+                        window.location.reload();
+                    }
+                }
+            })
+        })
+        
+        // navigator.serviceWorker.register('./sw.js').then(()=>{
 
-        }).catch(e=>{
-            console.log(e);
+        //     console.log('PWA ativo');
 
-        });
+        // }).catch(e=>{
+        //     console.log(e);
+
+        // });
 
     });
 
