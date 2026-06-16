@@ -36,11 +36,11 @@
 
          <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
 
-            <span id="back" class="material-symbols-outlined text-3xl text-white font-bold">keyboard_return</span>
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
 
-            <h1 class="text-3xl font-bold text-white">Análise</h1>
+            <h1 class="text-3xl font-semibold text-white">Análise de vendas</h1>
 
-            <!-- <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div> -->
+            <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
             
         </div>
 
@@ -50,34 +50,24 @@
 
         <div class=" p-5 grid grid-cols-2 gap-3 ">
 
-            <button class=" periodo bg-blue-500 text-white rounded-2xl p-4 " data-periodo="hoje">
-
+            <button class="periodo bg-blue-500 text-white rounded-2xl p-4 transition-all duration-300" data-periodo="hoje">
                 Hoje
-
             </button>
 
-            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="ontem">
-
+            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300 " data-periodo="ontem">
                 Ontem
-
             </button>
 
-            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="semana">
-
+            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300" data-periodo="semana">
                 Semana
-
             </button>
 
-            <button class=" periodo bg-white rounded-2xl shadow-md p-4 " data-periodo="mes">
-
+            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300" data-periodo="mes">
                 Mês
-
             </button>
 
-            <button class=" periodo bg-white rounded-2xl shadow-md p-4 col-span-2 " data-periodo="ano">
-
+            <button class="periodo bg-white rounded-2xl shadow-md p-4 col-span-2 transition-all duration-300" data-periodo="ano">
                 Ano
-
             </button>
 
         </div>
@@ -86,15 +76,15 @@
 
         <div class="px-5">
 
-            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6 ">
 
-                <h2 class=" text-2xl font-bold mb-6 ">
+                <h2 class="text-2xl font-bold mb-6 ">
 
                     Resumo
 
                 </h2>
 
-                <div class=" flex justify-between mb-5 ">
+                <div class="flex justify-between mb-5 ">
 
                     <span>
 
@@ -110,7 +100,7 @@
 
                 </div>
 
-                <div class=" flex justify-between mb-5 ">
+                <div class="flex justify-between mb-5 ">
 
                     <span>
 
@@ -126,7 +116,7 @@
 
                 </div>
 
-                <div class=" flex justify-between ">
+                <div class="flex justify-between ">
 
                     <span>
 
@@ -150,9 +140,9 @@
 
         <div class="p-5">
 
-            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6 ">
 
-                <h2 class=" text-2xl font-bold mb-6 ">
+                <h2 class="text-2xl font-bold mb-6 ">
 
                     Formas de Pagamento
 
@@ -160,53 +150,15 @@
 
                 <div id="formasPagamento" class=" space-y-4 ">
 
-                    <div class=" flex justify-between ">
+                    <div class="flex justify-center ">
 
-                        <span>
+                        <span class="text-center text-gray-400 py-8">
 
-                            PIX
-
-                        </span>
-
-                        <span>
-
-                            R$ 0,00
+                            Buscando dados aguarde..
 
                         </span>
 
-                    </div>
-
-                    <div class=" flex justify-between ">
-
-                        <span>
-
-                            Débito
-
-                        </span>
-
-                        <span>
-
-                            R$ 0,00
-
-                        </span>
-
-                    </div>
-
-                    <div class=" flex justify-between ">
-
-                        <span>
-
-                            Dinheiro
-
-                        </span>
-
-                        <span>
-
-                            R$ 0,00
-
-                        </span>
-
-                    </div>
+                    </div>                   
 
                 </div>
 
@@ -218,9 +170,9 @@
 
         <div class="px-5 pb-8">
 
-            <div class=" bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6 ">
 
-                <h2 class=" text-2xl font-bold mb-6 ">
+                <h2 class="text-2xl font-bold mb-6 ">
 
                     Produtos Mais Vendidos
 
@@ -228,9 +180,9 @@
 
                 <div id="topProdutos" class=" space-y-3 ">
 
-                    <div>
+                    <div class="text-center text-gray-400 py-8">
 
-                        Sem dados
+                        Buscando dados aguarde..
 
                     </div>
 
