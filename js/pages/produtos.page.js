@@ -42,6 +42,10 @@ function renderizarProdutos(produtos) {
   const container = document.getElementById('listaProdutos');
 
   container.innerHTML = '';
+  container.innerHTML = `
+    <button id="adicAvulso" class="bg-blue-500 text-white w-full rounded-xl p-3">
+      + Item Avulso 
+    </button>`
 
   produtos.forEach(produto => {
 
@@ -90,6 +94,9 @@ function renderizarProdutos(produtos) {
 
     });
   });
+  document.getElementById("adicAvulso").onclick=() =>{
+    abrirAvulso()
+  }
   
 }
 
@@ -214,6 +221,62 @@ document.querySelectorAll('[data-page]')
 });
 
 
+
+
+function abrirAvulso(){
+  document.getElementById('modalAvulso').classList.remove('hidden');
+}
+
+const valorInput = document.getElementById("valorAvulso")
+  
+  valorInput.addEventListener('input', ()=>{
+    let valor = valorInput.value.replace(/\D/g,'');
+    
+    valor = Number(valor) / 100;
+
+    valorInput.value = valor.toLocaleString('pt-BR',{
+    
+      style:'currency',
+      currency:'BRL'
+
+    });
+  });
+
+document.getElementById('confirmarAvulso').onclick=()=>{
+
+  const nome = document.getElementById('nomeAvulso').value.trim();
+
+  const valor = Number(document.getElementById('valorAvulso').value.replace('R$','').replace(/\./g,'').replace(',','.').trim());
+
+  if(!nome || !valor){
+    document.getElementById('modalAvulso').classList.add('hidden');
+    return;
+
+  }
+
+  adicionarCarrinho({id:crypto.randomUUID(), idCarrinho:'AVULSO-'+ crypto.randomUUID(), 
+    nome,
+
+    preco:valor,
+
+    quantidade:1,
+
+    avulso:true
+
+  });
+
+  document.getElementById('nomeAvulso').value='';
+
+  document.getElementById('valorAvulso').value='';
+
+  document.getElementById('modalAvulso').classList.add('hidden');
+
+};
+
+function modoEventoConfig(){
+  localStorage.setItem("modoEvento",true)
+}
+
 function init(){
 
   indicator();
@@ -222,6 +285,7 @@ function init(){
   iniciarCarrinho();
   atualizarCarrinhoUI();
   listarPagamentos();
+  modoEventoConfig()
 
 };
 

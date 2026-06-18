@@ -102,9 +102,7 @@ export async function conectar() {
         );
 
     printer = device;
-}
-
-
+};
 
 export function impressoraConectada() {
 
@@ -115,49 +113,7 @@ export function impressoraConectada() {
 
     );
 
-}
-
-// export async function imprimir(texto) {
-
-//     if (!printerChar) {
-
-//         await conectar();
-
-//     }
-
-//     const bytes =
-//         new TextEncoder()
-//             .encode(
-//                 limparTexto(
-//                     texto
-//                 )
-//             );
-
-//     const tamanhoBloco = 100;
-
-//     for (
-//         let i = 0;
-//         i < bytes.length;
-//         i += tamanhoBloco
-//     ) {
-
-//         const bloco =
-//             bytes.slice(
-//                 i,
-//                 i + tamanhoBloco
-//             );
-
-//         await printerChar.writeValueWithoutResponse(
-//             bloco.buffer
-//         );
-
-//         await esperar(
-//             80
-//         );
-
-//     }
-
-// }
+};
 
 export async function imprimir(texto) {
 
@@ -198,7 +154,7 @@ export async function imprimir(texto) {
 
     }
 
-}
+};
 
 function esperar(ms) {
 
@@ -213,7 +169,7 @@ function esperar(ms) {
 
     );
 
-}
+};
 
 export function gerarCupomESC(venda) {
    
@@ -315,9 +271,7 @@ export function gerarCupomESC(venda) {
     );
 
 
-}
-
-
+};
 
 export function gerarSenhaEvento(venda) {
 
@@ -422,9 +376,7 @@ export function gerarSenhaEvento(venda) {
 
     );
 
-}
-
-
+};
 
 function limparTexto(texto) {
 
@@ -453,7 +405,7 @@ function limparTexto(texto) {
             ''
         );
 
-}
+};
 
 function alinhar(
     esquerda,
@@ -491,7 +443,7 @@ function alinhar(
 
     );
 
-}
+};
 
 function centralizar(
     texto,
@@ -527,4 +479,4 @@ function centralizar(
 
     );
 
-}
+};

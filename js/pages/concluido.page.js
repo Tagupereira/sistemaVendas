@@ -4,11 +4,12 @@ import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services
 import { vendasAPI } from "../api/vendas.api.js";
 import { auth } from '../guards/auth.guard.js';
 import { toast } from '../components/toast.component.js'
+//import { modoEvento } from "../config/config.js";
 auth();
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
-let etapa = 1;
+let etapa = 2;
 
 let vendasCarregadas = [];
 
@@ -52,6 +53,8 @@ btnPrint.addEventListener("click", async ()=>{
         document.getElementById("btnImprimir").textContent = "Aguarde..."
         document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
         toast('Solicitando impressao', 'info')
+
+        //console.log(gerarSenhaEvento(venda));
         await imprimir(gerarSenhaEvento(venda));
 
         document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
@@ -68,6 +71,8 @@ btnPrint.addEventListener("click", async ()=>{
     document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
     document.getElementById("btnImprimir").textContent = "Aguarde..."
     
+    //console.log(gerarCupomESC(venda));
+     
     await imprimir(gerarCupomESC(venda));
 
     document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
@@ -76,9 +81,22 @@ btnPrint.addEventListener("click", async ()=>{
     localStorage.removeItem('vendaJson');
     
 })
+function buscaModoEvento(){
+    const modoEvento = JSON.parse(localStorage.getItem("modoEvento"))
+    console.log(modoEvento);
 
+    if(modoEvento){
+        etapa=1;
+        toast("Modo Evento Ativado", "info")
+    }else{ 
+        toast("Modo Evento Desativado", "error")
+    }
+    
+}
 
 function init(){
+    
+    buscaModoEvento()
 
     const retornar = document.getElementById("btnNovoPedido");
 
@@ -109,6 +127,7 @@ function init(){
         localStorage.removeItem("vendaJson");
 
     })
+    
 }
 
 init();
