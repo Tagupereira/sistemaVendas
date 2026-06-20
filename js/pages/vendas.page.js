@@ -22,10 +22,15 @@ container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-c
 async function carregarVendas(){
 
     const response = await vendasAPI.listar();                 
+    console.log(response);
     
     if(!response.success){
     
         container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Erro ao carregar...</div>';
+        return
+    }
+    if (response.vendas.length === 0){
+        container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhuma venda encontrada</div>';
         return
     }
 
@@ -218,7 +223,7 @@ function abrirModalVenda(venda){
     vendaSelecionada = venda;
 
     const vendaCompleta = JSON.parse(venda.vendasJson);
-console.log(vendaCompleta);
+    console.log(vendaCompleta);
 
     document.body.classList.add('overflow-hidden');
 
@@ -257,7 +262,9 @@ console.log(vendaCompleta);
                             }
                         )}
                 </span>
+                
             </div>
+            <p>${item.observacao}</p>
         `;
     });
 
@@ -274,7 +281,7 @@ console.log(vendaCompleta);
                 <span>${pagamento.tipo.toUpperCase()}</span>
 
                 <span>
-                    ${Number(pagamento.valor).toLocaleString('pt-BR', {
+                    ${Number(pagamento.recebido).toLocaleString('pt-BR', {
                             style:'currency',
                             currency:'BRL'
                         }
@@ -283,6 +290,60 @@ console.log(vendaCompleta);
             </div>
         `;
     });
+
+/////////////////////// informação total
+    const infoPedidoPg = document.getElementById("totalPedido")
+    
+    infoPedidoPg.innerHTML = '';
+
+    let totalPedido= 0;
+    vendaCompleta.pagamentos.forEach(pagamento => {
+        totalPedido += pagamento.recebido
+        
+    });
+
+    infoPedidoPg.innerHTML += `
+            
+        <div class="flex justify-between">
+
+            <span class="font-bold">Total Recebido</span>
+
+            <span>
+                ${Number(totalPedido).toLocaleString('pt-BR', {
+                        style:'currency',
+                        currency:'BRL'
+                    }
+                )}
+            </span>
+        </div>
+    `;
+
+/////////////////////// informação do troco
+
+    vendaCompleta.pagamentos.forEach(pagamento => {
+
+        if(pagamento.troco > 0){
+            infoPedidoPg.innerHTML += `
+
+            <div class="flex justify-between">
+
+                <span>Troco dinheiro</span>
+
+                <span>
+                    ${Number(pagamento.troco).toLocaleString('pt-BR', {
+                            style:'currency',
+                            currency:'BRL'
+                        }
+                    )}
+                </span>
+            </div>
+        `;
+
+        }
+        
+    });
+
+/////////////////////////////////////////////
 
     document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
         try{
