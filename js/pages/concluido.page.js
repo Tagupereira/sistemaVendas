@@ -9,9 +9,9 @@ auth();
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
-let etapa;
 
 let vendasCarregadas = [];
+let etapa = '';
 
 if(carrinho === false){
     
@@ -44,42 +44,45 @@ const btnPrint = document.getElementById("btnImprimir");
 btnPrint.addEventListener("click", async ()=>{
     
     const venda = JSON.parse(localStorage.getItem('pedido'))
-    carregarVendas(venda);
+    
     const recebeVendaJson = JSON.parse(localStorage.getItem('vendaJson'))
+
+    carregarVendas(venda);
 
     if(etapa === 1){
 
-        document.getElementById("btnImprimir").textContent = "Aguarde..."
-        document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
-        toast('Solicitando impressao', 'info')
+        document.getElementById("btnImprimir").textContent = "Aguarde...";
+        document.getElementById("btnImprimir").setAttribute("disabled", "disabled");
+        toast('Solicitando impressao', 'info');
 
-        //console.log(gerarSenhaEvento(venda));
+        console.log(gerarSenhaEvento(venda));
         await imprimir(gerarSenhaEvento(venda));
 
-        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
-        document.getElementById("btnImprimir").removeAttribute('disabled')
+        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante";
+        document.getElementById("btnImprimir").removeAttribute('disabled');
 
         etapa = 2;
         return;
+    }else{
+
+        venda.vendasJson = recebeVendaJson.vendasJson;
+        venda.total = recebeVendaJson.total;
+        
+
+        toast('Solicitando impressao', 'info')
+
+        document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
+        document.getElementById("btnImprimir").textContent = "Aguarde..."
+        
+        console.log(gerarCupomESC(venda));
+        
+        await imprimir(gerarCupomESC(venda));
+
+        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
+        document.getElementById("btnImprimir").removeAttribute("disabled")
+        
+        localStorage.removeItem('vendaJson');
     }
-    venda.vendasJson = recebeVendaJson.vendasJson;
-    venda.total = recebeVendaJson.total;
-    
-
-    toast('Solicitando impressao', 'info')
-
-    document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
-    document.getElementById("btnImprimir").textContent = "Aguarde..."
-    
-    console.log(gerarCupomESC(venda));
-     
-    await imprimir(gerarCupomESC(venda));
-
-    document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
-    document.getElementById("btnImprimir").removeAttribute("disabled")
-    
-    localStorage.removeItem('vendaJson');
-    
 })
 
 function buscaModoEvento(){
@@ -92,6 +95,7 @@ function buscaModoEvento(){
         etapa=2;
         toast("Modo Evento Desativado", "info")
     }
+    console.log(etapa);
     
 }
 
@@ -102,8 +106,6 @@ function init(){
     const retornar = document.getElementById("btnNovoPedido");
 
     const pedido = JSON.parse(localStorage.getItem("pedido"));
-
-    console.log(pedido);
     
     const pedidoNumber = "#"+(`${pedido.pedido}`).padStart(4, '0');
     const statusTitle = "Pedido Concluído";
@@ -111,8 +113,7 @@ function init(){
     //localStorage.removeItem("pedido");
 
     if(pedido){
-    console.log(pedido);
-        
+            
         document.getElementById("statusTitle").innerText = statusTitle;
         document.getElementById("statusSubTitle").innerText = statusSubTitle;
         document.getElementById("numeroPedido").innerText = pedidoNumber;

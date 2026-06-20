@@ -185,10 +185,17 @@ export function gerarCupomESC(venda) {
     
     let recebeTroco = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );
     let dimRecebido = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );
-        
-    if(venda.troco.troco > 0){
-        recebeTroco = alinhar('Troco:', `RS ${Number(venda.troco.troco).toFixed(2).replace('.', ',')}` );
-        dimRecebido = alinhar('Dinheiro recebido:', `RS ${Number(venda.troco.recebido).toFixed(2).replace('.', ',')}` );
+      
+    //console.log("venda: ",venda);
+    if(venda.troco){
+
+        if(venda.troco.troco > 0){
+            recebeTroco = alinhar('Troco:', `RS ${Number(venda.troco.troco).toFixed(2).replace('.', ',')}` );
+            dimRecebido = alinhar('Dinheiro recebido:', `RS ${Number(venda.troco.recebido).toFixed(2).replace('.', ',')}` );
+        }
+    }else{
+        recebeTroco="";
+        dimRecebido="";
     }
 
     const itens = vendaCompleta.pedido.itens.map(item => {
@@ -234,7 +241,7 @@ export function gerarCupomESC(venda) {
             )
             .join('\n');
 
-            console.log(vendaCompleta);
+            //console.log(vendaCompleta);
             
     return (
         centralizar('DELICIAS FERNANDES') + '\n' +
