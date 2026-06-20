@@ -9,7 +9,7 @@ auth();
 
 const carrinho = validarCarrinho();
 const status = validaCompra();
-let etapa = 2;
+let etapa;
 
 let vendasCarregadas = [];
 
@@ -84,13 +84,13 @@ btnPrint.addEventListener("click", async ()=>{
 
 function buscaModoEvento(){
     const modoEvento = JSON.parse(localStorage.getItem("modoEvento"))
-    console.log(modoEvento);
-
+    
     if(modoEvento){
         etapa=1;
         toast("Modo Evento Ativado", "info")
     }else{ 
-        toast("Modo Evento Desativado", "error")
+        etapa=2;
+        toast("Modo Evento Desativado", "info")
     }
     
 }
