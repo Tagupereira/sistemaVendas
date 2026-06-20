@@ -186,11 +186,15 @@ const overlay = document.getElementById('menuOverlay');
 
 const btnFechar = document.getElementById('fechar');
 
+const produtoFechar = document.getElementById('pageProdutosClose');
+
 btn.addEventListener('click', abrirMenu);
 
 overlay.addEventListener('click', fecharMenu);
 
 btnFechar.addEventListener('click', fecharMenu);
+
+produtoFechar.addEventListener('click', fecharMenu);
 
 function abrirMenu() {
 
@@ -219,9 +223,6 @@ document.querySelectorAll('[data-page]')
     }
   );
 });
-
-
-
 
 function abrirAvulso(){
   document.getElementById('modalAvulso').classList.remove('hidden');
@@ -272,7 +273,6 @@ document.getElementById('confirmarAvulso').onclick=()=>{
   document.getElementById('modalAvulso').classList.add('hidden');
 
 };
-
 
 function init(){
 
