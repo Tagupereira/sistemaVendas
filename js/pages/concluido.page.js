@@ -65,21 +65,20 @@ btnPrint.addEventListener("click", async ()=>{
         return;
     }else{
 
+        //document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
+        //document.getElementById("btnImprimir").removeAttribute("disabled")
+        document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
+        document.getElementById("btnImprimir").textContent = "Aguarde..."
+        
         venda.vendasJson = recebeVendaJson.vendasJson;
         venda.total = recebeVendaJson.total;
         
-
         toast('Solicitando impressao', 'info')
 
-        document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
-        document.getElementById("btnImprimir").textContent = "Aguarde..."
         
         console.log(gerarCupomESC(venda));
         
         await imprimir(gerarCupomESC(venda));
-
-        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
-        document.getElementById("btnImprimir").removeAttribute("disabled")
         
         localStorage.removeItem('vendaJson');
     }
@@ -94,6 +93,8 @@ function buscaModoEvento(){
     }else{ 
         etapa=2;
         toast("Modo Evento Desativado", "info")
+        document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
+        document.getElementById("btnImprimir").removeAttribute("disabled")
     }
     console.log(etapa);
     
