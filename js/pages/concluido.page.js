@@ -64,14 +64,14 @@ btnPrint.addEventListener("click", async ()=>{
         etapa = 2;
         return;
     }else{
+        venda.vendasJson = recebeVendaJson.vendasJson;
+        venda.total = recebeVendaJson.total;
 
         //document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
         //document.getElementById("btnImprimir").removeAttribute("disabled")
         document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
         document.getElementById("btnImprimir").textContent = "Aguarde..."
         
-        venda.vendasJson = recebeVendaJson.vendasJson;
-        venda.total = recebeVendaJson.total;
         
         toast('Solicitando impressao', 'info')
 
