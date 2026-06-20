@@ -182,18 +182,27 @@ export function gerarCupomESC(venda) {
     const hora = dataVenda.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
     const dia = dataVenda.toLocaleDateString('pt-BR', { weekday: 'long' }).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    
+    let recebeTroco = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );
+    let dimRecebido = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );
+        
+    if(venda.troco.troco > 0){
+        recebeTroco = alinhar('Troco:', `RS ${Number(venda.troco.troco).toFixed(2).replace('.', ',')}` );
+        dimRecebido = alinhar('Dinheiro recebido:', `RS ${Number(venda.troco.recebido).toFixed(2).replace('.', ',')}` );
+    }
 
     const itens = vendaCompleta.pedido.itens.map(item => {
+    
         const total = item.preco * item.quantidade;
-        const obs = item.observacao;       
+    
+        const obs = item.observacao;
+
         return (
             alinhar(
 
                 `${item.quantidade}x ${item.nome.toUpperCase()}`,
 
-                `RS ${total
-                    .toFixed(2)
-                    .replace('.', ',')}`
+                `RS ${total.toFixed(2).replace('.', ',')}`
 
             )
             +
@@ -257,13 +266,19 @@ export function gerarCupomESC(venda) {
 
         pagamentos +
 
-        '\n' +
-
+        '\n\n' +
+        
         '--------------------------------\n' +
 
         alinhar('TOTAL', `RS ${Number(venda.total).toFixed(2).replace('.', ',')}`)
-        + '\n\n' +
+        + '\n' +
 
+        dimRecebido + '\n' +
+
+        recebeTroco +
+
+        '\n\n' +
+       
         centralizar('CUPOM NAO FISCAL') + '\n' +
 
         centralizar('Obrigado pela sua compra!') + '\n\n\n\n'
@@ -275,25 +290,16 @@ export function gerarCupomESC(venda) {
 
 export function gerarSenhaEvento(venda) {
 
-    const dataVenda =
-        new Date(
-            venda.data
-        );
+    const dataVenda = new Date(venda.data);
 
-    const data =
-        dataVenda
-            .toLocaleDateString(
-                'pt-BR',
+    const data = dataVenda.toLocaleDateString('pt-BR',
                 {
                     day: '2-digit',
                     month: '2-digit'
                 }
             );
 
-    const hora =
-        dataVenda
-            .toLocaleTimeString(
-                'pt-BR',
+    const hora = dataVenda.toLocaleTimeString('pt-BR',
                 {
                     hour: '2-digit',
                     minute: '2-digit'

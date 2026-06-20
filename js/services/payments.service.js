@@ -1,14 +1,17 @@
 let pagamentos = [];
 
-export function adicionarPagamento(tipo, valor){
-
+export function adicionarPagamento(tipo, valor){       
     pagamentos.push({
 
         id: tipo.id,
 
         tipo: tipo.tipo_pagamento,
 
-        valor: Number(valor)
+        valor: Number(valor),
+        
+        troco: tipo.troco,
+
+        recebido: tipo.valorRecebido
 
     });
 
@@ -18,8 +21,14 @@ export function adicionarPagamento(tipo, valor){
 
 export function removerPagamento(index) {
 
-    pagamentos.splice(index, 1);
-
+    if(pagamentos[index].troco > 0){
+        
+        document.getElementById("trocoTotal").classList.add("hidden");
+        document.getElementById("troco").textContent ="";
+        
+    }
+    pagamentos.splice(index, 1)
+    
     salvarPagamentos();
 }
 

@@ -99,7 +99,7 @@ function renderizarVendas(vendas){
                     </div>
 
                     <div class="mt-2 font-medium">
-                        ${venda.cliente || 'Sem nome'}
+                        ${venda.cliente || 'Não identificado'}
                     </div>
 
                     <div class="flex justify-between text-sm text-slate-500 mt-2">
@@ -214,10 +214,11 @@ document.addEventListener('click', (e) => {
 );
 
 function abrirModalVenda(venda){
-
+        
     vendaSelecionada = venda;
 
     const vendaCompleta = JSON.parse(venda.vendasJson);
+console.log(vendaCompleta);
 
     document.body.classList.add('overflow-hidden');
 
@@ -227,7 +228,7 @@ function abrirModalVenda(venda){
 
     document.getElementById('modalData').textContent = new Date(venda.data).toLocaleString('pt-BR');
 
-    document.getElementById('modalCliente').textContent = `Cliente: ${venda.cliente || 'Sem nome'}`;
+    document.getElementById('modalCliente').textContent = `Cliente: ${venda.cliente || 'Não identificado'}`;
 
     document.getElementById('modalTotal').textContent = Number(venda.total).toLocaleString('pt-BR',
                     {
@@ -345,7 +346,7 @@ async function compartilharVenda(venda){
 }
 
 function geraCupom(venda){
-    
+       
     const vendaCompleta = JSON.parse(venda.vendasJson);
     
     const dataVenda = new Date(venda.data);

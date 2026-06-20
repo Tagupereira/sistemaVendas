@@ -39,7 +39,6 @@ async function carregarVendas(venda){
     
 }
 
-
 const btnPrint = document.getElementById("btnImprimir");
 
 btnPrint.addEventListener("click", async ()=>{
@@ -65,13 +64,14 @@ btnPrint.addEventListener("click", async ()=>{
     }
     venda.vendasJson = recebeVendaJson.vendasJson;
     venda.total = recebeVendaJson.total;
+    
 
     toast('Solicitando impressao', 'info')
 
     document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
     document.getElementById("btnImprimir").textContent = "Aguarde..."
     
-    //console.log(gerarCupomESC(venda));
+    console.log(gerarCupomESC(venda));
      
     await imprimir(gerarCupomESC(venda));
 
@@ -81,6 +81,7 @@ btnPrint.addEventListener("click", async ()=>{
     localStorage.removeItem('vendaJson');
     
 })
+
 function buscaModoEvento(){
     const modoEvento = JSON.parse(localStorage.getItem("modoEvento"))
     console.log(modoEvento);

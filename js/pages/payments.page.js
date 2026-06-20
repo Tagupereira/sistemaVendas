@@ -25,7 +25,6 @@ const valorTotal = document.getElementById("valorTotal");
 
 confirmar.addEventListener("click", async()=>{
 
-   
     if(getValorRestante() > 0){
 
         const msg = "Pagamento incompleto";
@@ -209,7 +208,7 @@ function atualizarResumoPagamento(){
 
                     <div class="text-sm text-slate-500">
 
-                        ${pagamento.valor.toLocaleString(
+                        ${pagamento.recebido.toLocaleString(
                             'pt-BR',
                             {
                                 style:'currency',
@@ -288,14 +287,11 @@ function validarPagamento(){
         btn.disabled = false;
         btn.classList.remove('opacity-50');
 
-
-
         return;
     }
 
     btn.disabled = true;
     btn.classList.add('opacity-50');
-
 
 }
 
@@ -314,10 +310,12 @@ document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 async function salvarVenda(){
     
     showLoading();
-
+    const troco = JSON.parse(localStorage.getItem("pagamentos"));
     const venda = getVenda(document.getElementById('nomeCliente').value);
     const pedido = {};
                  
+    console.log(troco);
+    
     try {
                
         const response = await vendasAPI.salvar(venda);
@@ -333,7 +331,10 @@ async function salvarVenda(){
         pedido.pedido = response.pedido;
         pedido.status = 1;
         pedido.carrinho = 1;
-        pedido.data = venda.data
+        pedido.data = venda.data;
+
+        const valorTroco = troco.find(p => p.troco > 0);        
+        pedido.troco = valorTroco;
                           
         localStorage.setItem("pedido", JSON.stringify(pedido));
     
@@ -365,26 +366,13 @@ function abrirModalPagamento(tipo){
 
     const restante = getValorRestante();
 
-    document.getElementById(
-        'tituloPagamento'
-    ).textContent =
-        `Pagamento - ${tipo.tipo_pagamento}`;
+    document.getElementById('tituloPagamento').textContent = `Pagamento - ${tipo.tipo_pagamento}`;
 
-    document.getElementById(
-        'valorPagamento'
-    ).value =
-        restante.toFixed(2);
+    document.getElementById('valorPagamento').value = restante.toFixed(2);
+    
+    const boxTroco = document.getElementById('trocoPagamento');
 
-    const boxTroco =
-        document.getElementById(
-            'trocoPagamento'
-        );
-
-    document.getElementById(
-        'modalPagamento'
-    ).classList.remove(
-        'hidden'
-    );
+    document.getElementById('modalPagamento').classList.remove('hidden');
 
 }
 
@@ -416,13 +404,23 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
 
         return;
     }
+    
+    let valorFinal = valor;
         
+    if(pagamentoSelecionado.type_pagamento === 'dinheiro' || pagamentoSelecionado.tipo_pagamento === 'dinheiro'){
+        
+        valorFinal = Math.min(valor, restante);
+    }
 
-    adicionarPagamento(
-        pagamentoSelecionado,
-        valor
-    );
 
+    adicionarPagamento({
+        ...pagamentoSelecionado,
+        valorRecebido: valor,
+        troco: Math.max(0, valor-restante),
+        
+    }, valorFinal
+);
+   
     atualizarResumoPagamento();
 
     fecharModalPagamento();
@@ -431,21 +429,16 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
 
 function fecharModalPagamento(){
 
-   document.getElementById(
-        'modalPagamento'
-    ).classList.add(
-        'hidden'
-    );
-
-    document.getElementById(
-        'trocoPagamento'
-    ).classList.add(
-        'hidden'
-    );
+    document.getElementById('modalPagamento').classList.add('hidden');
+    document.getElementById('trocoPagamento').classList.add('hidden');
 
 }
 
-document.getElementById('cancelarPagamento').addEventListener('click', fecharModalPagamento);
+document.getElementById('cancelarPagamento').addEventListener('click', ()=>{
+    fecharModalPagamento()
+    document.getElementById("trocoTotal").classList.add('hidden')
+    document.getElementById("troco").textContent = 'R$ 0,00'
+});
 
 function atualizarTroco(){
 
@@ -457,22 +450,16 @@ function atualizarTroco(){
         return;
     }
 
-    const recebido = Number(
-        document.getElementById(
-            'valorPagamento'
-        ).value
-    );
+    const recebido = Number(document.getElementById('valorPagamento').value);
 
-    const restante =
-        getValorRestante();
+    const restante = getValorRestante();
 
-    const troco =
-        recebido - restante;
+    const troco = recebido - restante;
 
-    const boxTroco =
-        document.getElementById(
-            'trocoPagamento'
-        );
+    const boxTroco = document.getElementById('trocoPagamento');
+
+    const trocoTotal = document.getElementById("trocoTotal")
+    const viewTroco = document.getElementById("troco")
 
     if(troco > 0){
 
@@ -484,6 +471,28 @@ function atualizarTroco(){
                     currency:'BRL'
                 }
             )}`;
+
+        // boxTroco.innerHTML=`
+        //     <div class="text-green-600 font-bold">
+        //     Troco: ${troco.toLocaleString(
+        //         'pt-BR', 
+        //         {
+        //             style:'currency',
+        //             currency:'BRL'
+        //         }
+        //     )}
+        //     </div>`;
+
+        viewTroco.textContent =
+            `${troco.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )}`;
+
+        trocoTotal.classList.remove('hidden')
 
         boxTroco.classList.remove(
             'hidden'
