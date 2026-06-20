@@ -23,7 +23,7 @@
         </svg>
 
         <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
-            <span id="btnMenu" class="material-symbols-outlined text-3xl text-white ">menu </span>
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
 
             <h1 class="text-3xl font-semibold text-white">Configurações</h1>
             <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
@@ -33,121 +33,45 @@
 
     <main class="px-5 -mt-4">
 
-        <div class="
-min-h-screen
-bg-gray-50
-">
+        <div class="min-h-screen bg-gray-50">
 
-            <div class="
-bg-white
-p-6
-shadow
-">
+            <div class="bg-white p-6 shadow">
 
-                <h1 class="
-text-3xl
-font-bold
-">
-
+                <h1 class="text-3xl font-bold">
                     Configurações
 
                 </h1>
 
-                <p class="
-text-gray-500
-mt-1
-">
-
+                <p class="text-gray-500 mt-1">
                     Personalize o comportamento do sistema
 
                 </p>
 
             </div>
 
+            <div class="p-5 space-y-5">
 
-
-            <div class="
-p-5
-space-y-5
-">
-
-
-
-
-
-                <div class="
-bg-white
-rounded-3xl
-shadow
-p-5
-flex
-justify-between
-items-center
-">
+                <div class="bg-white rounded-3xl shadow p-5 flex justify-between items-center">
 
                     <div>
 
-                        <h3 class="
-font-semibold
-text-xl
-">
-
+                        <h3 class="font-semibold text-xl">
                             Modo Evento
 
                         </h3>
 
-                        <p class="
-text-gray-500
-text-sm
-mt-1
-">
-
+                        <p class="text-gray-500 text-sm mt-1">
                             Ativa impressão de senha para espera
 
                         </p>
 
                     </div>
 
+                    <label class="relative inline-flex cursor-pointer">
 
+                        <input id="modoEvento" type="checkbox" class="sr-only peer" />
 
-                    <label class="
-relative
-inline-flex
-cursor-pointer
-">
-
-                        <input id="modoEvento" type="checkbox" class="
-sr-only
-peer
-" />
-
-
-
-                        <div class="
-w-14
-h-8
-bg-gray-300
-rounded-full
-
-peer-checked:bg-green-500
-
-after:absolute
-
-after:left-1
-after:top-1
-
-after:bg-white
-
-after:h-6
-after:w-6
-
-after:rounded-full
-
-after:transition-all
-
-peer-checked:after:translate-x-6
-
-">
+                        <div class="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 after:absolute after:left-1 after:top-1 after:bg-white after:h-6 after:w-6 after:rounded-full after:transition-all peer-checked:after:translate-x-6 ">
 
                         </div>
 
@@ -155,53 +79,26 @@ peer-checked:after:translate-x-6
 
                 </div>
 
+                <div class="bg-white rounded-3xl shadow p-5">
 
-
-
-
-                <div class="
-bg-white
-rounded-3xl
-shadow
-p-5
-">
-
-                    <h3 class="
-font-semibold
-">
-
+                    <h3 class="font-semibold ">
                         Descrição
 
                     </h3>
 
-
-                    <p class="
-text-gray-500
-mt-2
-">
-
-                        Ligado → imprime comprovante de espera
-
+                    <p class="text-gray-500 mt-2 ">
+                        Ligado → imprime senha
                     </p>
 
-
-                    <p class="
-text-gray-500
-">
-
+                    <p class="text-gray-500">
                         Desligado → impressão direta
 
                     </p>
 
                 </div>
-
-
-
             </div>
-
         </div>
     </main>
-
 
     <script type="module" src="./js/pages/config.page.js"></script>
 

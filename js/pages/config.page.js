@@ -1,4 +1,11 @@
 import { toast } from "../components/toast.component.js"
+import { go, goto } from "../routes/routes.js";
+import { API_URL } from "../api/api.js";
+import { indicator } from "../services/indicator.service.js";
+
+document.getElementById("back").addEventListener("click",()=>{
+  go("produtos");
+})
 
 const toggle = document.getElementById('modoEvento');
 
@@ -9,3 +16,15 @@ toggle.addEventListener('change', () => {localStorage.setItem('modoEvento', togg
     toast(toggle.checked ?'Modo evento ativado':'Modo evento desativado', 'success');
 
 });
+
+function init(){
+    indicator();
+}
+
+setInterval(() => {
+
+    indicator();    
+
+}, 10000);
+
+init();

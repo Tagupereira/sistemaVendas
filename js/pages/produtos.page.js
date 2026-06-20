@@ -273,9 +273,6 @@ document.getElementById('confirmarAvulso').onclick=()=>{
 
 };
 
-function modoEventoConfig(){
-  localStorage.setItem("modoEvento",true)
-}
 
 function init(){
 
@@ -285,8 +282,7 @@ function init(){
   iniciarCarrinho();
   atualizarCarrinhoUI();
   listarPagamentos();
-  modoEventoConfig()
-
+ 
 };
 
 setInterval(() => {
