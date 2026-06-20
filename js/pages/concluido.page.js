@@ -68,18 +68,18 @@ btnPrint.addEventListener("click", async ()=>{
         venda.total = recebeVendaJson.total;
 
         //document.getElementById("btnImprimir").textContent = "Imprimir Comprovante"
-        //document.getElementById("btnImprimir").removeAttribute("disabled")
         document.getElementById("btnImprimir").setAttribute("disabled", "disabled")
         document.getElementById("btnImprimir").textContent = "Aguarde..."
         
         
         toast('Solicitando impressao', 'info')
-
+        
         
         console.log(gerarCupomESC(venda));
         
         await imprimir(gerarCupomESC(venda));
         
+        document.getElementById("btnImprimir").removeAttribute("disabled")
         localStorage.removeItem('vendaJson');
     }
 })
