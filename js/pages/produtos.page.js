@@ -58,18 +58,18 @@ function renderizarProdutos(produtos) {
             ${nome}
           </h3>
 
-          <p class="text-xs text-gray-500 truncate">
-            ${produto.descricao}
+          <p class="text-xs text-gray-500 ">
+            ${produto.descricao.toUpperCase()}
           </p>
-          <p class="text-slate-500">
+          <p class="text-xs text-gray-500 mt-0.5 truncate">
             Estoque: ${produto.estoque}
           </p>
-          <span class="font-bold text-lg text-gray-800">
+          <span class="flex items-baseline mt-1 font-bold text-lg text-gray-800">
             R$ ${produto.preco.toFixed(2)}
           </span>
         </div>
         <div>
-        <button data-id="${produto.id}" class="adicionar w-[70px] h-[70px] bg-blue-600 text-white text-4xl font-light rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition">
+        <button data-id="${produto.id}" class="adicionar w-16 h-16 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center transition-colors duration-300">
           <span class="material-symbols-outlined">add_shopping_cart</span>
         </button>
         </div>
