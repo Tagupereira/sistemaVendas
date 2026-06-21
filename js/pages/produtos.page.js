@@ -53,30 +53,26 @@ function renderizarProdutos(produtos) {
 
     container.innerHTML += `
       <div class="bg-white rounded-3xl shadow p-4 flex flex-column justify-between items-center">
-        <div class="w-[60%]">
-          <h3 class="font-bold text-lg">
+        <div class="">
+          <h3 class="font-bold text-base text-gray-800 truncate">
             ${nome}
           </h3>
 
-          <p class="text-slate-500">
+          <p class="text-xs text-gray-500 truncate">
             ${produto.descricao}
           </p>
           <p class="text-slate-500">
             Estoque: ${produto.estoque}
           </p>
-
-          <div class="flex justify-between mt-4">
-          
-            <span class="font-bold text-2xl">
-              R$ ${produto.preco.toFixed(2)}
-            </span>
-
-          </div>
+          <span class="font-bold text-lg text-gray-800">
+            R$ ${produto.preco.toFixed(2)}
+          </span>
         </div>
-        <button data-id="${produto.id}" class="adicionar w-20 h-20 bg-blue-600 text-white text-4xl font-light rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition">
+        <div>
+        <button data-id="${produto.id}" class="adicionar w-[70px] h-[70px] bg-blue-600 text-white text-4xl font-light rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition">
           <span class="material-symbols-outlined">add_shopping_cart</span>
         </button>
-
+        </div>
       </div>
     `;
 
