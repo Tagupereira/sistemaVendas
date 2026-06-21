@@ -15,6 +15,7 @@ export async function indicator(){
     }else{
 
         indResp.classList.add("bg-red-400");
+        await pingAPI();
 
     }
 

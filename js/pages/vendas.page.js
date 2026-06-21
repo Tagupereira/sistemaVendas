@@ -17,7 +17,7 @@ document.getElementById("back").addEventListener("click",()=>{
 const usuario = JSON.parse( localStorage.getItem('usuario'));
 const container = document.getElementById('listaVendas');
 
-container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando Vendas...</div>';
+container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500">Carregando Vendas...</div>';
 
 async function carregarVendas(){
 
@@ -55,7 +55,7 @@ function renderizarVendas(vendas){
 
             <div class="mb-6">
 
-                <h2 class="text-sm font-bold text-slate-500 ml-3 mb-3">
+                <h2 class="w-full h-10 bg-blue-500 rounded-xl p-2 text-white text-sm font-bold text-slate-500 mb-3 text-center">
 
                     ${data}
 
