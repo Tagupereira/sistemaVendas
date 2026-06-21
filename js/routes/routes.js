@@ -8,6 +8,8 @@ export const Routes = {
 
     analiseVendas: '/analiseVendas.html',
 
+    pendentes: '/pendentes.html',
+
     concluido: '/concluido.html',
     
     vendas: '/vendas.html',
