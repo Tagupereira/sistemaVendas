@@ -32,8 +32,8 @@ async function carregarProdutos() {
     return
   }
 
-  produtos = response.produtos;
-
+  produtos = response.produtos.filter(p=> String(p.status).toLowerCase() === 'ativo');
+    
   renderizarProdutos(produtos)
 }
 
@@ -90,6 +90,7 @@ function renderizarProdutos(produtos) {
 
     });
   });
+
   document.getElementById("adicAvulso").onclick=() =>{
     abrirAvulso()
   }
@@ -130,6 +131,7 @@ function modalObs(item){
 
 
 }
+
 const btnFinalizarPedido = document.getElementById("finalizarPedido");
 btnFinalizarPedido.addEventListener("click", ()=>{
 
@@ -190,7 +192,7 @@ overlay.addEventListener('click', fecharMenu);
 
 btnFechar.addEventListener('click', fecharMenu);
 
-produtoFechar.addEventListener('click', fecharMenu);
+//produtoFechar.addEventListener('click', fecharMenu);
 
 function abrirMenu() {
 

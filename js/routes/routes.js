@@ -4,6 +4,8 @@ export const Routes = {
 
     produtos: '/produtos.html',
 
+    produtosAdmin: '/produtos-admin.html',
+
     pagamentos: '/payments.html',
 
     analiseVendas: '/analiseVendas.html',

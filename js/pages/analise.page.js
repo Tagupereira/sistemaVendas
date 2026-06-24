@@ -1,6 +1,9 @@
 import { vendasAPI } from '../api/vendas.api.js';
 import { go, goto } from "../routes/routes.js";
 import { indicator } from "../services/indicator.service.js";
+import { auth } from '../guards/auth.guard.js';
+
+auth();
 
 let vendas = [];
 

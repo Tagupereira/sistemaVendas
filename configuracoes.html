@@ -25,7 +25,7 @@
         <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
             <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
 
-            <h1 class="text-3xl font-semibold text-white">Configurações</h1>
+            <h1 class="text-2xl font-semibold text-white">Configurações</h1>
             <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
         </div>
 
@@ -35,12 +35,7 @@
 
         <div class="min-h-screen bg-gray-50">
 
-            <div class="bg-white p-6 shadow">
-
-                <h1 class="text-3xl font-bold">
-                    Configurações
-
-                </h1>
+            <div class="bg-white p-4 shadow">
 
                 <p class="text-gray-500 mt-1">
                     Personalize o comportamento do sistema
@@ -49,54 +44,62 @@
 
             </div>
 
-            <div class="p-5 space-y-5">
+            <div class="mt-5 space-y-2">
+                <div class="bg-white rounded-2xl shadow p-5">
+                    <div class="flex justify-between items-center">
+                        <div>
 
-                <div class="bg-white rounded-3xl shadow p-5 flex justify-between items-center">
+                            <h3 class="font-semibold text-xl">
+                                Modo Evento
 
-                    <div>
+                            </h3>
 
-                        <h3 class="font-semibold text-xl">
-                            Modo Evento
+                            <p class="text-gray-500 text-sm mt-1">
+                                Ativa impressão de senha do pedido
 
-                        </h3>
-
-                        <p class="text-gray-500 text-sm mt-1">
-                            Ativa impressão de senha para espera
-
-                        </p>
-
-                    </div>
-
-                    <label class="relative inline-flex cursor-pointer">
-
-                        <input id="modoEvento" type="checkbox" class="sr-only peer" />
-
-                        <div class="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 after:absolute after:left-1 after:top-1 after:bg-white after:h-6 after:w-6 after:rounded-full after:transition-all peer-checked:after:translate-x-6 ">
+                            </p>
 
                         </div>
 
-                    </label>
+                        <label class="relative inline-flex cursor-pointer">
 
+                            <input id="modoEvento" type="checkbox" class="sr-only peer" />
+
+                            <div class="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 after:absolute after:left-1 after:top-1 after:bg-white after:h-6 after:w-6 after:rounded-full after:transition-all peer-checked:after:translate-x-6 ">
+
+                            </div>
+
+                        </label>
+
+                    </div>
+                    
+                    <div class="text-gray-400 text-sm mt-3">
+
+                        <p>
+                            Ligado → imprime senha
+                        </p>
+
+                        <p>
+                            Desligado → impressão direta
+                        </p>
+
+                    </div>
                 </div>
 
-                <div class="bg-white rounded-3xl shadow p-5">
+            </div>
 
-                    <h3 class="font-semibold ">
-                        Descrição
-
-                    </h3>
-
-                    <p class="text-gray-500 mt-2 ">
-                        Ligado → imprime senha
-                    </p>
-
-                    <p class="text-gray-500">
-                        Desligado → impressão direta
-
-                    </p>
-
+            <div class="bg-white rounded-2xl shadow p-5 mt-5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span>
+                                *habilitar seleção de login ou nao
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
         </div>
     </main>
 

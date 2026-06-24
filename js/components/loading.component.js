@@ -38,7 +38,6 @@ export function stopLoading(button){
 
 }
 
-
 export function showLoading(){
 
     document.body.classList.add(

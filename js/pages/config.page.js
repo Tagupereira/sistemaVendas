@@ -2,6 +2,8 @@ import { toast } from "../components/toast.component.js"
 import { go, goto } from "../routes/routes.js";
 import { API_URL } from "../api/api.js";
 import { indicator } from "../services/indicator.service.js";
+import { auth } from '../guards/auth.guard.js';
+auth();
 
 document.getElementById("back").addEventListener("click",()=>{
   go("produtos");
