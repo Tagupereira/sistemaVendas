@@ -19,7 +19,6 @@ export const vendasAPI = {
             await response.text();
             
         return JSON.parse(texto);
-
     },
 
     async listar(){
@@ -30,8 +29,14 @@ export const vendasAPI = {
             );
 
         return await response.json();
+    },
 
+    async editar(venda){
+
+        const vendaJson = encodeURIComponent(JSON.stringify(venda));
+        const response = await fetch(`${API_URL}?action=editarVenda&venda=${vendaJson}`);
+
+        return await response.json();
     }
-    
 }
 
