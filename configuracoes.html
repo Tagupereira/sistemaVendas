@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Produtos</title>
+</head>
+
+<body class="bg-slate-50">
+
+    <!-- Header -->
+    <header class="relative h-40 overflow-hidden">
+
+        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
+
+        </svg>
+
+        <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
+
+            <h1 class="text-2xl font-semibold text-white">Configurações</h1>
+            <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
+        </div>
+
+    </header>
+
+    <main class="px-5 -mt-4">
+
+        <div class="min-h-screen bg-gray-50">
+
+            <div class="bg-white p-4 shadow">
+
+                <p class="text-gray-500 mt-1">
+                    Personalize o comportamento do sistema
+
+                </p>
+
+            </div>
+
+            <div class="mt-5 space-y-2">
+                <div class="bg-white rounded-2xl shadow p-5">
+                    <div class="flex justify-between items-center">
+                        <div>
+
+                            <h3 class="font-semibold text-xl">
+                                Modo Evento
+
+                            </h3>
+
+                            <p class="text-gray-500 text-sm mt-1">
+                                Ativa impressão de senha do pedido
+
+                            </p>
+
+                        </div>
+
+                        <label class="relative inline-flex cursor-pointer">
+
+                            <input id="modoEvento" type="checkbox" class="sr-only peer" />
+
+                            <div class="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 after:absolute after:left-1 after:top-1 after:bg-white after:h-6 after:w-6 after:rounded-full after:transition-all peer-checked:after:translate-x-6 ">
+
+                            </div>
+
+                        </label>
+
+                    </div>
+                    
+                    <div class="text-gray-400 text-sm mt-3">
+
+                        <p>
+                            Ligado → imprime senha
+                        </p>
+
+                        <p>
+                            Desligado → impressão direta
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-5 mt-5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span>
+                                *habilitar seleção de login ou nao
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+    <script type="module" src="./js/pages/config.page.js"></script>
+
+</body>
+
+</html>

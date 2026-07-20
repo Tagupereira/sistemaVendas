@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>controle</title>
+</head>
+
+<body class="bg-slate-50">
+
+    <!-- Header -->
+    <header class="relative h-40 overflow-hidden">
+
+        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
+
+        </svg>
+
+        <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
+
+            <h1 class="text-2xl font-semibold text-white">Controle</h1>
+            <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
+        </div>
+
+    </header>
+
+    <main class="px-5 -mt-4 pb-10">
+        <div class="bg-white rounded-2xl shadow p-4">
+            <input id="pesquisa" type="text" placeholder="Pesquisar produto..."
+            class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+
+        </div>
+        <button id="novoProduto" class="w-full bg-blue-500 text-white rounded-xl p-3 mt-5 mb-5">
+
+            + Novo Produto
+
+        </button>
+
+        <div id="listaProdutos" class="space-y-3">
+
+        </div>
+
+    <div id="modalProduto" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+
+        <div class="bg-white rounded-3xl p-5 w-[90%]">
+
+            <h2 class="text-xl mb-5">
+
+                Produto
+
+            </h2>
+
+            <input id="nome" placeholder="Nome" class="w-full border p-3 rounded mb-3">
+
+            <input id="descricao" placeholder="Descrição" class="w-full border p-3 rounded mb-3">
+
+            <input id="preco" placeholder="Preço" class="w-full border p-3 rounded mb-3">
+
+            <select id="tipoVenda" class="w-full border p-3 rounded mb-3">
+
+                <option>
+                    unidade
+                </option>
+
+                <option>
+                    kg
+                </option>
+
+                <option>
+                    cento
+                </option>
+
+            </select>
+
+            <div class="flex gap-3">
+
+                <button id="cancelar" class="flex-1 bg-gray-200 rounded p-3">
+
+                    Cancelar
+
+                </button>
+
+                <button id="salvar" class="flex-1 bg-green-500 text-white rounded p-3">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </main>
+
+    <div id="loadingOverlay"
+        class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-3">
+
+            <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin">
+            </div>
+
+            <span>
+                Salvando Aguarde...
+            </span>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="./js/pages/produtos-admin.page.js"></script>
+
+</body>
+
+</html>

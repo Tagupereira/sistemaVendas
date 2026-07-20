@@ -1,0 +1,492 @@
+import { vendasAPI } from "../api/vendas.api.js";
+import { indicator } from "../services/indicator.service.js";
+import { go, goto } from '../routes/routes.js';
+import { toast } from "../components/toast.component.js";
+import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
+import { auth } from '../guards/auth.guard.js';
+import { excluir } from "../services/crud.service.js";
+
+auth();
+
+let vendasCarregadas = [];
+let vendaSelecionada = null;
+document.getElementById("back").addEventListener("click",()=>{
+  go("produtos");
+})
+
+const usuario = JSON.parse( localStorage.getItem('usuario'));
+const container = document.getElementById('listaVendas');
+
+container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500">Carregando Vendas...</div>';
+
+async function carregarVendas(){
+
+    const response = await vendasAPI.listar();                 
+    console.log(response);
+    
+    if(!response.success){
+    
+        container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Erro ao carregar...</div>';
+        return
+    }
+    if (response.vendas.length === 0){
+        container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhuma venda encontrada</div>';
+        return
+    }
+
+    vendasCarregadas = response.vendas;
+    vendasCarregadas.sort(
+        (a,b) => new Date(b.data) - new Date(a.data)
+    );
+    
+    renderizarVendas(vendasCarregadas);
+    
+}
+
+function renderizarVendas(vendas){
+       
+    const agrupadas = agruparPorData(vendas);
+
+    container.innerHTML = '';
+    
+    Object.entries(agrupadas).forEach(([data, vendas]) => {
+
+        container.innerHTML += `
+
+            <div class="mb-6">
+
+                <h2 class="w-full h-10 bg-blue-500 rounded-xl p-2 text-white text-sm font-bold text-slate-500 mb-3 text-center">
+
+                    ${data}
+
+                </h2>
+
+                <div id="grupo-${data.replaceAll('/','-')}">
+
+                </div>
+
+            </div>
+
+        `;
+
+        const grupo = document.getElementById(`grupo-${data.replaceAll('/','-')}`);
+
+        vendas.forEach(venda => {
+                       
+            const vendaCompleta = JSON.parse(venda.vendasJson);
+                    
+            const quantidadeItens = vendaCompleta.pedido.quantidadeItens;  
+           
+            const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'PARCIAL' : vendaCompleta.pagamentos[0].tipo.toUpperCase();
+            
+            grupo.innerHTML += `
+
+                <button class="w-full bg-white rounded-2xl shadow p-4 mb-2 text-left venda-card" data-id="${venda.id}">
+
+                    <div class="flex justify-between">
+
+                        <span class="font-bold">
+
+                            #${String(venda.pedido).padStart(4, '0')}
+
+                        </span>
+
+                        <span>
+
+                            ${new Date(venda.data).toLocaleTimeString('pt-BR',{
+                                    hour:'2-digit',
+                                    minute:'2-digit'
+                                }
+                            )}
+
+                        </span>
+
+                    </div>
+
+                    <div class="mt-2 font-medium">
+                        ${venda.cliente || 'Não identificado'}
+                    </div>
+
+                    <div class="flex justify-between text-sm text-slate-500 mt-2">
+
+                        <span>
+                            ${formaPagamento} • ${quantidadeItens} item(s)
+                        </span>
+
+                        <span>
+
+                            ${Number(venda.total).toLocaleString('pt-BR',
+                                    {
+                                        style:'currency',
+                                        currency:'BRL'
+                                    }
+                                )}
+
+                        </span>
+
+                    </div>
+
+                </button>
+
+            `;
+
+        });
+
+    });
+}
+
+function agruparPorData(vendas){
+
+    return vendas.reduce((grupo, venda) => {
+
+            const data = new Date(venda.data).toLocaleDateString('pt-BR',{
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            if(!grupo[data]){
+                
+                grupo[data] = [];
+
+            }
+
+            grupo[data].push(venda);
+
+            return grupo;
+
+        },
+        {}
+    );
+
+}
+
+function normalizar(texto) {
+  return texto
+  ?.toString()
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '');
+}
+
+document.getElementById('buscarVenda').addEventListener('input', (e) => {
+  
+    const termo = normalizar(e.target.value);
+  
+    const filtradas = vendasCarregadas.filter(venda => {
+
+    const vendaCompleta = JSON.parse(venda.vendasJson);
+        console.log(vendaCompleta);
+        
+    const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'parcial' : vendaCompleta.pagamentos[0].tipo;
+    
+    const dataFormatada = new Date(venda.data).toLocaleDateString('pt-BR',
+            {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            }
+        );
+    
+    return ( 
+      normalizar(venda.cliente).includes(termo) ||
+      normalizar(dataFormatada).includes(termo) ||
+      normalizar(formaPagamento).includes(termo) ||
+      String(venda.pedido).includes(termo)
+    );
+    
+  });
+  
+  renderizarVendas(filtradas);
+  
+});
+
+document.addEventListener('click', (e) => {
+
+        const card = e.target.closest('.venda-card');
+
+        if(!card){
+            return;
+        }
+
+        const venda = vendasCarregadas.find(v => v.id == card.dataset.id);
+
+        abrirModalVenda(venda);
+
+    }
+);
+
+function abrirModalVenda(venda){
+        
+    vendaSelecionada = venda;
+
+    const vendaCompleta = JSON.parse(venda.vendasJson);
+    console.log(vendaCompleta);
+
+    document.body.classList.add('overflow-hidden');
+
+    document.getElementById('modalVenda').classList.remove('hidden');
+
+    document.getElementById('modalPedido').textContent = `Pedido #${String(venda.pedido).padStart(4,'0')}`;
+
+    document.getElementById('modalData').textContent = new Date(venda.data).toLocaleString('pt-BR');
+
+    document.getElementById('modalCliente').textContent = `Cliente: ${venda.cliente || 'Não identificado'}`;
+
+    document.getElementById('modalTotal').textContent = Number(venda.total).toLocaleString('pt-BR',
+                    {
+                        style:'currency',
+                        currency:'BRL'
+                    }
+                );
+
+    const itens = document.getElementById('modalItens');
+
+    itens.innerHTML = '';
+
+    vendaCompleta.pedido.itens.forEach(item => {
+
+        itens.innerHTML += `
+
+            <div class="flex justify-between font-bold"">
+
+                <span >${item.quantidade}x ${item.nome}</span>
+
+                <span>
+                    ${(item.quantidade * item.preco).toLocaleString('pt-BR',
+                            {
+                                style:'currency',
+                                currency:'BRL'
+                            }
+                        )}
+                </span>
+                
+            </div>
+            <span class="mt-0">${item.observacao || ""}</span>
+            
+        `;
+    });
+
+    const pagamentos = document.getElementById('modalPagamentos');
+
+    pagamentos.innerHTML = '';
+
+    vendaCompleta.pagamentos.forEach(pagamento => {
+
+        pagamentos.innerHTML += `
+
+            <div class="flex justify-between">
+
+                <span>${pagamento.tipo.toUpperCase()}</span>
+
+                <span>
+                    ${Number(pagamento.recebido).toLocaleString('pt-BR', {
+                            style:'currency',
+                            currency:'BRL'
+                        }
+                    )}
+                </span>
+            </div>
+        `;
+    });
+
+/////////////////////// informação total
+    const infoPedidoPg = document.getElementById("totalPedido")
+    
+    infoPedidoPg.innerHTML = '';
+
+    let totalPedido= 0;
+    vendaCompleta.pagamentos.forEach(pagamento => {
+        totalPedido += pagamento.recebido
+        
+    });
+
+    infoPedidoPg.innerHTML += `
+            
+        <div class="flex justify-between">
+
+            <span class="font-bold">Total Recebido</span>
+
+            <span>
+                ${Number(totalPedido).toLocaleString('pt-BR', {
+                        style:'currency',
+                        currency:'BRL'
+                    }
+                )}
+            </span>
+        </div>
+    `;
+
+/////////////////////// informação do troco
+
+    vendaCompleta.pagamentos.forEach(pagamento => {
+
+        if(pagamento.troco > 0){
+            infoPedidoPg.innerHTML += `
+
+            <div class="flex justify-between">
+
+                <span>Troco dinheiro</span>
+
+                <span>
+                    ${Number(pagamento.troco).toLocaleString('pt-BR', {
+                            style:'currency',
+                            currency:'BRL'
+                        }
+                    )}
+                </span>
+            </div>
+        `;
+
+        }
+        
+    });
+
+/////////////////////////////////////////////
+
+    document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
+        try{
+            const msg = 'Imprimindo';
+            const cor = "info";
+            toast(msg, cor);
+
+            //await imprimir(gerarSenhaEvento(venda));
+            console.log(vendaSelecionada);
+            
+            await imprimir(gerarCupomESC(vendaSelecionada));
+
+
+        }catch(error){
+            console.log(error);
+            
+            const msg = "Não foi possivel conectar";
+            const cor = "error"
+            toast(msg, cor);
+
+        }
+        
+        });
+
+    document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
+        const msg = 'Compartilhando';
+        const cor = "success";
+        toast(msg, cor);
+
+        compartilharVenda(venda)
+    })
+
+    document.getElementById("btnExcluirVenda").addEventListener("click", ()=>{
+       
+        
+        excluir(venda.id)
+        
+    })
+}
+
+async function compartilharVenda(venda){
+   
+    try{
+
+        await navigator.share({
+            title: `Pedido #${venda.pedido}`,
+            text: geraCupom(venda)
+        });
+
+    }catch(error){
+
+        
+        console.error(error)
+        const msg = 'Compartilhamento cancelado';
+        const cor = "warning";
+        toast(msg, cor);
+
+
+    }
+
+}
+
+function geraCupom(venda){
+       
+    const vendaCompleta = JSON.parse(venda.vendasJson);
+    
+    const dataVenda = new Date(venda.data);
+    
+    const data = dataVenda.toLocaleDateString('pt-BR');
+    
+    const hora = dataVenda.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+     
+    const diaSemana = dataVenda.toLocaleDateString('pt-BR', { weekday:'long' });
+     
+    const itens = vendaCompleta.pedido.itens.map(item =>
+        `- _${item.quantidade}x ${item.nome} Únit: ${item.preco.toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}_
+        *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}*`
+
+    ).join('\n\n');
+
+    const pagamentos = vendaCompleta.pagamentos.map(pagamento =>
+
+        `${pagamento.tipo.toUpperCase()}: ${pagamento.valor.toLocaleString(
+            'pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )}`
+
+    ).join('\n');
+    
+
+    const cupom = `
+=========================
+  ✨ DELÍCIAS FERNANDES ✨
+=========================
+
+${diaSemana}, ${data} - ${hora} 
+    
+Pedido: *#${String(venda.pedido).padStart(4,'0')}*
+========================
+*ITENS:*
+${itens}
+========================
+*PAGAMENTO:*
+
+${pagamentos}
+
+VALOR TOTAL: *${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}*
+========================
+
+✨ Obrigado pela preferência!
+
+Cupom de compra - Não é documento fiscal. `;
+
+    return cupom;
+
+}
+
+document.getElementById('fecharModalVenda').addEventListener('click',() => {
+
+        document.getElementById('modalVenda').classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+
+    }
+);
+
+async function init(){
+
+    indicator();
+    await carregarVendas();
+}
+
+init();

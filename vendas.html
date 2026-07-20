@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+
+    <title>Vendas</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+    
+  
+    <!-- HEADER -->
+    <header class="relative h-40 overflow-hidden">
+
+        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
+
+        </svg>
+
+        <div class="relative z-10 px-6 pt-6 flex items-center gap-4">
+
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
+
+            <h1 class="text-2xl font-semibold text-white">Vendas</h1>
+
+            <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
+        </div>
+
+    </header>
+
+    <main class="px-5 -mt-4 pb-10">
+               
+        <!-- BUSCA -->
+
+        <div class="bg-white rounded-3xl shadow p-5 ">
+
+            <input id="buscarVenda" type="text" placeholder="Buscar pedido ou cliente..."
+            class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+
+        </div>
+
+        <!-- LISTA -->
+
+        <div id="listaVendas" class="space-y-3 mt-5">
+
+            <!-- CARDS INSERIDOS VIA JS -->
+
+            <div id="listaVendas" class="space-y-6">
+                
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL DETALHES VENDA -->
+
+<div id="modalVenda" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
+
+    <div class="bg-white w-[100dvw] h-[100dvh] overflow-y-auto flex flex-col">
+
+        <!-- Cabeçalho -->
+
+        <div class="p-5 border-b">
+
+            <div class="flex justify-between items-center">
+
+                <h2 class="font-bold text-xl">
+                    Cupom do Pedido
+                </h2>
+
+                <button
+                    id="fecharModalVenda"
+                    class="text-2xl">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Cupom -->
+
+        <div class="p-5 h-full">
+
+            <div class="text-center">
+
+                <h3 class="font-bold text-lg">
+                    DELÍCIAS FERNANDES
+                </h3>
+
+                <p id="modalPedido" class="text-sm text-slate-500">
+
+                    Pedido #0000
+
+                </p>
+
+            </div>
+
+            <div class="mt-4 text-sm">
+
+                <div id="modalData" class="flex font-bold"></div>
+
+                <div id="modalCliente"></div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div
+                id="modalItens"
+                class="space-y-2">
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="flex justify-between font-bold">
+
+                <span>Total</span>
+
+                <span id="modalTotal">
+                    R$ 0,00
+                </span>
+
+
+            </div>
+
+            
+            <hr class="my-4">
+
+            <h4 class="font-bold mb-2">Pagamentos</h4>
+
+            <div id="modalPagamentos" class="space-y-2"></div>
+
+             <hr class="my-4">
+
+            <div>
+
+                <span id="totalPedido" class="space-y-2"></span>
+                
+            </div>
+
+        </div>
+
+        <!-- Ações -->
+
+        <div class="mt-auto border-t p-5 flex flex-col gap-2 ">
+            <div class=" grid grid-cols-2 gap-2">
+                
+                <button id="btnImprimirVenda" class="bg-black text-white rounded-xl py-3 flex justify-center items-center">
+
+                    <span class="material-symbols-outlined p-2">print</span>
+                    Imprimir
+                    
+
+                </button>
+
+                 <button id="btnCompartilharVenda" class="bg-green-600 text-white rounded-xl py-3 flex justify-center items-center">
+
+                    <span class="material-symbols-outlined p-2">share</span>
+                    Compartilhar
+
+                </button>
+
+            </div>
+
+            
+                <button id="btnEditarVenda" class="bg-amber-500 text-white rounded-xl py-3 w-full">
+
+                    Editar
+
+                </button>
+
+                <button id="btnExcluirVenda" class="bg-red-600 text-white rounded-xl py-3 w-full">
+
+                    Excluir
+
+                </button>
+           
+        </div>
+
+    </div>
+
+</div>
+
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-3">
+
+            <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+            <span>Aguarde Excluindo venda...</span>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="../js/pages/vendas.page.js"></script>
+</body>
+
+</html>
