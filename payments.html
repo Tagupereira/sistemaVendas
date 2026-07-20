@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Pagamento</title>
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="relative h-40 overflow-hidden">
+
+        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z">
+            </path>
+
+        </svg>
+
+         <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
+
+            <span id="back" class="material-symbols-outlined text-3xl text-white">keyboard_return</span>
+
+            <h1 class="text-2xl font-semibold text-white">Pagamento</h1>
+
+            <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
+            
+        </div>
+
+    </header>
+
+    <main class="px-5 -mt-4 pb-10">
+
+        <!-- Total -->
+        <div class="bg-white rounded-3xl shadow p-6">
+
+            <p class="text-slate-500">
+                Total do Pedido
+            </p>
+
+            <h2 id="valorTotal" class="text-4xl font-bold text-blue-600 mt-2">
+
+                R$ 0,00
+
+            </h2>
+
+        </div>
+
+        <div class="mt-4 border-t pt-4">
+
+            <div class="flex justify-between">
+
+                <span>Total Pago</span>
+
+                <span id="valorPago">
+                    R$ 0,00
+                </span>
+
+            </div>
+
+            <div class="flex justify-between font-bold">
+
+                <span id="tituloTroco">Restante</span>
+
+                <span id="valorRestante">
+                    R$ 0,00
+                </span>
+
+            </div>
+            <div id="trocoTotal" class="hidden flex justify-between font-bold text-green-600">
+
+                <span id="tituloTroco">Troco</span>
+
+                <span id="troco">
+                </span>
+
+            </div>
+
+        </div>
+
+        <div
+            id="listaPagamentos"
+            class="space-y-2 mt-4">
+        </div>
+        
+        <!-- Resumo -->
+        <div class="bg-white rounded-3xl shadow p-5 mt-5">
+
+            <h3 class="font-bold text-lg mb-4">
+                Resumo do Pedido
+            </h3>
+
+            <div id="listaItens" class="space-y-3">
+
+            </div>
+
+        </div>
+
+        <!-- Forma Pagamento -->
+        <div class="bg-white rounded-3xl shadow p-5 mt-5">
+
+            <h3 class="font-bold text-lg mb-4">
+                Forma de Pagamento
+            </h3>
+
+            <div id="formasPagamento">
+
+                <div id="tiposPagamento" class="grid grid-cols-2 gap-4 mt-4"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Dinheiro -->
+        <div id="boxDinheiro" class="bg-white rounded-3xl shadow p-5 mt-5 hidden">
+
+            <h3 class="font-bold text-lg mb-4">
+                Valor Recebido
+            </h3>
+
+            <input id="valorRecebido" type="number" step="0.01" placeholder="0,00"
+                class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+
+            <div id="troco" class="mt-4 text-xl font-bold text-green-600">
+
+                Troco: R$ 0,00
+
+            </div>
+
+        </div>
+
+        <div class="bg-white rounded-3xl shadow p-5 mt-5">
+
+            <h3 class="font-bold text-lg mb-4">
+                Cliente
+            </h3>
+
+            <input id="nomeCliente" type="text" placeholder="Nome do cliente"
+                class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+
+        </div>
+
+        <!-- Observação -->
+        <div class="bg-white rounded-3xl shadow p-5 mt-5">
+
+            <h3 class="font-bold text-lg mb-4">
+                Observação
+            </h3>
+
+            <textarea id="obsPedido" rows="3" placeholder="Observações do pedido..." class="w-full border rounded-2xl p-3 resize-none"></textarea>
+
+        </div>
+
+        <!-- Botão -->
+        <button id="btnConfirmarVenda" class="w-full mt-6 bg-blue-600 text-white py-4 rounded-full font-medium shadow">
+
+            Confirmar Venda
+
+        </button>
+
+    </main>
+    <div
+    id="modalPagamento"
+    class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-3xl p-6 w-80">
+
+        <h3
+            id="tituloPagamento"
+            class="text-xl font-bold mb-4">
+        </h3>
+
+        <input
+            id="valorPagamento"
+            type="number"
+            step="0.01"
+            class="w-full border rounded-xl p-3">
+            <div id="trocoPagamento" class="hidden mt-3 text-green-600 font-bold"></div>
+
+        <div class="flex gap-3 mt-5">
+
+            <button id="cancelarPagamento" class="flex-1 border rounded-xl p-3"> Cancelar </button>
+
+            <button id="confirmarPagamento" class="flex-1 bg-green-500 text-white rounded-xl p-3"> Adicionar </button>
+            
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="loadingOverlay"
+    class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+
+    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-3">
+
+        <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin">
+        </div>
+
+        <span>
+            Salvando venda...
+        </span>
+
+    </div>
+
+</div>
+
+    <script type="module" src="./js/pages/payments.page.js"></script>
+
+</body>
+
+</html>
