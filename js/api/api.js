@@ -1,8 +1,9 @@
-const dadosEmpresa = JSON.parse(localStorage.getItem("empresa"));
 
-const KEY_API = dadosEmpresa.key;
+const dadosEmpresa = JSON.parse(localStorage.getItem("empresa")) || {};
 
-export const API_URL = `https://script.google.com/macros/s/${KEY_API}/exec`;
+const KEY_API = dadosEmpresa.key || "";
+
+export const API_URL = KEY_API ? `https://script.google.com/macros/s/${KEY_API}/exec` : "";
 
 export async function get(action, params = {}) {
   try {

@@ -24,7 +24,6 @@ const btnConfig = document.getElementById('btnConfig');
 
 btnConfig.addEventListener('click',()=>{
     alert("oi")
-    
     go("conta");
 
 });
