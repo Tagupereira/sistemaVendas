@@ -7,6 +7,15 @@ import { startLoading, stopLoading, showLoading, hideLoading } from '../componen
 
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
+const empresa = JSON.parse(localStorage.getItem("empresa"));
+
+const img = document.getElementById("imgLogo");
+    if(empresa.logo === ""){
+        img.setAttribute("src", "../assets/img/logo.jpg")
+    }else{
+        img.setAttribute("src", empresa.logo);
+    }
+
 if(usuario) {
     go("produtos");
 }
