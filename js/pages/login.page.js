@@ -5,17 +5,20 @@ import { startLoading, stopLoading, showLoading, hideLoading } from '../componen
 
 //console.log("Aplicação iniciada:", new Date().toLocaleTimeString()); -- futuro registro de log.
 
+const imgGoogle = "https://lh3.googleusercontent.com/d/";
+
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
 const empresa = JSON.parse(localStorage.getItem("empresa"));
 
 const img = document.getElementById("imgLogo");
 
+
     if(empresa){
         if(empresa.logo === ""){
             img.setAttribute("src", "assets/img/logo.jpg")
         }else{
-            img.setAttribute("src", empresa.logo);
+            img.setAttribute("src", imgGoogle+empresa.logo);
         }
     }else{
         img.setAttribute("src", "assets/img/logo.jpg")
