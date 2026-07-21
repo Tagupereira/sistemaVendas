@@ -10,10 +10,15 @@ const usuario = JSON.parse(localStorage.getItem("usuario"));
 const empresa = JSON.parse(localStorage.getItem("empresa"));
 
 const img = document.getElementById("imgLogo");
-    if(empresa.logo === ""){
-        img.setAttribute("src", "../assets/img/logo.jpg")
+
+    if(empresa){
+        if(empresa.logo === ""){
+            img.setAttribute("src", "assets/img/logo.jpg")
+        }else{
+            img.setAttribute("src", empresa.logo);
+        }
     }else{
-        img.setAttribute("src", empresa.logo);
+        img.setAttribute("src", "assets/img/logo.jpg")
     }
 
 if(usuario) {
