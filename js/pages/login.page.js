@@ -20,6 +20,13 @@ btnLogin.addEventListener('click', async () => {
     await login();
 
 });
+const btnConfig = document.getElementById('btnConfig');
+
+btnConfig.addEventListener('click',()=>{
+    
+    go("conta");
+
+});
 //localStorage.removeItem('usuario');
 
 async function login() {

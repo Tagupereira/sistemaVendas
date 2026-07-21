@@ -18,7 +18,9 @@ export const Routes = {
 
     categorias: '/categorias.html',
 
-    configuracoes: '/configuracoes.html'
+    configuracoes: '/configuracoes.html',
+
+    conta: '/configConta.html'
 
 
 };

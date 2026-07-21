@@ -1,4 +1,6 @@
-const KEY_API = 'AKfycbwYVsN0uFrX2ckTE5tAC8DlPpbS-oHG2lywaev1wPdzkQsuw1iVszycKOgI-we72kWuuQ';
+const dadosEmpresa = JSON.parse(localStorage.getItem("empresa"));
+
+const KEY_API = dadosEmpresa.key;
 
 export const API_URL = `https://script.google.com/macros/s/${KEY_API}/exec`;
 
