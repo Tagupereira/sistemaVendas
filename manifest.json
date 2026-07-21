@@ -1,15 +1,24 @@
 {
-    "name": "guilherminos",
+    "name": "Sistema-PDV",
 
-    "short_name": "guilherminos",
+    "short_name": "Sistema-PDV",
+
+    "description":"Sistema de vendas",
+
+    "lang":"pt-BR",
 
     "id":"./",
 
     "scope":"./",
 
-    "start_url":"./",
+    "start_url":"./index.html",
 
     "display": "standalone",
+
+    "display_override": [
+        "window-controls-overlay",
+        "standalone"
+    ],
 
     "background_color": "#ffffff",
 
@@ -20,7 +29,7 @@
     "icons": [
 
         {
-            "src": "/assets/icon-192.png",
+            "src": "assets/icon-192.png",
 
             "sizes": "192x192",
 
@@ -28,7 +37,7 @@
         },
 
         {
-            "src": "/assets/icon-512.png",
+            "src": "assets/icon-512.png",
 
             "sizes": "512x512",
 
