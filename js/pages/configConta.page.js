@@ -1,5 +1,5 @@
 import { reqCount } from "../api/requestDados.api.js";
-import { go, goto } from '../routes/routes.js';
+import { go } from '../routes/routes.js';
 
 const buscarDados = document.getElementById("buscarDados");
 const campoEmpresa = document.getElementById("campoEmpresa");

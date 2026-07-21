@@ -22,10 +22,10 @@ export const Routes = {
 
     conta: '/configConta.html'
 
-
 };
 
 //export const go = (page) => window.location.href = Routes[page];
+
 export const go = (page) => window.location.replace(Routes[page]);
 
 export function back(){
