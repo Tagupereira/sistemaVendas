@@ -1,8 +1,14 @@
 import { reqCount } from "../api/requestDados.api.js";
+import { go, goto } from '../routes/routes.js';
+
 const buscarDados = document.getElementById("buscarDados");
 const campoEmpresa = document.getElementById("campoEmpresa");
 
 let empresa = null;
+
+document.getElementById("back").addEventListener("click",()=>{
+   go("login");
+})
 
 buscarDados.addEventListener("click",async ()=>{
 
