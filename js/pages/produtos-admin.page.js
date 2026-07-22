@@ -82,20 +82,6 @@ function render(produtos) {
 
 }
 
-// window.alterarStatus = async(id)=>{
-
-//   const produto = produtos.find(p=>p.id==id);
- 
-//   produto.status = produto.status==='ativo'?'inativo':'ativo';
-
-//   await ProdutoAPI.salvar(produto);
-
-//   toast(`${produto.nome.toUpperCase()} - Status: ${produto.status}`, "info");
-
-//   render(produtos);
-
-// };
-
 window.alterarStatus = async(id)=>{
 
   let produto = null;
@@ -193,7 +179,7 @@ salvar.onclick = async () => {
 
     descricao: descricao.value,
 
-    preco: Number(preco.value),
+    preco: parseFloat(preco.value.replace(/\./g, "").replace(",", ".")),
 
     tipo_de_venda: tipoVenda.value,
 
