@@ -1,5 +1,6 @@
 import { reqCount } from "../api/requestDados.api.js";
 import { go } from '../routes/routes.js';
+import { indicator } from "../services/indicator.service.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { toast } from "../components/toast.component.js";
 
@@ -16,7 +17,7 @@ document.getElementById("back").addEventListener("click",()=>{
 
 buscarDados.addEventListener("click",async ()=>{
     toast("Buscando aguarde...", "warning")
-
+    showLoading()
     const id = document.getElementById("pesquisa").value;
         
     const dadoReq = await reqCount('buscarEmpresa', id);
@@ -27,7 +28,7 @@ buscarDados.addEventListener("click",async ()=>{
         toast("Nada encontrado", "error");
         return;
     }
-    
+    hideLoading();
     const nome = empresa.nome.toUpperCase()
     
     campoEmpresa.innerHTML = `
@@ -62,12 +63,13 @@ buscarDados.addEventListener("click",async ()=>{
     const gravarDados = document.getElementById("gravarDados");
     const buscarDados = document.getElementById("buscarDados");
     const pesquisa = document.getElementById("campoPesquisa");
+
     gravarDados.addEventListener("click",()=>{        
         gravar(empresa);
+
         gravarDados.classList.add("hidden");
         buscarDados.classList.add("hidden");
         pesquisa.classList.add("hidden");   
-
         
         campoEmpresa.innerHTML = `
         <h1 class="m-5 font-bold text-gray-600">Registrado para:</h1>
@@ -92,16 +94,16 @@ buscarDados.addEventListener("click",async ()=>{
             </div>
         </div>
     `;
-
+        
     })
 
   });
 
 function gravar(empresa){
-
+    
     toast("Cadastrando...","warning");
-
     localStorage.setItem("empresa",JSON.stringify(empresa))
+    
 }
 
 function confirmaEmpresa(){
@@ -148,3 +150,4 @@ function confirmaEmpresa(){
     }
 }
 confirmaEmpresa();
+indicator();
