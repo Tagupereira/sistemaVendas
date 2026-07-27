@@ -4,7 +4,7 @@ export function admin(){
 
     let timer;
 
-    campo.addEventListener("pointerdown", () => {
+    campo.addEventListener("touchstart", () => {
 
         timer = setTimeout(() => {
 
@@ -30,9 +30,9 @@ export function admin(){
 
     });
 
-    campo.addEventListener("pointerup", () => clearTimeout(timer));
-    campo.addEventListener("pointerleave", () => clearTimeout(timer));
-    campo.addEventListener("pointercancel", () => clearTimeout(timer));
+    campo.addEventListener("touchend", () => clearTimeout(timer));
+    campo.addEventListener("touchleave", () => clearTimeout(timer));
+    campo.addEventListener("touchcancel", () => clearTimeout(timer));
 }
 
 

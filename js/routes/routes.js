@@ -4,7 +4,7 @@ export const Routes = {
 
     produtos: '/produtos.html',
 
-    produtosAdmin: '/produtos-admin.html',
+    estoque: '/estoque.html',
 
     pagamentos: '/payments.html',
 
