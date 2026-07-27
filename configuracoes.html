@@ -14,11 +14,11 @@
 <body class="bg-slate-50">
 
     <!-- Header -->
-    <header class="relative h-40 overflow-hidden">
+    <header class="relative h-20 mb-10 overflow-hidden">
 
-        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+        <svg viewBox="0 0 10 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
 
-            <path fill="#2563EB" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
+            <path id="temaTopo" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
 
         </svg>
 
@@ -33,7 +33,8 @@
 
     <main class="px-5 -mt-4">
 
-        <div class="min-h-screen bg-gray-50">
+        <!-- <div class="min-h-screen bg-gray-50"> -->
+        <div class="bg-gray-50">
 
             <div class="bg-white p-4 shadow">
 
@@ -99,8 +100,53 @@
                 </div>
             </div>
 
+            <div class="bg-white rounded-3xl shadow p-5 mt-5 mb-10">
+
+                <h2 class="text-lg font-semibold text-slate-700">
+                    Tema do aplicativo
+                </h2>
+
+                <p class="text-sm text-slate-500 mb-5">
+                    Escolha a cor principal do sistema.
+                </p>
+
+                <div class="flex gap-4 flex-wrap">
+
+                    <button class="theme w-12 h-12 rounded-full bg-blue-500" data-color="blue"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-green-500" data-color="green"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-red-500" data-color="red"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-purple-500" data-color="purple"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-orange-500" data-color="orange"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-orange-950" data-color="brown"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-pink-500" data-color="pink"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-cyan-500" data-color="cyan"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-indigo-500" data-color="indigo"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-amber-500" data-color="amber"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-emerald-500" data-color="emerald"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-slate-700" data-color="slate"></button>
+
+                    <button class="theme w-12 h-12 rounded-full bg-black" data-color="black"></button>
+
+                </div>
+
+            </div>
 
         </div>
+
+
+        
+
     </main>
 
     <script type="module" src="./js/pages/config.page.js"></script>

@@ -2,6 +2,17 @@ import { API_URL } from "../api/api.js";
 import { go } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { temas } from "../config/thema.js";
+
+if(localStorage.getItem("tema")){
+    const thema = JSON.parse(localStorage.getItem("tema"));
+    document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
+}else{
+    localStorage.setItem("tema",JSON.stringify(temas["blue"]));
+    document.getElementById("temaTopo").setAttribute("fill", temas["blue"].hex);
+    
+}
 
 //console.log("Aplicação iniciada:", new Date().toLocaleTimeString()); -- futuro registro de log.
 

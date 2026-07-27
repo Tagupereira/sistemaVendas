@@ -34,3 +34,6 @@ export function admin(){
     campo.addEventListener("pointerleave", () => clearTimeout(timer));
     campo.addEventListener("pointercancel", () => clearTimeout(timer));
 }
+
+
+

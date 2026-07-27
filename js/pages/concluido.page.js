@@ -5,6 +5,10 @@ import { vendasAPI } from "../api/vendas.api.js";
 import { auth } from '../guards/auth.guard.js';
 import { toast } from '../components/toast.component.js'
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
+
 auth();
 
 const carrinho = validarCarrinho();

@@ -3,6 +3,9 @@ import { go, goto } from "../routes/routes.js";
 import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
 auth();
 
 let vendas = [];

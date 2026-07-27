@@ -5,6 +5,9 @@ import { startLoading, stopLoading, showLoading, hideLoading } from '../componen
 import { toast } from "../components/toast.component.js";
 import { admin } from "../config/config.js";
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
 const buscarDados = document.getElementById("buscarDados");
 const campoEmpresa = document.getElementById("campoEmpresa");
 const gravarDados = document.getElementById("gravarDados");

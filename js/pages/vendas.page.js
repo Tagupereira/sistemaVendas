@@ -6,6 +6,9 @@ import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
 auth();
 
 let vendasCarregadas = [];

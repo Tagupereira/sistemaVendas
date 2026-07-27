@@ -6,7 +6,11 @@ import { excluir } from "../services/crud.service.js";
 import { ProdutoAPI } from '../api/produtos.api.js';
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
 auth();
+
 
 document.getElementById("back").addEventListener("click", () => {
   go("produtos");

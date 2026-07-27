@@ -6,6 +6,9 @@ import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
 
+const thema = JSON.parse(localStorage.getItem("tema"));
+document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+
 auth();
 
 let pendenciasCarregadas = [];
