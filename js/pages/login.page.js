@@ -7,10 +7,11 @@ import { temas } from "../config/thema.js";
 if(localStorage.getItem("tema")){
     const thema = JSON.parse(localStorage.getItem("tema"));
     document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 
 }else{
     localStorage.setItem("tema",JSON.stringify(temas["blue"]));
-    document.getElementById("temaTopo").setAttribute("fill", temas["blue"].hex);
+    document.getElementById("temaTopo").setAttribute("fill", temas["slate"].hex);
     
 }
 

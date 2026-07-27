@@ -7,6 +7,7 @@ import { admin } from "../config/config.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 
 const buscarDados = document.getElementById("buscarDados");
 const campoEmpresa = document.getElementById("campoEmpresa");

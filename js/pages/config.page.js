@@ -7,9 +7,8 @@ import { temas } from "../config/thema.js";
 auth();
 
 const thema = JSON.parse(localStorage.getItem("tema"));
-
-
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 
 document.getElementById("back").addEventListener("click",()=>{
   go("produtos");
