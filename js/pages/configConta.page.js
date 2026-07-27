@@ -3,6 +3,7 @@ import { go } from '../routes/routes.js';
 import { indicator } from "../services/indicator.service.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { toast } from "../components/toast.component.js";
+import { admin } from "../config/config.js";
 
 const buscarDados = document.getElementById("buscarDados");
 const campoEmpresa = document.getElementById("campoEmpresa");
@@ -151,3 +152,4 @@ function confirmaEmpresa(){
 }
 confirmaEmpresa();
 indicator();
+admin();
