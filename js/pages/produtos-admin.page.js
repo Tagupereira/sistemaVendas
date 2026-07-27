@@ -9,6 +9,7 @@ import { startLoading, stopLoading, showLoading, hideLoading } from '../componen
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
+document.getElementById('novoProduto').classList.add(`${thema.tailwind}`);
 
 auth();
 
@@ -42,6 +43,7 @@ function render(produtos) {
   produtos.forEach(p => {
 
     lista.innerHTML += `
+   
 
       <div class=" column bg-white rounded-3xl p-5 shadow ${p.status==='ativo'?'border-green-500':'opacity-50'}">
         <div class="flex justify-between">
@@ -75,7 +77,7 @@ function render(produtos) {
           
           </div>
           
-          <button onclick="editar(${p.id})" class="bg-blue-500 text-white p-2 rounded text-center">
+          <button onclick="editar(${p.id})" class="${thema.tailwind} text-white p-2 rounded text-center">
             Editar
           </button>
 

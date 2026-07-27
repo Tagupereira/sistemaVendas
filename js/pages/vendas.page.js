@@ -59,7 +59,7 @@ function renderizarVendas(vendas){
 
             <div class="mb-6">
 
-                <h2 class="w-full h-10 bg-blue-500 rounded-xl p-2 text-white text-sm font-bold text-slate-500 mb-3 text-center">
+                <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 text-white text-sm font-bold text-slate-500 mb-3 text-center">
 
                     ${data}
 

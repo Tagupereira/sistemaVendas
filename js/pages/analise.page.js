@@ -269,7 +269,7 @@ function atualizarBotoes(periodo) {
 
     document.querySelectorAll('.periodo').forEach(btn => {
 
-        btn.classList.remove('bg-blue-500', 'text-white');
+        btn.classList.remove(`${thema.tailwind}`, 'text-white');
 
         btn.classList.add('bg-white');
 
@@ -277,7 +277,7 @@ function atualizarBotoes(periodo) {
 
             btn.classList.remove('bg-white');
 
-            btn.classList.add('bg-blue-500', 'text-white');
+            btn.classList.add(`${thema.tailwind}`, 'text-white');
         }
     });
 }
