@@ -104,7 +104,7 @@ window.alterarStatus = async(id)=>{
     produto.status = produto.status === 'ativo'?'inativo':'ativo';
 
     const response = await ProdutoAPI.salvar(produto);
-
+        
     if(!response.success){
       throw new Error('Falha ao salvar');
     }
@@ -195,20 +195,24 @@ salvar.onclick = async () => {
 
     showLoading();
 
-    await ProdutoAPI.salvar(novo);
+    const response = await ProdutoAPI.salvar(novo);
+    console.log(response);
+    
 
     modalProduto.classList.add('hidden');
     
     toast("Salvo com sucesso", "success");
 
-    limparFormulario();
+    limparEdit();
 
     produtoAtual=null;
 
     await carregar();
 
   }
-  catch{
+  catch(error){
+    console.log(error);
+    
     toast("Erro ao salvar", "error");
 
   }
