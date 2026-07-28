@@ -1,6 +1,7 @@
 let printerDevice = null;
 let printerChar = null;
 let printer = null;
+const empresa = JSON.parse(localStorage.getItem("empresa"));
 
 export async function conectar() {
 
@@ -247,7 +248,7 @@ export function gerarCupomESC(venda) {
             //console.log(vendaCompleta);
             
     return (
-        centralizar('DELICIAS FERNANDES') + '\n' +
+        centralizar(`${empresa.nome}`) + '\n' +
 
         `${data} - ${hora}\n` +
 
@@ -322,7 +323,7 @@ export function gerarSenhaEvento(venda) {
         '\n' +
 
         centralizar(
-            'DELICIAS FERNANDES'
+            `${empresa.nome}`
         ) +
 
         '\n' +

@@ -6,6 +6,9 @@ import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 
+const empresa = JSON.parse(localStorage.getItem("empresa"));
+const nomecupom = document.getElementById("nomeCupom").innerText = empresa.nome;
+
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
@@ -454,7 +457,7 @@ function geraCupom(venda){
 
     const cupom = `
 =========================
-  ✨ DELÍCIAS FERNANDES ✨
+  ✨ ${empresa.nome} ✨
 =========================
 
 ${diaSemana}, ${data} - ${hora} 

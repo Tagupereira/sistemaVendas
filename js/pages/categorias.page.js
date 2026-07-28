@@ -6,8 +6,6 @@ import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
 
-console.log(await categoriaAPI.listarCategorias());
-
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
@@ -59,7 +57,6 @@ function render(categorias) {
   });
 
 }
-
 
 window.editar = (id) => {
 
