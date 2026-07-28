@@ -13,7 +13,6 @@ document.getElementById('novoProduto').classList.add(`${thema.tailwind}`);
 
 auth();
 
-
 document.getElementById("back").addEventListener("click", () => {
   go("produtos");
 })
@@ -130,9 +129,7 @@ window.alterarStatus = async(id)=>{
 };
 
 window.editar = (id) => {
-
   produtoAtual = produtos.find(p => p.id == id);
-
   abrir();
 
 };
