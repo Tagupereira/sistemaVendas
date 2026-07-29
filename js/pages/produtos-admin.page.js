@@ -2,7 +2,7 @@ import { indicator } from "../services/indicator.service.js";
 import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
-import { excluir } from "../services/crud.service.js";
+import { excluir, excluirItem } from "../services/crud.service.js";
 import { ProdutoAPI } from '../api/produtos.api.js';
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 
@@ -36,6 +36,11 @@ async function carregar() {
 function render(produtos) {
   
   const lista = document.getElementById('listaProdutos');
+
+  if (produtos === undefined) {
+    lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhum item encontrado</div>';
+    return
+  }
 
   lista.innerHTML = '';
 
@@ -75,16 +80,46 @@ function render(produtos) {
             </label>
           
           </div>
-          
-          <button onclick="editar(${p.id})" class="${thema.tailwind} text-white p-2 rounded text-center">
-            Editar
-          </button>
+          <div>
+            <button onclick="editar(${p.id})" class="bg-orange-500 text-white p-2 rounded text-center">
+              Editar
+            </button>
+
+            <button onclick="confirmarExclusao(${p.id})" class="${thema.tailwind} text-white p-2 rounded text-center">
+              Excluir
+            </button>
+          </div>
 
         </div>
 
       </div>
     `;
   });
+
+}
+
+window.confirmarExclusao = async(id)=>{
+
+    const produto = produtos.find(p=>p.id==id);
+
+    if(!produto) return;
+        
+    try{
+
+      await excluirItem(id);
+
+      carregar();
+
+      toast("Item excluído","success");
+
+
+    }catch{
+
+        toast("Erro ao excluir","error");
+
+    }finally{
+      hideLoading();
+    }
 
 }
 

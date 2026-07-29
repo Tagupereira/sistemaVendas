@@ -52,3 +52,47 @@ export async function excluir(id) {
     );
 
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+export async function excluirItem(id) {
+
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const tipoUser = usuario.tipo;
+
+    // valida admin
+    if (usuario?.tipo !== 'administrador') {
+
+        toast(
+            'Apenas administrador pode excluir',
+            'warning'
+        );
+
+        return;
+
+    }
+
+    showLoading();
+
+    const res = await fetch(`${API_URL}?action=excluirItem&id=${id}&tipo=${tipoUser}`);
+    const data = await res.json();
+    
+    console.log(data);
+        
+    if (data.success) {
+
+        toast(
+            'Item excluido',
+            'success'
+        );
+
+        return;
+
+    }
+    
+    toast(
+        'Erro ao excluir',
+        'error'
+    );
+
+}

@@ -301,7 +301,8 @@ function abrirModalVenda(venda){
 
 /////////////////////// informação total
     const infoPedidoPg = document.getElementById("totalPedido")
-    
+    const obs = document.getElementById("obs")
+        
     infoPedidoPg.innerHTML = '';
 
     let totalPedido= 0;
@@ -309,7 +310,8 @@ function abrirModalVenda(venda){
         totalPedido += pagamento.recebido
         
     });
-
+    
+    
     infoPedidoPg.innerHTML += `
             
         <div class="flex justify-between">
@@ -324,7 +326,16 @@ function abrirModalVenda(venda){
                 )}
             </span>
         </div>
+
     `;
+
+    obs.innerHTML += `
+        <div class="flex flex-col">
+
+            <span class="font-bold">Observação do pedido</span>
+                ${vendaCompleta.obsPedido}
+        </div>
+    `
 
 /////////////////////// informação do troco
 
@@ -360,10 +371,9 @@ function abrirModalVenda(venda){
             toast(msg, cor);
 
             //await imprimir(gerarSenhaEvento(venda));
-            console.log(vendaSelecionada);
+            // console.log(vendaSelecionada);
             
             await imprimir(gerarCupomESC(vendaSelecionada));
-
 
         }catch(error){
             console.log(error);
@@ -374,15 +384,8 @@ function abrirModalVenda(venda){
 
         }
         
-        });
+    });
 
-    // document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
-    //     const msg = 'Compartilhando';
-    //     const cor = "success";
-    //     toast(msg, cor);
-
-    //     compartilharVenda(venda)
-    // })
     const btnCompartilhar = document.getElementById("btnCompartilharVenda");
 
     btnCompartilhar.onclick = () => {
@@ -394,7 +397,6 @@ function abrirModalVenda(venda){
     };
 
     document.getElementById("btnExcluirVenda").addEventListener("click", async ()=>{
-       
         
         await excluir(venda.id)
         
@@ -415,15 +417,12 @@ async function compartilharVenda(venda){
             text: geraCupom(venda)
         });
 
-
     }catch(error){
-
-        
+   
         console.error(error)
         const msg = 'Compartilhamento cancelado';
         const cor = "warning";
         toast(msg, cor);
-
 
     }
     finally{
@@ -451,6 +450,8 @@ function geraCupom(venda){
                 currency:'BRL'
             }
         )}_
+        (${item.observacao})
+        
         *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
             {
                 style:'currency',
@@ -472,6 +473,7 @@ function geraCupom(venda){
 
     ).join('\n');
     
+console.log(itens);
 
     const cupom = `
 =========================
@@ -479,11 +481,14 @@ function geraCupom(venda){
 =========================
 
 ${diaSemana}, ${data} - ${hora} 
+
+Cliente: ${venda.cliente}
     
 Pedido: *#${String(venda.pedido).padStart(4,'0')}*
 ========================
 *ITENS:*
 ${itens}
+
 ========================
 *PAGAMENTO:*
 
@@ -491,6 +496,8 @@ ${pagamentos}
 
 VALOR TOTAL: *${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}*
 ========================
+obs:
+${vendaCompleta.obsPedido}
 
 ✨ Obrigado pela preferência!
 
