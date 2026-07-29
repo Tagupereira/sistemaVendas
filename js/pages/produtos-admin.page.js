@@ -39,7 +39,7 @@ function render(produtos) {
 
   if (produtos === undefined) {
     lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhum item encontrado</div>';
-    return
+    
   }
 
   lista.innerHTML = '';
@@ -99,18 +99,25 @@ function render(produtos) {
 }
 
 window.confirmarExclusao = async(id)=>{
-
+ 
     const produto = produtos.find(p=>p.id==id);
 
     if(!produto) return;
-        
+
+
+    const confirma = confirm(
+        `Deseja excluir "${produto.nome}"?`
+    );
+
+    if (!confirma) return;
+
+    showLoading();
     try{
-
+      
       await excluirItem(id);
-
-      carregar();
-
+      
       toast("Item excluído","success");
+      await carregar();   
 
 
     }catch{
@@ -118,6 +125,7 @@ window.confirmarExclusao = async(id)=>{
         toast("Erro ao excluir","error");
 
     }finally{
+
       hideLoading();
     }
 
