@@ -376,23 +376,37 @@ function abrirModalVenda(venda){
         
         });
 
-    document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
-        const msg = 'Compartilhando';
-        const cor = "success";
-        toast(msg, cor);
+    // document.getElementById("btnCompartilharVenda").addEventListener("click",() => {
+    //     const msg = 'Compartilhando';
+    //     const cor = "success";
+    //     toast(msg, cor);
 
-        compartilharVenda(venda)
-    })
+    //     compartilharVenda(venda)
+    // })
+    const btnCompartilhar = document.getElementById("btnCompartilharVenda");
 
-    document.getElementById("btnExcluirVenda").addEventListener("click", ()=>{
+    btnCompartilhar.onclick = () => {
+
+        toast("Compartilhando", "success");
+
+        compartilharVenda(venda);
+
+    };
+
+    document.getElementById("btnExcluirVenda").addEventListener("click", async ()=>{
        
         
-        excluir(venda.id)
+        await excluir(venda.id)
         
     })
 }
+let compartilhando = false;
 
 async function compartilharVenda(venda){
+
+     if (compartilhando) return;
+
+        compartilhando = true;
    
     try{
 
@@ -400,6 +414,7 @@ async function compartilharVenda(venda){
             title: `Pedido #${venda.pedido}`,
             text: geraCupom(venda)
         });
+
 
     }catch(error){
 
@@ -410,6 +425,9 @@ async function compartilharVenda(venda){
         toast(msg, cor);
 
 
+    }
+    finally{
+        compartilhando = false;
     }
 
 }
