@@ -302,6 +302,7 @@ function abrirModalVenda(venda){
 /////////////////////// informação total
     const infoPedidoPg = document.getElementById("totalPedido")
     const obs = document.getElementById("obs")
+    obs.innerText="";
         
     infoPedidoPg.innerHTML = '';
 
