@@ -5,6 +5,7 @@ import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
+import { elements } from "../elements/categorias.element.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -32,6 +33,7 @@ async function carregar() {
 }
 
 function render(categorias) {
+  categoriaList = categorias;
   
   const lista = document.getElementById('listaCategorias');
 
@@ -46,27 +48,61 @@ function render(categorias) {
                 <div class="flex items-center">
                     <b>${c.categorias.toUpperCase()}</b>
                 </div>
-
-                <button onclick="editar(${c.id})" class="${thema.tailwind} text-white p-2 rounded text-center">
-                    Editar
-                </button>
+                <div>
+                  <button onclick="editar('${c.id}')" class="${thema.tailwind} text-white p-2 rounded text-center">
+                      Editar
+                  </button>
+                  <button onclick="excluir('${c.id}')" class="bg-red-500 text-white p-2 rounded text-center">
+                      Excluir
+                  </button>
+                </div>
             </div>
 
         </div>
     `;
   });
-
 }
 
 window.editar = (id) => {
-
+    
   categoriaAtual = categoriaList.find(p => p.id == id);
 
   abrir();
 
 };
 
+window.excluir = async (id) => {
+    
+  categoriaAtual = categoriaList.find(p => p.id == id);
+
+  const confirma = confirm(
+      `Deseja excluir "${id}"?`
+  );
+
+  if (!confirma) return;
+
+  showLoading();
+  
+  try{
+    
+    await categoriaAPI.excluir(id);
+    
+    toast("Item excluído","success");
+    await carregar();   
+
+
+  }catch{
+
+      toast("Erro ao excluir","error");
+
+  }finally{
+
+    hideLoading();
+  }
+};
+
 window.status = async (id) => {
+    
     const produto = categoriaList.find(p => p.id == id);
 
     produto.status = produto.status === 'ativo'?'inativo':'ativo';
@@ -76,22 +112,24 @@ window.status = async (id) => {
     );
 
     carregar();
-
 };
 
 function abrir() {
 
-  document.getElementById('modalProduto').classList.remove('hidden');
+  elements.tituloModal.innerText = "Cadastrar";
+  elements.modalCategoria.classList.remove('hidden');
+  
   
   limparEdit();
   
   if (!categoriaAtual) return;
-
-  nome.value = categoriaAtual.nome;
+  elements.tipo.setAttribute("data-id", categoriaAtual.id)
+  elements.tituloModal.innerText = "Editar";
+  elements.tipo.value = categoriaAtual.categorias;  
 
 }
 
-novaCategoria.onclick = () => {
+elements.novaCategoria.onclick = () => {
 
   categoriaAtual = null;
 
@@ -99,32 +137,48 @@ novaCategoria.onclick = () => {
 
 };
 
-salvar.onclick = async () => {
+elements.salvar.onclick = async () => {
 
-  const novo = {
+  const novo = elements.tipo.value;
 
-    id: categoriaAtual?.id ?? Math.max(...categoriaList.map(p => Number(p.id))) + 1,
-    
-    nome: nome.value
+  const editID = elements.tipo.dataset.id;
 
-  };
+  if(novo === ""){
+    toast("Nao pode ser vazio", "warning");
+      
+    return
+  }
 
   try{
 
     showLoading();
 
-    // await ProdutoAPI.salvar(novo);
+    if(editID){
 
-    modalProduto.classList.add('hidden');
+      await categoriaAPI.editar(novo, editID);
+
+      elements.modalCategoria.classList.add('hidden');
+    
+      toast("Editado com sucesso", "success");
+      
+      categoriaAtual=null;
+      
+      await carregar();
+
+      return;
+
+    }
+
+    await categoriaAPI.salvar(novo);
+
+    elements.modalCategoria.classList.add('hidden');
     
     toast("Salvo com sucesso", "success");
-
-    limparFormulario();
-
+    
     categoriaAtual=null;
-
+    
     await carregar();
-
+    
   }
   catch{
     toast("Erro ao salvar", "error");
@@ -135,14 +189,14 @@ salvar.onclick = async () => {
   }
 };
 
-cancelar.onclick = () => {
-  modalProduto.classList.add('hidden');
+elements.cancelar.onclick = () => {
+  elements.modalCategoria.classList.add('hidden');
   categoriaAtual = null;
 };
 
 
 function limparEdit(){
-  document.getElementById('nome').value='';
+  elements.tipo.value='';
 
 }
 

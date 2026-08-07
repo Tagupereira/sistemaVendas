@@ -29,8 +29,7 @@ container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-c
 async function carregarVendas(){
 
     const response = await vendasAPI.listar();                 
-    console.log(response);
-    
+        
     if(!response.success){
     
         container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Erro ao carregar...</div>';
@@ -184,7 +183,6 @@ document.getElementById('buscarVenda').addEventListener('input', (e) => {
     const filtradas = vendasCarregadas.filter(venda => {
 
     const vendaCompleta = JSON.parse(venda.vendasJson);
-        console.log(vendaCompleta);
         
     const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'parcial' : vendaCompleta.pagamentos[0].tipo;
     
@@ -474,8 +472,6 @@ function geraCupom(venda){
 
     ).join('\n');
     
-console.log(itens);
-
     const cupom = `
 =========================
   ✨ ${empresa.nome} ✨

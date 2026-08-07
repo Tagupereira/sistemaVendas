@@ -81,11 +81,11 @@ function render(produtos) {
           
           </div>
           <div>
-            <button onclick="editar(${p.id})" class="bg-orange-500 text-white p-2 rounded text-center">
+            <button onclick="editar('${p.id}')" class="bg-orange-500 text-white p-2 rounded text-center">
               Editar
             </button>
 
-            <button onclick="confirmarExclusao(${p.id})" class="${thema.tailwind} text-white p-2 rounded text-center">
+            <button onclick="confirmarExclusao('${p.id}')" class="${thema.tailwind} text-white p-2 rounded text-center">
               Excluir
             </button>
           </div>

@@ -193,7 +193,6 @@ document.querySelectorAll('.periodo').forEach(btn => {
 
         selecionarPeriodo(btn.dataset.periodo);
 
-
     });
 
 });
@@ -204,10 +203,6 @@ function selecionarPeriodo(periodo){
 
     const filtradas = filtrarPeriodo(periodo);
 
-    // DEBUG
-    // console.log('Periodo:',periodo);
-    // console.log('Resultado:',filtradas);
-
     renderResumo(filtradas);
 
 }
@@ -217,7 +212,7 @@ function filtrarPeriodo(periodo) {
     const agora = new Date();
 
     agora.setHours(0,0,0,0);
-
+    
     return vendas.filter(v => {
 
         const venda = JSON.parse(v.vendasJson);

@@ -50,7 +50,12 @@ async function carregarListaPendencias() {
             return;
         }
 
-        const possuiPendente = vendaJson.pagamentos.some(p => p.tipo === 'pendente' || p.tipo_pagamento === 'pendente');
+        //const possuiPendente = vendaJson.pagamentos.some(p => p.tipo === 'pendente' || p.tipo_pagamento === 'pendente');
+
+        const possuiPendente = vendaJson.pagamentos.some(p =>
+            (p.tipo === 'pendente' || p.tipo_pagamento === 'pendente') &&
+            Number(p.valor) > 0
+        );
 
         if (!possuiPendente) {
             return;
@@ -197,9 +202,17 @@ document.getElementById('valorRecebido').addEventListener('input',()=>{
 
     const saldo = pendenciaSelecionada.dados.pagamentos.find(p=>p.tipo === "pendente").valor;
 
-    const restante = Math.max(0, saldo-valor);
+    //const restante = Math.max(0, saldo-valor);
 
-    document.getElementById('novoSaldo').textContent=`Restará: R$ ${restante.toFixed(2)}`;
+    const saldoCentavos = Math.round(Number(saldo) * 100);
+    const valorCentavos = Math.round(Number(valor) * 100);
+
+    const restante = Math.max(
+        0,
+        saldoCentavos - valorCentavos
+    ) / 100;
+
+    document.getElementById('novoSaldo').textContent=`Restará: R$ ${restante.toFixed(2).replace('.',',')}`;
 
 });
 
@@ -232,23 +245,47 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
             return;
         }
 
-        pendente.valor -= recebido;
+        // pendente.valor -= recebido;
         
-        const option = select.options[select.selectedIndex];
+        // const option = select.options[select.selectedIndex];
         
-        vendaJson.pagamentos.push(
-            {
-                idPagamento: option.dataset.pgid,
-                id:option.dataset.id,
-                tipo: document.getElementById('formaRecebimento').value,
-                valor: recebido,    
-                troco:0,
-                recebido: recebido
-            }
-        );
+        // vendaJson.pagamentos.push(
+        //     {
+        //         idPagamento: option.dataset.pgid,
+        //         id:option.dataset.id,
+        //         tipo: document.getElementById('formaRecebimento').value,
+        //         valor: recebido,    
+        //         troco:0,
+        //         recebido: recebido
+        //     }
+        // );
                    
-        if(pendente.valor===0){
-            vendaJson.pagamentos = vendaJson.pagamentos.filter(p=>p.tipo!=='pendente');
+        // if(pendente.valor===0){
+        //     vendaJson.pagamentos = vendaJson.pagamentos.filter(p=>p.tipo!=='pendente');
+        // }
+
+        const saldoCentavos = Math.round(Number(pendente.valor) * 100);
+        const recebidoCentavos = Math.round(Number(recebido) * 100);
+
+        const restanteCentavos = saldoCentavos - recebidoCentavos;
+
+        pendente.valor = Math.max(0, restanteCentavos) / 100;
+
+        const option = select.options[select.selectedIndex];
+
+        vendaJson.pagamentos.push({
+            idPagamento: option.dataset.pgid,
+            id: option.dataset.id,
+            tipo: document.getElementById('formaRecebimento').value,
+            valor: recebidoCentavos / 100,
+            troco: 0,
+            recebido: recebidoCentavos / 100
+        });
+
+        if (restanteCentavos <= 0) {
+            vendaJson.pagamentos = vendaJson.pagamentos.filter(
+                p => p.tipo !== 'pendente'
+            );
         }
 
         pendenciaSelecionada.vendasJson=JSON.stringify(vendaJson);
