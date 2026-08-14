@@ -159,7 +159,7 @@ function renderProdutos(vendas) {
 
     });
 
-    const ranking = Object.entries(produtos).sort((a, b) => b[1].quantidade - a[1].quantidade).slice(0, 20);
+    const ranking = Object.entries(produtos).sort((a, b) => b[1].quantidade - a[1].quantidade).slice(0, 50);
 
     const container = document.getElementById('topProdutos');
 
