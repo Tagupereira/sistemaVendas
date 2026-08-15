@@ -91,14 +91,20 @@ function renderizarProdutos(produtos) {
   });
 
   const adicionarItem = document.querySelectorAll('.adicionar');
+    
 
   adicionarItem.forEach(btn => {
 
     btn.addEventListener("click", () => {
-      const itemId = Number(btn.dataset.id);
+      const itemId = btn.dataset.id;
       const itemCart = produtos.find(produto => produto.id === itemId);
+
+      console.log(itemId);
+      
       
       modalObs(itemCart);
+      console.log(itemCart);
+      
 
     });
   });
@@ -122,7 +128,9 @@ function modalObs(item){
   confirmarObs.onclick=()=>{
 
     const inputObs = document.getElementById("obsProduto").value.trim();
-    item.idCarrinho = crypto.randomUUID(),   
+    console.log(item);
+    
+    item.idCarrinho = crypto.randomUUID();  
     item.observacao = inputObs;
     
     modalObs.classList.add("hidden");
