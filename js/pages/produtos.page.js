@@ -47,6 +47,12 @@ function renderizarProdutos(produtos) {
  
   const container = document.getElementById('listaProdutos');
 
+  if(produtos.length === 0){
+    
+    container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhum produto encontrado.</div>';
+    return
+  }
+  
   container.innerHTML = '';
   container.innerHTML = `
     <button id="adicAvulso" class="${thema.tailwind} text-white w-full rounded-xl p-3">

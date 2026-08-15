@@ -37,9 +37,9 @@ function render(produtos) {
   
   const lista = document.getElementById('listaProdutos');
 
-  if (produtos === undefined) {
+  if (produtos.length === 0) {
     lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhum item encontrado</div>';
-    
+    return
   }
 
   lista.innerHTML = '';
