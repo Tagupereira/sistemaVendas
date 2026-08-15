@@ -1,5 +1,4 @@
 import { API_URL } from './api.js';
-import { showLoading, hideLoading } from '../components/loading.component.js';
 
 export const categoriaAPI = {
 
@@ -50,9 +49,7 @@ export const categoriaAPI = {
             return;
             
         }
-        
-        showLoading();
-       
+            
         const url =`${API_URL}?action=excluirCategoria&id=${id}&tipo=${tipoUser}`;
 
         const response = await fetch(url);

@@ -11,6 +11,8 @@ const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('novaCategoria').classList.add(`${thema.tailwind}`);
+const lista = document.getElementById('listaCategorias');
+lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando categorias...</div>';
 
 auth();
 
@@ -33,11 +35,15 @@ async function carregar() {
 }
 
 function render(categorias) {
+
   categoriaList = categorias;
   
-  const lista = document.getElementById('listaCategorias');
-
-  lista.innerHTML = '';
+  if(categorias.length === 0){
+    
+    lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhuma categoria encontrada.</div>';
+    return
+  }
+  lista.innerHTML ='';
 
   categorias.forEach(c => {
 
@@ -81,10 +87,10 @@ window.excluir = async (id) => {
   
   if (!confirma) return;
   
-  
+  showLoading();
+    
   try{
     
-    console.log(id);
     await categoriaAPI.excluir(id);
     
     toast("Item excluído","success");
