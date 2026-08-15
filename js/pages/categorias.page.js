@@ -78,13 +78,13 @@ window.excluir = async (id) => {
   const confirma = confirm(
       `Deseja excluir "${id}"?`
   );
-
+  
   if (!confirma) return;
-
-  showLoading();
+  
   
   try{
     
+    console.log(id);
     await categoriaAPI.excluir(id);
     
     toast("Item excluído","success");

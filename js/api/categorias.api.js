@@ -1,4 +1,5 @@
 import { API_URL } from './api.js';
+import { showLoading, hideLoading } from '../components/loading.component.js';
 
 export const categoriaAPI = {
 
@@ -37,21 +38,21 @@ export const categoriaAPI = {
         
         const usuario = JSON.parse(localStorage.getItem('usuario'));
         const tipoUser = usuario.tipo;
-
+        
         // valida admin
         if (usuario?.tipo !== 'administrador') {
-
+            
             toast(
                 'Apenas administrador pode excluir',
                 'warning'
             );
-
+            
             return;
-
+            
         }
-
-        showLoading();
         
+        showLoading();
+       
         const url =`${API_URL}?action=excluirCategoria&id=${id}&tipo=${tipoUser}`;
 
         const response = await fetch(url);

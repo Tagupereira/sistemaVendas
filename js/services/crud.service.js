@@ -2,12 +2,14 @@ import { API_URL } from "../api/api.js";
 import { toast } from "../components/toast.component.js";
 import { go } from "../routes/routes.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+//import { carregarPagina } from "../pages/index.page.js";
 
 export async function excluir(id) {
 
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const tipoUser = usuario.tipo
     
+    console.log(id);
     // valida admin
     if (usuario?.tipo !== 'administrador') {
 
@@ -17,7 +19,6 @@ export async function excluir(id) {
         );
 
         return;
-
     }
 
     const confirmar = confirm('Excluir venda?');
@@ -40,9 +41,8 @@ export async function excluir(id) {
             'success'
         );
 
-        go('vendas')
+        carregarPagina('vendas')
         return;
-
     }
     
     document.getElementById("btnExcluirVenda").removeAttribute("disabled")
@@ -69,15 +69,12 @@ export async function excluirItem(id) {
         );
 
         return;
-
     }
 
     showLoading();
 
     const res = await fetch(`${API_URL}?action=excluirItem&id=${id}&tipo=${tipoUser}`);
     const data = await res.json();
-    
-    console.log(data);
         
     if (data.success) {
 
