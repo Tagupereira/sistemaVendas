@@ -96,15 +96,15 @@ function renderizarProdutos(produtos) {
   adicionarItem.forEach(btn => {
 
     btn.addEventListener("click", () => {
-      const itemId = Number(btn.dataset.id);
-      const itemCart = produtos.find(produto => produto.id === itemId);
+      //const itemId = Number(btn.dataset.id);
+      const itemId = btn.dataset.id;
+      const itemCart = produtos.find(produto => String(produto.id) === String(itemId));
 
-      console.log(itemId);
-      
-      
-      modalObs(itemCart);
-      console.log(itemCart);
-      
+      if (!itemCart) {
+        toast("Produto não encontrado", "error");
+        return;
+      }
+      modalObs(itemCart);      
 
     });
   });
@@ -128,8 +128,7 @@ function modalObs(item){
   confirmarObs.onclick=()=>{
 
     const inputObs = document.getElementById("obsProduto").value.trim();
-    console.log(item);
-    
+       
     item.idCarrinho = crypto.randomUUID();  
     item.observacao = inputObs;
     
