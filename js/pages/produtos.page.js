@@ -96,7 +96,7 @@ function renderizarProdutos(produtos) {
   adicionarItem.forEach(btn => {
 
     btn.addEventListener("click", () => {
-      const itemId = btn.dataset.id;
+      const itemId = Number(btn.dataset.id);
       const itemCart = produtos.find(produto => produto.id === itemId);
 
       console.log(itemId);
