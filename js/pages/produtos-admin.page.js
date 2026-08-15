@@ -10,6 +10,10 @@ const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('novoProduto').classList.add(`${thema.tailwind}`);
+//document.getElementById('btnMenu').classList.add(`${thema.text}`)
+document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('novoProduto').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 auth();
 
@@ -85,7 +89,7 @@ function render(produtos) {
               Editar
             </button>
 
-            <button onclick="confirmarExclusao('${p.id}')" class="${thema.tailwind} text-white p-2 rounded text-center">
+            <button onclick="confirmarExclusao('${p.id}')" class="bg-red-500 text-white p-2 rounded text-center">
               Excluir
             </button>
           </div>

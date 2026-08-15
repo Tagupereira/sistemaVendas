@@ -8,10 +8,12 @@ import { admin } from "../config/config.js";
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
+document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 const buscarDados = document.getElementById("buscarDados");
-const campoEmpresa = document.getElementById("campoEmpresa");
 const gravarDados = document.getElementById("gravarDados");
+const campoEmpresa = document.getElementById("campoEmpresa");
 const pesquisa = document.getElementById("campoPesquisa");
 
 let empresa = null;
@@ -21,7 +23,7 @@ document.getElementById("back").addEventListener("click",()=>{
 })
 
 buscarDados.addEventListener("click",async ()=>{
-    toast("Buscando aguarde...", "warning")
+    toast("Buscando aguarde...", "info")
     showLoading()
     const id = document.getElementById("pesquisa").value;
         
@@ -31,9 +33,11 @@ buscarDados.addEventListener("click",async ()=>{
     
     if(empresa === undefined){
         toast("Nada encontrado", "error");
+        hideLoading();
         return;
     }
     hideLoading();
+    
     const nome = empresa.nome.toUpperCase()
     
     campoEmpresa.innerHTML = `
@@ -106,7 +110,7 @@ buscarDados.addEventListener("click",async ()=>{
 
 function gravar(empresa){
     
-    toast("Cadastrando...","warning");
+    toast("Gravando dados...","info");
     localStorage.setItem("empresa",JSON.stringify(empresa))
     
 }

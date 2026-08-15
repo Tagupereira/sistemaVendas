@@ -66,35 +66,7 @@ export const temas = {
         text: "text-black"
     },
 
-    // =========================
-    // CORES FORTES
-    // =========================
-
-    blue: {
-        hex: "#3B82F6",
-        tailwind: "bg-blue-500",
-        text: "text-blue-500"
-    },
-
-    green: {
-        hex: "#22C55E",
-        tailwind: "bg-green-500",
-        text: "text-green-500"
-    },
-
-    red: {
-        hex: "#EF4444",
-        tailwind: "bg-red-500",
-        text: "text-red-500"
-    },
-
-    purple: {
-        hex: "#A855F7",
-        tailwind: "bg-purple-500",
-        text: "text-purple-500"
-    },
-
-
+ 
     // =========================
     // CORES SUAVES / PASTEL
     // =========================
@@ -138,13 +110,13 @@ export const temas = {
     rose: {
         hex: "#FBCFE8",
         tailwind: "bg-pink-200",
-        text: "text-pink-600"
+        text: "text-pink-800"
     },
 
     blush: {
         hex: "#FFE4E6",
         tailwind: "bg-rose-100",
-        text: "text-rose-600"
+        text: "text-rose-800"
     },
 
     peach: {
@@ -198,12 +170,6 @@ export const temas = {
     slateSoft: {
         hex: "#CBD5E1",
         tailwind: "bg-slate-300",
-        text: "text-slate-700"
-    },
-
-    slate: {
-        hex: "#334155",
-        tailwind: "bg-slate-700",
         text: "text-slate-700"
     },
 

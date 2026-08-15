@@ -13,6 +13,9 @@ document.querySelector('meta[name="theme-color"]').setAttribute("content", thema
 document.getElementById('novaCategoria').classList.add(`${thema.tailwind}`);
 const lista = document.getElementById('listaCategorias');
 lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando categorias...</div>';
+document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
+document.getElementById('novaCategoria').classList.add(`${thema.text}`)
 
 auth();
 
@@ -55,7 +58,7 @@ function render(categorias) {
                     <b>${c.categorias.toUpperCase()}</b>
                 </div>
                 <div>
-                  <button onclick="editar('${c.id}')" class="${thema.tailwind} text-white p-2 rounded text-center">
+                  <button onclick="editar('${c.id}')" class="bg-orange-500 text-white p-2 rounded text-center">
                       Editar
                   </button>
                   <button onclick="excluir('${c.id}')" class="bg-red-500 text-white p-2 rounded text-center">

@@ -12,6 +12,8 @@ const nomecupom = document.getElementById("nomeCupom").innerText = empresa.nome;
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
+document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 auth();
 
@@ -61,7 +63,7 @@ function renderizarVendas(vendas){
 
             <div class="mb-6">
 
-                <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 text-white text-sm font-bold text-slate-500 mb-3 text-center">
+                <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 ${thema.text} text-sm font-bold text-slate-500 mb-3 text-center">
 
                     ${data}
 

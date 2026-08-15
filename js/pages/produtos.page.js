@@ -10,6 +10,9 @@ const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('finalizarPedido').classList.add(`${thema.tailwind}`);
+document.getElementById('finalizarPedido').classList.add(`${thema.text}`);
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 auth();
 
@@ -55,7 +58,7 @@ function renderizarProdutos(produtos) {
   
   container.innerHTML = '';
   container.innerHTML = `
-    <button id="adicAvulso" class="${thema.tailwind} text-white w-full rounded-xl p-3">
+    <button id="adicAvulso" class="${thema.tailwind} ${thema.text} w-full rounded-xl p-3">
       + Item Avulso 
     </button>`
 
@@ -81,7 +84,7 @@ function renderizarProdutos(produtos) {
           </span>
         </div>
         <div>
-        <button data-id="${produto.id}" class="adicionar w-16 h-16 ${thema.tailwind} text-white font-bold rounded-full flex items-center justify-center transition-colors duration-300">
+        <button data-id="${produto.id}" class="adicionar w-16 h-16 ${thema.tailwind} ${thema.text} font-bold rounded-full flex items-center justify-center transition-colors duration-300">
           <span class="material-symbols-outlined">add_shopping_cart</span>
         </button>
         </div>
@@ -92,7 +95,6 @@ function renderizarProdutos(produtos) {
 
   const adicionarItem = document.querySelectorAll('.adicionar');
     
-
   adicionarItem.forEach(btn => {
 
     btn.addEventListener("click", () => {

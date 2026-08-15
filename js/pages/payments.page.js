@@ -13,6 +13,9 @@ document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('valorTotal').classList.add(`${thema.text}`);
 document.getElementById('btnConfirmarVenda').classList.add(`${thema.tailwind}`);
+document.getElementById('btnConfirmarVenda').classList.add(`${thema.text}`);
+document.getElementById('tituloPage').classList.add(`${thema.text}`);
+document.getElementById('back').classList.add(`${thema.text}`);
 
 auth();
 

@@ -5,6 +5,8 @@ import { auth } from '../guards/auth.guard.js';
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 auth();
 
@@ -264,7 +266,7 @@ function atualizarBotoes(periodo) {
 
     document.querySelectorAll('.periodo').forEach(btn => {
 
-        btn.classList.remove(`${thema.tailwind}`, 'text-white');
+        btn.classList.remove(`${thema.tailwind}`, `${thema.text}`);
 
         btn.classList.add('bg-white');
 
@@ -272,7 +274,7 @@ function atualizarBotoes(periodo) {
 
             btn.classList.remove('bg-white');
 
-            btn.classList.add(`${thema.tailwind}`, 'text-white');
+            btn.classList.add(`${thema.tailwind}`, `${thema.text}`);
         }
     });
 }

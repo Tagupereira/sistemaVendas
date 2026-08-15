@@ -7,6 +7,10 @@ import { toast } from '../components/toast.component.js'
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+document.getElementById("btnCompartilhar").addEventListener("click", ()=>{
+    toast("Em desenvolvimento...","warning")
+})
+
 
 
 auth();
