@@ -23,6 +23,7 @@ document.getElementById("back").addEventListener("click",()=>{
 })
 
 buscarDados.addEventListener("click",async ()=>{
+    campoEmpresa.innerHTML ="";
     toast("Buscando aguarde...", "info")
     showLoading()
     const id = document.getElementById("pesquisa").value;
@@ -34,6 +35,11 @@ buscarDados.addEventListener("click",async ()=>{
     if(empresa === undefined){
         toast("Nada encontrado", "error");
         hideLoading();
+         campoEmpresa.innerHTML = `
+            <div class="bg-white rounded-3xl shadow p-4 flex flex-column justify-between items-center">
+                <div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500">Nenhuma empresa encontrada...</div>
+            </div>
+        `;
         return;
     }
     hideLoading();
