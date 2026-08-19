@@ -36,7 +36,9 @@ document.querySelectorAll(".theme").forEach(btn => {
         localStorage.setItem("tema", JSON.stringify(temas[cor]));
 
         document.getElementById("temaTopo").setAttribute("fill", temas[cor].hex);
-
+        document.getElementById("tituloPage").setAttribute("class", `text-2xl font-semibold ${temas[cor].text}`);
+        document.getElementById("back").setAttribute("class", `material-symbols-outlined text-3xl ${temas[cor].text}`);
+        
     };
 
 });
