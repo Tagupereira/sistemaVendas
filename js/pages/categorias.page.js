@@ -83,9 +83,10 @@ window.editar = (id) => {
 window.excluir = async (id) => {
     
   categoriaAtual = categoriaList.find(p => p.id == id);
-
+  console.log(categoriaAtual);
+  
   const confirma = confirm(
-      `Deseja excluir "${id}"?`
+      `Deseja excluir ${categoriaAtual.categorias}?`
   );
   
   if (!confirma) return;
@@ -127,6 +128,7 @@ function abrir() {
 
   elements.tituloModal.innerText = "Cadastrar";
   elements.modalCategoria.classList.remove('hidden');
+  elements.tipo.removeAttribute("data-id");
   
   
   limparEdit();

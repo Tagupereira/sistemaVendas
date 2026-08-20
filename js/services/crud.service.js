@@ -41,7 +41,7 @@ export async function excluir(id) {
             'success'
         );
 
-        carregarPagina('vendas')
+        go('vendas')
         return;
     }
     
