@@ -58,23 +58,45 @@
     </main>
     <!-- MODAL PENDENCIAS POR CLIENTE -->
      <div id="modalPendencia" class="fixed inset-0 bg-black/40 hidden flex items-end z-50">
-        <div class="bg-white w-full h-full p-6 animate-slide-up">
-            
-            <div class="flex justify-between">
-                <h2 class="text-2xl font-bold mb-5">Pendências</h2>
-                <span id="closePend" class="material-symbols-outlined text-3xl">close</span>
-            </div>
-                
-            <div id="content" class="max-h-[82vh] overflow-y-auto p-2"></div>
-            
-            <div id="total">
-                <div class="flex justify-between mt-8">
-                    <span class="font-bold text-2xl">Total pendente:</span>
-                    <span id="totalPend" class="font-bold text-2xl text-red-500">R$ 0,00</span>
-                </div>
-            </div>
+
+    <div class="bg-white w-full h-full p-6 animate-slide-up flex flex-col">
+
+        <!-- Cabeçalho -->
+        <div class="flex justify-between shrink-0">
+            <h2 class="text-2xl font-bold mb-5">
+                Pendências
+            </h2>
+
+            <span id="closePend"
+                  class="material-symbols-outlined text-3xl">
+                close
+            </span>
         </div>
-     </div>
+
+        <!-- Lista -->
+        <div id="content"
+             class="flex-1 overflow-y-auto p-2 min-h-0">
+        </div>
+
+        <!-- Rodapé -->
+        <div id="total" class="shrink-0 border-t pt-4">
+
+            <div class="flex justify-between">
+                <span class="font-bold text-2xl">
+                    Total pendente:
+                </span>
+
+                <span id="totalPend"
+                      class="font-bold text-2xl text-red-500">
+                    R$ 0,00
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
     <!-- MODAL RECEBER -->
 
