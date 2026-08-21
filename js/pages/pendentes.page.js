@@ -83,8 +83,6 @@ async function carregarListaPendencias() {
 }
 
 function renderPendencias() {
-
-    
     container.innerHTML = '';
 
     if (Object.keys(pendenciasCarregadas).length === 0) {
@@ -112,14 +110,13 @@ function renderPendencias() {
         }, 0);
 
         console.log(vendas);
-        
-
+    
         container.innerHTML += `
         
         <div class="bg-white rounded-3xl shadow p-5 mb-5">
             <div class="text-2xl font-bold flex justify-between items-center">
                 <span>${cliente}</span>
-                <span id="iconSearch" class="material-symbols-outlined">article_shortcut</span>
+                <span id="iconSearch" class="material-symbols-outlined" data-cliente="${cliente}">article_shortcut</span>
             </div>
             
             <div class="text-red-500 mb-3 font-bold">
@@ -147,7 +144,6 @@ function renderPendencias() {
                 </div>`
                 
             ).join('')}
-            
 
         </div>`;
 
@@ -161,6 +157,113 @@ function renderPendencias() {
             abrirRecebimento(cliente,venda);
         };
     });
+
+    document.querySelectorAll('#iconSearch').forEach(search=>{
+        search.onclick=()=>{
+            const cliente = search.dataset.cliente;
+            const pendencia = pendenciasCarregadas[cliente];
+
+            // pendencia.forEach(pend=>{
+
+                
+                
+            // })
+            abrirPendencias(pendencia);
+        }
+    })
+}
+// function abrirPendencias(dados){
+//     console.log(dados);
+    
+//     //const data =  JSON.parse(dados)
+//      document.getElementById('modalPendencia').classList.remove('hidden');
+
+     
+//      document.getElementById('content').innerHTML =`
+//         <div>Cliente: ${dados.cliente}</div>
+//         <div>Data Pedido: ${dados.data}</div>
+//         <div>Observação: ${dados.obsPedido || ""}</div>
+
+//      `;
+    
+//     //console.log(data);
+
+//     document.getElementById('closePend').addEventListener('click', ()=>{
+//         document.getElementById('modalPendencia').classList.add('hidden');
+//         document.getElementById('content').innerHTML ="";
+//      })
+    
+// }
+
+function abrirPendencias(dados) {
+
+    const modal = document.getElementById('modalPendencia');
+    const content = document.getElementById('content');
+    const totalPend = document.getElementById('totalPend');
+
+    let valorTotalPend = 0;
+
+    modal.classList.remove('hidden');
+
+    content.innerHTML = '';
+
+    content.innerHTML = `
+        <div class="font-bold">
+            <h1 class="text-xl m-3">${dados[0].cliente.toUpperCase()}</h1>
+        </div>`
+
+    dados.forEach(pendencia => {
+
+        
+        valorTotalPend += pendencia.total;
+
+        const itensHTML = pendencia.dados.pedido.itens.map(item => `
+            <div class="flex justify-between items-center border-b py-2 text-slate-700">
+                <div class="">
+                    <span class="font-semibold">
+                        ${item.quantidade}x
+                    </span>
+                    ${item.nome}
+                </div>
+
+                <div class="font-semibold">
+                    R$ ${Number(item.subtotal).toFixed(2).replace('.', ',')}
+                </div>
+            </div>
+        `).join('');
+
+        content.innerHTML += `
+            <div class="bg-white rounded-xl p-4 mb-3 shadow">
+
+                <div class="mb-3">
+                    <span class="font-bold">Data:</span> ${new Date(pendencia.data).toLocaleString('pt-BR')}
+                </div>
+
+                <div class="mb-3">
+                    <span class="font-bold">Itens:</span> 
+                    <div class="mb-2">${itensHTML}</div>
+                    
+                </div>
+
+                <div class="flex justify-between items-center mb-3 font-bold">
+                    <span>Total:</span> <span class="text-red-500">R$ ${Number(pendencia.total).toFixed(2).replace('.', ',')}</span>
+                </div>
+
+                <div>
+                    <span class="font-bold">Observação:</span>
+                    <p>${pendencia.dados.obsPedido || ''}</p>
+                </div>
+
+            </div>
+        `;
+        totalPend.innerText = `R$ ${Number(valorTotalPend).toFixed(2).replace('.', ',')}`;        
+    });
+
+    document.getElementById('closePend').addEventListener('click', ()=>{
+        document.getElementById('modalPendencia').classList.add('hidden');
+        document.getElementById('content').innerHTML ="";
+     })
+
 }
 
 function abrirRecebimento(cliente,venda){
@@ -248,25 +351,6 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
             return;
         }
 
-        // pendente.valor -= recebido;
-        
-        // const option = select.options[select.selectedIndex];
-        
-        // vendaJson.pagamentos.push(
-        //     {
-        //         idPagamento: option.dataset.pgid,
-        //         id:option.dataset.id,
-        //         tipo: document.getElementById('formaRecebimento').value,
-        //         valor: recebido,    
-        //         troco:0,
-        //         recebido: recebido
-        //     }
-        // );
-                   
-        // if(pendente.valor===0){
-        //     vendaJson.pagamentos = vendaJson.pagamentos.filter(p=>p.tipo!=='pendente');
-        // }
-
         const saldoCentavos = Math.round(Number(pendente.valor) * 100);
         const recebidoCentavos = Math.round(Number(recebido) * 100);
 
@@ -303,7 +387,6 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
             vendasJson: JSON.stringify(vendaJson)
         };
           
-            
         await vendasAPI.editar(vendaAtualizada);
         
         toast('Pagamento recebido','success');
