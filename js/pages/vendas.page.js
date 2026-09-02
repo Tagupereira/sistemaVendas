@@ -289,11 +289,11 @@ function abrirModalVenda(venda){
                 <span>${pagamento.tipo.toUpperCase()}</span>
 
                 <span>
-                    ${Number(pagamento.recebido).toLocaleString('pt-BR', {
-                            style:'currency',
-                            currency:'BRL'
-                        }
-                    )}
+                     ${Number(pagamento.tipo === 'pendente'? 
+                        pagamento.valor : pagamento.recebido).toLocaleString('pt-BR', {
+                        style:'currency',
+                        currency:'BRL'
+                    })}
                 </span>
             </div>
         `;
@@ -306,10 +306,19 @@ function abrirModalVenda(venda){
         
     infoPedidoPg.innerHTML = '';
 
-    let totalPedido= 0;
-    vendaCompleta.pagamentos.forEach(pagamento => {
-        totalPedido += pagamento.recebido
+    // let totalPedido= 0;
+    // vendaCompleta.pagamentos.forEach(pagamento => {
+    //     totalPedido += pagamento.recebido
         
+    // });
+    let totalPedido = 0;
+
+    vendaCompleta.pagamentos.forEach(pagamento => {
+
+        if (pagamento.tipo !== 'pendente') {
+            totalPedido += Number(pagamento.recebido || 0);
+        }
+
     });
     
     
