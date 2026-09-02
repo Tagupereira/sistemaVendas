@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+  <meta name="theme-color" content="#3b82f6">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <title>Saidas</title>
+</head>
+
+<body class="bg-slate-50">
+
+  <!-- Header -->
+  <header class="relative h-20 mb-10 overflow-hidden">
+
+    <svg viewBox="0 0 10 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
+
+      <path id="temaTopo" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
+
+    </svg>
+
+    <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
+      <span id="back" class="material-symbols-outlined text-3xl">keyboard_return </span>
+
+      <h1 id="tituloPage" class="text-2xl font-semibold text-white">Saidas</h1>
+      <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
+    </div>
+
+  </header>
+
+  <main class="px-5 -mt-4">
+    <!-- Busca -->
+    <span id="bemvindo" class="m-2"></span>
+    <div class="bg-white rounded-2xl shadow p-4">
+
+      <input id="pesquisa" type="text" placeholder="Pesquisar saida"
+        class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+
+    </div>
+    <button id="novaSaida" class="w-full text-white rounded-xl p-3 mt-5 mb-5">
+            + Nova saida
+        </button>
+     
+
+    <!-- Lista -->
+    <div id="listaSaidas" class="mt-6 mb-20 pb-20 space-y-4"></div>
+
+  </main>
+
+
+<!-- MODAL OBSERVAÇÃO -->
+  <div id="modalObs" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
+  
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+  
+        <div class="text-center mb-10">
+            <h2 class=" text-2xl font-bold">Registrar saida</h2>
+        </div>
+  
+        <input id="nomeSaida" placeholder="Saida" class="w-full border rounded-xl p-3 mb-4" />
+        <input id="valorSaida" type="text" placeholder="R$ 0,00" class="w-full border rounded-xl p-3 mb-5" />
+        
+        <label>Tipo Saida</label>
+        <select id="tipoSaida" class="w-full border-b py-3 outline-none"></select>
+
+        <input id="dataSaida" type="date" placeholder="Dinheiro" class="w-full border rounded-xl p-3 mb-5" />
+  
+        <div class=" flex justify-end gap-3 mt-6">
+
+            <button id="cancelarObs" class=" px-5 py-3 rounded-xl bg-gray-500 text-white">
+                cancelar
+            </button>
+            <button id="confirmarObs" class=" px-5 py-3 rounded-xl bg-blue-500 text-white">
+                Registrar
+            </button>
+    
+        </div>
+  
+    </div>
+  
+  </div>
+  <script type="module" src="./js/pages/saidas.page.js"></script>
+   
+</body>
+
+</html>

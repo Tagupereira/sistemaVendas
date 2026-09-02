@@ -10,6 +10,8 @@ export const Routes = {
 
     analiseVendas: '/analiseVendas.html',
 
+    saidas: '/saidas.html',
+
     pendentes: '/pendentes.html',
 
     concluido: '/concluido.html',

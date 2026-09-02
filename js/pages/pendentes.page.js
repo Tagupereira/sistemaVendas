@@ -53,8 +53,6 @@ async function carregarListaPendencias() {
             return;
         }
 
-        //const possuiPendente = vendaJson.pagamentos.some(p => p.tipo === 'pendente' || p.tipo_pagamento === 'pendente');
-
         const possuiPendente = vendaJson.pagamentos.some(p =>
             (p.tipo === 'pendente' || p.tipo_pagamento === 'pendente') &&
             Number(p.valor) > 0
@@ -163,37 +161,10 @@ function renderPendencias() {
             const cliente = search.dataset.cliente;
             const pendencia = pendenciasCarregadas[cliente];
 
-            // pendencia.forEach(pend=>{
-
-                
-                
-            // })
             abrirPendencias(pendencia);
         }
     })
 }
-// function abrirPendencias(dados){
-//     console.log(dados);
-    
-//     //const data =  JSON.parse(dados)
-//      document.getElementById('modalPendencia').classList.remove('hidden');
-
-     
-//      document.getElementById('content').innerHTML =`
-//         <div>Cliente: ${dados.cliente}</div>
-//         <div>Data Pedido: ${dados.data}</div>
-//         <div>Observação: ${dados.obsPedido || ""}</div>
-
-//      `;
-    
-//     //console.log(data);
-
-//     document.getElementById('closePend').addEventListener('click', ()=>{
-//         document.getElementById('modalPendencia').classList.add('hidden');
-//         document.getElementById('content').innerHTML ="";
-//      })
-    
-// }
 
 function abrirPendencias(dados) {
 

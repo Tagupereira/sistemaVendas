@@ -86,7 +86,18 @@ function renderResumo(vendas) {
 
     const pedidos = vendas.length;
 
-    const recebido = vendas.reduce((total, v) => total + Number(v.total), 0);
+    // const recebido = vendas.reduce((total, v) => total + Number(v.total), 0);
+    const recebido = vendas.reduce((total, v) => {
+
+        const venda = JSON.parse(v.vendasJson);
+
+        const totalRecebido = venda.pagamentos.filter(p => p.tipo !== 'pendente')
+            .reduce((soma, p) => soma + Number(p.valor), 0);
+
+        return total + totalRecebido;
+
+    }, 0);
+
 
     const ticket = pedidos ? recebido / pedidos : 0;
 
