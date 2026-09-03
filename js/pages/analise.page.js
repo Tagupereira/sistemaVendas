@@ -109,6 +109,7 @@ function renderResumo(vendas) {
 
     renderFormasPagamento(vendas);
     renderProdutos(vendas);
+    renderPendentes(vendas);
 
 };
 
@@ -119,6 +120,8 @@ function renderFormasPagamento(vendas){
         const venda = JSON.parse(v.vendasJson);
 
             venda.pagamentos.forEach(p => {
+
+                    if (p.tipo === 'pendente') return;
 
                     if (!formas[p.tipo]) {
 
@@ -149,6 +152,43 @@ function renderFormasPagamento(vendas){
     `;
     });
 };
+
+function renderPendentes(vendas){
+    const formas = {};
+
+    vendas.forEach(v => {
+        const venda = JSON.parse(v.vendasJson);
+
+            venda.pagamentos.forEach(p => {
+
+                    if (p.tipo !== 'pendente') return;
+
+                    if (!formas[p.tipo]) {
+
+                        formas[p.tipo] = 0;
+
+                    }
+
+                    formas[p.tipo] += Number(p.valor);
+
+                }
+
+            );
+
+        }
+
+    );
+
+    const totalPendente = document.getElementById('totalPendente');
+
+    totalPendente.innerHTML = '';
+
+    Object.entries(formas).forEach(([tipo, valor]) => {
+        totalPendente.innerText += `R$ ${valor.toFixed(2).replace('.', ',')}
+    `;
+    });
+};
+
 
 function renderProdutos(vendas) {
 
