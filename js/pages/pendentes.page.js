@@ -12,6 +12,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute("content", thema
 document.getElementById('confirmarRecebimento').classList.add(`${thema.tailwind}`);
 document.getElementById('back').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
+document.getElementById('confirmarRecebimento').classList.add(`${thema.text}`)
 
 
 auth();
@@ -118,7 +119,7 @@ function renderPendencias() {
             </div>
             
             <div class="text-red-500 mb-3 font-bold">
-                Total: R$ ${total.toFixed(2)}
+                Pendente: R$ ${total.toFixed(2)}
             </div>
             
             ${vendas.map(v => `<div class="border-t pt-2 mt-2">
