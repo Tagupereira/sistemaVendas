@@ -1,10 +1,11 @@
 import { vendasAPI } from "../api/vendas.api.js";
 import { indicator } from "../services/indicator.service.js";
-import { go, goto } from '../routes/routes.js';
+import { go } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services/printer.service.js";
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
+import { menu } from "../components/menu.component.js";
 
 const empresa = JSON.parse(localStorage.getItem("empresa"));
 const nomecupom = document.getElementById("nomeCupom").innerText = empresa.nome;
@@ -12,16 +13,11 @@ const nomecupom = document.getElementById("nomeCupom").innerText = empresa.nome;
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
-
-auth();
 
 let vendasCarregadas = [];
 let vendaSelecionada = null;
-document.getElementById("back").addEventListener("click",()=>{
-  go("produtos");
-})
 
 const usuario = JSON.parse( localStorage.getItem('usuario'));
 const container = document.getElementById('listaVendas');
@@ -519,14 +515,22 @@ document.getElementById('fecharModalVenda').addEventListener('click',() => {
 
         document.getElementById('modalVenda').classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
-
     }
 );
 
-async function init(){
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
 
-    indicator();
-    await carregarVendas();
+function abrirMenu() {
+  menu.open();
+  
 }
 
+async function init(){
+    auth();
+    indicator();
+    await carregarVendas();
+    
+}
+menu.createMenu();
 init();

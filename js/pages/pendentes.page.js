@@ -5,26 +5,20 @@ import { vendasAPI } from "../api/vendas.api.js";
 import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('confirmarRecebimento').classList.add(`${thema.tailwind}`);
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
 document.getElementById('confirmarRecebimento').classList.add(`${thema.text}`)
-
-
-auth();
 
 let pendenciasCarregadas = [];
 let pendenciaSelecionada = null;
 let pagamentos = null;
 const select = document.getElementById("formaRecebimento");
-
-document.getElementById("back").addEventListener("click", () => {
-    go("produtos");
-})
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const container = document.getElementById('listaPendencias');
@@ -377,12 +371,23 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
 
 };
 
-async function init() {
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
 
+function abrirMenu() {
+  menu.open();
+  
+}
+
+async function init() {
+    auth();
     indicator();
     await carregarListaPendencias();
-
+    
 }
+
+menu.createMenu();
+
 setInterval(() => {
 
     indicator();

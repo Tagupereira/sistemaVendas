@@ -1,11 +1,11 @@
 import { categoriaAPI } from "../api/categorias.api.js";
 import { indicator } from "../services/indicator.service.js";
-import { go, goto } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
-import { elements } from "../elements/categorias.element.js";
+import { elementsSaida } from "../elements/elementos.js";
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -13,29 +13,25 @@ document.querySelector('meta[name="theme-color"]').setAttribute("content", thema
 document.getElementById('novaSaida').classList.add(`${thema.tailwind}`,`${thema.text}`);
 const lista = document.getElementById('listaCategorias');
 //lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando categorias...</div>';
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
-//document.getElementById('novaCategoria').classList.add(`${thema.text}`)
 
-auth();
-
-document.getElementById("back").addEventListener("click", () => {
-  go("produtos");
-})
+const novaSaida = document.getElementById('novaSaida');
+const modalSaida = document.getElementById('modalSaida');
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 let categoriaList = [];
 let categoriaAtual = null;
 
-async function carregar() {
+// async function carregar() {
 
-  const response = await categoriaAPI.listarCategorias();
+//   const response = await categoriaAPI.listarCategorias();
 
-  const categorias = response.lista;
+//   const categorias = response.lista;
 
-  render(categorias);
+//   render(categorias);
 
-}
+// }
 
 function render(categorias) {
 
@@ -71,6 +67,19 @@ function render(categorias) {
     `;
   });
 }
+
+novaSaida.addEventListener("click", () => {
+
+  modalSaida.classList.remove('hidden');
+
+  const btnCancelarModal = document.getElementById("cancelarModal")
+
+  btnCancelarModal.addEventListener("click",()=>{
+    modalSaida.classList.add('hidden');
+    limparEdit();
+  })
+  
+})
 
 window.editar = (id) => {
     
@@ -205,6 +214,14 @@ function abrir() {
 //   categoriaAtual = null;
 // };
 
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
+
+function abrirMenu() {
+  menu.open();
+  
+}
+
 
 function limparEdit(){
   elements.tipo.value='';
@@ -212,8 +229,10 @@ function limparEdit(){
 }
 
 function init(){
-  indicator()
-  carregar(); 
+  auth();
+  indicator();
+  menu.createMenu();
+  //carregar(); 
 }
 
 init();

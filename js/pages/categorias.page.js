@@ -5,7 +5,8 @@ import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
-import { elements } from "../elements/categorias.element.js";
+import { elementsCategoria } from "../elements/elementos.js";
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -13,15 +14,9 @@ document.querySelector('meta[name="theme-color"]').setAttribute("content", thema
 document.getElementById('novaCategoria').classList.add(`${thema.tailwind}`);
 const lista = document.getElementById('listaCategorias');
 lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando categorias...</div>';
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
 document.getElementById('novaCategoria').classList.add(`${thema.text}`)
-
-auth();
-
-document.getElementById("back").addEventListener("click", () => {
-  go("produtos");
-})
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 let categoriaList = [];
@@ -126,21 +121,21 @@ window.status = async (id) => {
 
 function abrir() {
 
-  elements.tituloModal.innerText = "Cadastrar";
-  elements.modalCategoria.classList.remove('hidden');
-  elements.tipo.removeAttribute("data-id");
+  elementsCategoria.tituloModal.innerText = "Cadastrar";
+  elementsCategoria.modalCategoria.classList.remove('hidden');
+  elementsCategoria.tipo.removeAttribute("data-id");
   
   
   limparEdit();
   
   if (!categoriaAtual) return;
-  elements.tipo.setAttribute("data-id", categoriaAtual.id)
-  elements.tituloModal.innerText = "Editar";
-  elements.tipo.value = categoriaAtual.categorias;  
+  elementsCategoria.tipo.setAttribute("data-id", categoriaAtual.id)
+  elementsCategoria.tituloModal.innerText = "Editar";
+  elementsCategoria.tipo.value = categoriaAtual.categorias;  
 
 }
 
-elements.novaCategoria.onclick = () => {
+elementsCategoria.novaCategoria.onclick = () => {
 
   categoriaAtual = null;
 
@@ -148,11 +143,11 @@ elements.novaCategoria.onclick = () => {
 
 };
 
-elements.salvar.onclick = async () => {
+elementsCategoria.salvar.onclick = async () => {
 
-  const novo = elements.tipo.value;
+  const novo = elementsCategoria.tipo.value;
 
-  const editID = elements.tipo.dataset.id;
+  const editID = elementsCategoria.tipo.dataset.id;
 
   if(novo === ""){
     toast("Nao pode ser vazio", "warning");
@@ -168,7 +163,7 @@ elements.salvar.onclick = async () => {
 
       await categoriaAPI.editar(novo, editID);
 
-      elements.modalCategoria.classList.add('hidden');
+      elementsCategoria.modalCategoria.classList.add('hidden');
     
       toast("Editado com sucesso", "success");
       
@@ -182,7 +177,7 @@ elements.salvar.onclick = async () => {
 
     await categoriaAPI.salvar(novo);
 
-    elements.modalCategoria.classList.add('hidden');
+    elementsCategoria.modalCategoria.classList.add('hidden');
     
     toast("Salvo com sucesso", "success");
     
@@ -200,20 +195,30 @@ elements.salvar.onclick = async () => {
   }
 };
 
-elements.cancelar.onclick = () => {
-  elements.modalCategoria.classList.add('hidden');
+elementsCategoria.cancelar.onclick = () => {
+  elementsCategoria.modalCategoria.classList.add('hidden');
   categoriaAtual = null;
 };
 
 
 function limparEdit(){
-  elements.tipo.value='';
+  elementsCategoria.tipo.value='';
 
 }
 
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
+
+function abrirMenu() {
+  menu.open();
+  
+}
+
 function init(){
+  auth();
   indicator()
   carregar(); 
+  menu.createMenu();
 }
 
 init();

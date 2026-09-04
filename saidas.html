@@ -13,6 +13,7 @@
 </head>
 
 <body class="bg-slate-50">
+  <div id="menu"></div>
 
   <!-- Header -->
   <header class="relative h-20 mb-10 overflow-hidden">
@@ -24,7 +25,8 @@
     </svg>
 
     <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
-      <span id="back" class="material-symbols-outlined text-3xl">keyboard_return </span>
+      
+       <span id="btnMenu" class="material-symbols-outlined text-3xl">menu </span>
 
       <h1 id="tituloPage" class="text-2xl font-semibold text-white">Saidas</h1>
       <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
@@ -34,16 +36,15 @@
 
   <main class="px-5 -mt-4">
     <!-- Busca -->
-    <span id="bemvindo" class="m-2"></span>
-    <div class="bg-white rounded-2xl shadow p-4">
+      <div class="bg-white rounded-2xl shadow p-4">
 
-      <input id="pesquisa" type="text" placeholder="Pesquisar saida"
-        class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
+        <input id="pesquisa" type="text" placeholder="Pesquisar saida"
+          class="w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-500">
 
-    </div>
-    <button id="novaSaida" class="w-full text-white rounded-xl p-3 mt-5 mb-5">
-            + Nova saida
-        </button>
+      </div>
+      <button id="novaSaida" class="w-full text-white rounded-xl p-3 mt-5 mb-5">
+        + Nova saida
+      </button>
      
 
     <!-- Lista -->
@@ -51,9 +52,8 @@
 
   </main>
 
-
 <!-- MODAL OBSERVAÇÃO -->
-  <div id="modalObs" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
+  <div id="modalSaida" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
   
     <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
   
@@ -71,7 +71,7 @@
   
         <div class=" flex justify-end gap-3 mt-6">
 
-            <button id="cancelarObs" class=" px-5 py-3 rounded-xl bg-gray-500 text-white">
+            <button id="cancelarModal" class=" px-5 py-3 rounded-xl bg-gray-500 text-white">
                 cancelar
             </button>
             <button id="confirmarObs" class=" px-5 py-3 rounded-xl bg-blue-500 text-white">

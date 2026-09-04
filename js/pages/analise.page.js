@@ -2,10 +2,12 @@ import { vendasAPI } from '../api/vendas.api.js';
 import { go, goto } from "../routes/routes.js";
 import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
+import { menu } from "../components/menu.component.js";
+
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
 auth();
@@ -17,10 +19,6 @@ window.addEventListener('load', async () => {
         atualizarBotoes('hoje');
     }
 );
-
-document.getElementById("back").addEventListener("click",()=>{
-  go("produtos");
-});
 
 async function carregarHoje() {
     
@@ -330,8 +328,18 @@ function atualizarBotoes(periodo) {
     });
 }
 
-function init(){
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
 
+function abrirMenu() {
+  menu.open();
+  
+}
+
+
+function init(){
+    auth()
+    menu.createMenu();
   indicator();
   
 };

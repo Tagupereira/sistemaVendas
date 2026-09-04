@@ -4,18 +4,13 @@ import { API_URL } from "../api/api.js";
 import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
 import { temas } from "../config/thema.js";
-auth();
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
-//document.getElementById('btnMenu').classList.add(`${thema.text}`)
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
-
-document.getElementById("back").addEventListener("click",()=>{
-  go("produtos");
-})
 
 const toggle = document.getElementById('modoEvento');
 
@@ -43,8 +38,18 @@ document.querySelectorAll(".theme").forEach(btn => {
 
 });
 
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
+
+function abrirMenu() {
+  menu.open();
+  
+}
+
 function init(){
+    auth();
     indicator();
+    menu.createMenu();
 }
 
 setInterval(() => {

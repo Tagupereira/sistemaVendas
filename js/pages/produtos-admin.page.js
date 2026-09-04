@@ -1,25 +1,19 @@
 import { indicator } from "../services/indicator.service.js";
-import { go, goto } from '../routes/routes.js';
+import { go } from '../routes/routes.js';
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
-import { excluir, excluirItem } from "../services/crud.service.js";
+import { excluirItem } from "../services/crud.service.js";
 import { ProdutoAPI } from '../api/produtos.api.js';
-import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { showLoading, hideLoading } from '../components/loading.component.js';
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('novoProduto').classList.add(`${thema.tailwind}`);
-//document.getElementById('btnMenu').classList.add(`${thema.text}`)
-document.getElementById('back').classList.add(`${thema.text}`)
+document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('novoProduto').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
-
-auth();
-
-document.getElementById("back").addEventListener("click", () => {
-  go("produtos");
-})
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 
@@ -313,9 +307,20 @@ function limparEdit(){
 
 }
 
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
+
+function abrirMenu() {
+  menu.open();
+  
+}
+
 function init(){
+  
+  auth();
   indicator()
   carregar(); 
+  menu.createMenu();
 }
 
 init();

@@ -1,10 +1,11 @@
 import { ProdutoAPI } from '../api/produtos.api.js';
 import { iniciarCarrinho, carregarCarrinho, atualizarCarrinhoUI, adicionarCarrinho} from '../services/carrinho.service.js';
-import { go, goto } from '../routes/routes.js';
+import { go } from '../routes/routes.js';
 import { indicator } from "../services/indicator.service.js";
 import { paymentAPI } from '../api/payments.api.js';
 import { auth } from '../guards/auth.guard.js';
 import { toast } from '../components/toast.component.js';
+import { menu } from "../components/menu.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -14,14 +15,13 @@ document.getElementById('finalizarPedido').classList.add(`${thema.text}`);
 document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
-auth();
-
-document.getElementById("back").addEventListener("click",()=>{
-  localStorage.removeItem('usuario');
-  go("login");
-})
+// document.getElementById("back").addEventListener("click",()=>{
+//   localStorage.removeItem('usuario');
+//   go("login");
+// })
 
 let produtos = [];
+
 const user = JSON.parse(localStorage.getItem('usuario'));
 
 document.getElementById('bemvindo').textContent=`Olá ${user.user.toUpperCase()}`
@@ -150,7 +150,6 @@ function modalObs(item){
 
   }
 
-
 }
 
 const btnFinalizarPedido = document.getElementById("finalizarPedido");
@@ -196,52 +195,6 @@ async function listarPagamentos(){
   localStorage.setItem("payments", JSON.stringify(tipos));
   
 }
-
-const btn = document.getElementById('btnMenu');
-
-const menu = document.getElementById('menuLateral');
-
-const overlay = document.getElementById('menuOverlay');
-
-const btnFechar = document.getElementById('fechar');
-
-const produtoFechar = document.getElementById('pageProdutosClose');
-
-btn.addEventListener('click', abrirMenu);
-
-overlay.addEventListener('click', fecharMenu);
-
-btnFechar.addEventListener('click', fecharMenu);
-
-//produtoFechar.addEventListener('click', fecharMenu);
-
-function abrirMenu() {
-
-  menu.classList.add('aberto');
-
-  overlay.classList.add('aberto');
-
-}
-
-function fecharMenu() {
-
-  menu.classList.remove('aberto');
-
-  overlay.classList.remove('aberto');
-
-}
-
-document.querySelectorAll('[data-page]')
-  .forEach(item => {item.addEventListener('click', () => {
-      
-      const page = item.dataset.page;
-
-      menu.classList.remove('aberto');
-      go(page);
-
-    }
-  );
-});
 
 function abrirAvulso(){
   document.getElementById('modalAvulso').classList.remove('hidden');
@@ -293,14 +246,24 @@ document.getElementById('confirmarAvulso').onclick=()=>{
 
 };
 
+const btn = document.getElementById('btnMenu');
+btn.addEventListener('click',abrirMenu);
+
+function abrirMenu() {
+  menu.open();
+  
+}
+
 function init(){
 
+  auth();
   indicator();
   carregarProdutos();
   carregarCarrinho();
   iniciarCarrinho();
   atualizarCarrinhoUI();
   listarPagamentos();
+  menu.createMenu();
  
 };
 
