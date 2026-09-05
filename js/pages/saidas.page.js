@@ -20,8 +20,12 @@ const novaSaida = document.getElementById('novaSaida');
 const modalSaida = document.getElementById('modalSaida');
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
+const tipoPagamentos = JSON.parse(localStorage.getItem("payments"));
+const select = document.getElementById("tipoSaida");
+
 let categoriaList = [];
 let categoriaAtual = null;
+
 
 // async function carregar() {
 
@@ -71,6 +75,15 @@ function render(categorias) {
 novaSaida.addEventListener("click", () => {
 
   modalSaida.classList.remove('hidden');
+
+  select.innerHTML = '<option class="text-slate-500" value="">Tipo Saida</option>';
+
+    tipoPagamentos.payments.forEach(p => {
+        if(p.tipo_pagamento === "pendente"){
+          return;
+        }
+        select.innerHTML += `<option data-id="${p.id}" value="${p.tipo_pagamento}">${p.tipo_pagamento}</option>`       
+    })
 
   const btnCancelarModal = document.getElementById("cancelarModal")
 

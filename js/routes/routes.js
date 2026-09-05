@@ -1,3 +1,6 @@
+import { toast } from "../components/toast.component.js";
+import { showLoading, hideLoading } from '../components/loading.component.js';
+
 export const Routes = {
 
     login: '/index.html',
@@ -26,9 +29,16 @@ export const Routes = {
 
 };
 
-//export const go = (page) => window.location.href = Routes[page];
-
-export const go = (page) => window.location.replace(Routes[page]);
+export const go = (page) => {
+        
+    if(!Routes[page]){
+        const overlay = document.getElementById("menuOverlay");
+        toast("Pagina em desenvolvimento", "warning");
+        overlay.classList.remove("aberto")
+        return;
+    }
+    window.location.replace(Routes[page]);
+}
 
 export function back(){
 
