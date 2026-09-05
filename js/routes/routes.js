@@ -1,5 +1,4 @@
 import { toast } from "../components/toast.component.js";
-import { showLoading, hideLoading } from '../components/loading.component.js';
 
 export const Routes = {
 
