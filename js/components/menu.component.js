@@ -73,7 +73,7 @@ export const menu = {
         const divMenu = document.getElementById("menu");
 
         const botoes = pages.map(item => `
-            <div id="${item.idPage}" data-page="${item.dataPage}" class="p-2 flex items-center cursor-pointer">
+            <div id="${item.idPage}" data-page="${item.dataPage}" class="p-3 flex items-center cursor-pointer">
                 <span class="material-symbols-outlined ${item.color}">
                     ${item.icon}
                 </span>
