@@ -18,4 +18,10 @@ export const elementsSaida = {
     salvar: document.getElementById("salvar"),
     tipo: document.getElementById("tipo"),
     tituloModal: document.getElementById("tituloModal"),
+    btnCadastraSaida: document.getElementById("addSaida"),
+    nomeSaida:document.getElementById("nomeSaida"),
+    valorSaida:document.getElementById("valorSaida"), 
+    tipoSaida:document.getElementById("tipoSaida"), 
+    dataSaida:document.getElementById("dataSaida")
+    
 }

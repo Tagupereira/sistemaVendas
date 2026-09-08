@@ -1,8 +1,8 @@
-import { categoriaAPI } from "../api/categorias.api.js";
+//import { categoriaAPI } from "../api/categorias.api.js";
 import { indicator } from "../services/indicator.service.js";
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
-import { excluir } from "../services/crud.service.js";
+//import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { elementsSaida } from "../elements/elementos.js";
 import { menu } from "../components/menu.component.js";
@@ -11,8 +11,8 @@ const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
 document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('novaSaida').classList.add(`${thema.tailwind}`,`${thema.text}`);
-const lista = document.getElementById('listaCategorias');
-//lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Carregando categorias...</div>';
+const lista = document.getElementById('listaSaidas');
+
 document.getElementById('btnMenu').classList.add(`${thema.text}`)
 document.getElementById('tituloPage').classList.add(`${thema.text}`)
 
@@ -23,55 +23,177 @@ const usuario = JSON.parse(localStorage.getItem('usuario'));
 const tipoPagamentos = JSON.parse(localStorage.getItem("payments"));
 const select = document.getElementById("tipoSaida");
 
-let categoriaList = [];
-let categoriaAtual = null;
-
-
-// async function carregar() {
-
-//   const response = await categoriaAPI.listarCategorias();
-
-//   const categorias = response.lista;
-
-//   render(categorias);
-
-// }
-
-function render(categorias) {
-
-  categoriaList = categorias;
-  
-  if(categorias.length === 0){
-    
-    lista.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Nenhuma categoria encontrada.</div>';
-    return
+let saidasList = [
+  {
+    id: "1",
+    nomeSaida: "Compra de ingredientes",
+    valorSaida: 150.00,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-07"
+  },
+  {
+    id: "2",
+    nomeSaida: "Compra de embalagens",
+    valorSaida: 85.50,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "3",
+    nomeSaida: "Conta de energia",
+    valorSaida: 230.00,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "4",
+    nomeSaida: "Material de limpeza",
+    valorSaida: 62.90,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-05"
   }
-  lista.innerHTML ='';
+];
+let saidaAtual = null;
 
-  categorias.forEach(c => {
+
+async function carregar() {
+
+  //const response = await categoriaAPI.listarCategorias();
+  const response = await saidasList;
+
+  //const categorias = response.lista;
+  const categorias = response;
+
+  render(categorias);
+
+}
+
+function render(saidas) {
+
+  if (saidas.length === 0) {
+    lista.innerHTML = `
+      <div class="text-center text-slate-400 py-10">
+        Nenhuma saída encontrada.
+      </div>
+    `;
+    return;
+  }
+
+  // Agrupa as saídas por data
+  const grupos = {};
+
+  saidas.forEach(saida => {
+
+    if (!grupos[saida.dataSaida]) {
+      grupos[saida.dataSaida] = [];
+    }
+
+    grupos[saida.dataSaida].push(saida);
+  });
+
+  lista.innerHTML = "";
+
+  Object.entries(grupos).forEach(([data, saidasDoDia]) => {
+
+    const dataObj = new Date(`${data}T00:00:00`);
+
+    const dia = dataObj.toLocaleDateString("pt-BR", {
+      day: "2-digit"
+    });
+
+    const semana = dataObj.toLocaleDateString("pt-BR", {
+      weekday: "short"
+    }).replace(".", "");
+
+    const mes = dataObj.toLocaleDateString("pt-BR", {
+      month: "short"
+    }).replace(".", "");
+
+    const ano = dataObj.toLocaleDateString("pt-BR", {
+      year: "2-digit"
+    }).replace(".", "");
 
     lista.innerHTML += `
-   
-        <div class=" column bg-white rounded-3xl p-5 shadow}">
-            <div class="flex justify-between center">
-                <div class="flex items-center">
-                    <b>${c.categorias.toUpperCase()}</b>
-                </div>
-                <div>
-                  <button onclick="editar('${c.id}')" class="bg-orange-500 text-white p-2 rounded text-center">
-                      Editar
-                  </button>
-                  <button onclick="excluir('${c.id}')" class="bg-red-500 text-white p-2 rounded text-center">
-                      Excluir
-                  </button>
-                </div>
-            </div>
+
+      <div class="flex gap-4">
+
+        <!-- DATA -->
+        <div class="w-10 shrink-0 text-center pt-3">
+          <div class="text-sm text-slate-400 uppercase">
+            ${semana}
+          </div>
+
+          <div class="text-2xl font-bold text-slate-600">
+            ${dia}
+          </div>
+
+          <div class="text-sm text-slate-400 uppercase">
+            ${mes}
+          </div>
+
+          <div class="text-sm text-slate-400 uppercase">
+            ${ano}
+          </div>
 
         </div>
+
+
+        <!-- LINHA + SAÍDAS -->
+        <div class="relative flex-1 pl-6 pb-6">
+
+          <!-- linha vertical -->
+          <div class="absolute left-0 top-3 bottom-0 w-px bg-slate-200"></div>
+
+
+          ${saidasDoDia.map(saida => `
+
+            <div class="relative mb-3">
+
+              <!-- bolinha -->
+              <div class="absolute -left-[30px] top-5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
+
+
+              <!-- saída -->
+              <div class="bg-white rounded-2xl shadow p-2">
+
+                <div id="${saida.id}" class="flex justify-between">
+
+                  <div class="w-[100%]">
+
+                    <div class="font-medium truncate">
+                      ${saida.nomeSaida}
+                    </div>
+
+                    <div class="flex justify-between">
+                      <div class="text-sm text-slate-400">
+                        ${saida.tipoSaida}
+                      </div>
+                      <div class="font-bold text-red-500 whitespace-nowrap">
+                        - R$ ${Number(saida.valorSaida).toFixed(2).replace(".", ",")}
+                      </div>
+
+                      
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+
+      </div>
+
     `;
   });
 }
 
+//-------------- ABRE MODAL -------------//
 novaSaida.addEventListener("click", () => {
 
   modalSaida.classList.remove('hidden');
@@ -92,8 +214,26 @@ novaSaida.addEventListener("click", () => {
     limparEdit();
   })
   
-})
+  
 
+  elementsSaida.btnCadastraSaida.addEventListener("click", ()=>{
+    
+    saidasList = {
+      nomeSaida: elementsSaida.nomeSaida.value,
+      valorSaida: elementsSaida.valorSaida.value,
+      tipoSaida: elementsSaida.tipoSaida.value,
+      dataSaida: elementsSaida.dataSaida.value
+    }
+
+
+    modalSaida.classList.add('hidden');
+    limparEdit();
+    toast("Saida cadastrada com sucesso", "success")
+    console.log(saidasList);    
+
+  })
+})
+//-----------------FIM MODAL---------------//
 window.editar = (id) => {
     
   categoriaAtual = categoriaList.find(p => p.id == id);
@@ -237,7 +377,11 @@ function abrirMenu() {
 
 
 function limparEdit(){
-  elements.tipo.value='';
+
+  elementsSaida.nomeSaida.value='';
+  elementsSaida.valorSaida.value='';
+  elementsSaida.tipoSaida.value='';
+  elementsSaida.dataSaida.value='';
 
 }
 
@@ -245,7 +389,7 @@ function init(){
   auth();
   indicator();
   menu.createMenu();
-  //carregar(); 
+  carregar(); 
 }
 
 init();
