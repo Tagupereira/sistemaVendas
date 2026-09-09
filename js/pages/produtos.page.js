@@ -69,7 +69,7 @@ function renderizarProdutos(produtos) {
     container.innerHTML += `
       <div class="bg-white rounded-3xl shadow p-4 flex flex-column justify-between items-center">
         <div class="w-[75%]">
-          <h3 class="font-bold text-base text-gray-800 pr-5">
+          <h3 class="font-bold text-base text-gray-800">
             ${nome}
           </h3>
 
