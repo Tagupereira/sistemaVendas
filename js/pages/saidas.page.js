@@ -1,4 +1,4 @@
-//import { categoriaAPI } from "../api/categorias.api.js";
+import { saidasAPI } from "../api/saidas.api.js";
 import { indicator } from "../services/indicator.service.js";
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
@@ -51,6 +51,62 @@ let saidasList = [
     valorSaida: 62.90,
     tipoSaida: "Dinheiro",
     dataSaida: "2026-09-05"
+  },
+  {
+    id: "1",
+    nomeSaida: "Compra de ingredientes",
+    valorSaida: 150.00,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-07"
+  },
+  {
+    id: "2",
+    nomeSaida: "Compra de embalagens",
+    valorSaida: 85.50,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "3",
+    nomeSaida: "Conta de energia",
+    valorSaida: 230.00,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "4",
+    nomeSaida: "Material de limpeza",
+    valorSaida: 62.90,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "1",
+    nomeSaida: "Compra de ingredientes",
+    valorSaida: 150.00,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-07"
+  },
+  {
+    id: "2",
+    nomeSaida: "Compra de embalagens",
+    valorSaida: 85.50,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "3",
+    nomeSaida: "Conta de energia",
+    valorSaida: 230.00,
+    tipoSaida: "Pix",
+    dataSaida: "2026-09-05"
+  },
+  {
+    id: "4",
+    nomeSaida: "Material de limpeza",
+    valorSaida: 62.90,
+    tipoSaida: "Dinheiro",
+    dataSaida: "2026-09-05"
   }
 ];
 let saidaAtual = null;
@@ -58,13 +114,11 @@ let saidaAtual = null;
 
 async function carregar() {
 
-  //const response = await categoriaAPI.listarCategorias();
-  const response = await saidasList;
-
-  //const categorias = response.lista;
-  const categorias = response;
-
-  render(categorias);
+  const response = await saidasAPI.listarSaidas();
+ 
+  const saidas = response.lista;
+  
+  render(saidas);
 
 }
 
@@ -79,16 +133,22 @@ function render(saidas) {
     return;
   }
 
+  saidas.sort((b, a) => {
+    return new Date(a.dataSaida) - new Date(b.dataSaida);
+  });
+
   // Agrupa as saídas por data
   const grupos = {};
 
   saidas.forEach(saida => {
 
-    if (!grupos[saida.dataSaida]) {
-      grupos[saida.dataSaida] = [];
+    const data = saida.dataSaida.split("T")[0];
+
+    if (!grupos[data]) {
+      grupos[data] = [];
     }
 
-    grupos[saida.dataSaida].push(saida);
+    grupos[data].push(saida);
   });
 
   lista.innerHTML = "";
@@ -115,7 +175,7 @@ function render(saidas) {
 
     lista.innerHTML += `
 
-      <div class="flex gap-4">
+      <div class="flex gap-4 mb-5">
 
         <!-- DATA -->
         <div class="w-10 shrink-0 text-center pt-3">
@@ -154,7 +214,7 @@ function render(saidas) {
 
 
               <!-- saída -->
-              <div class="bg-white rounded-2xl shadow p-2">
+              <div class="bg-white rounded-2xl shadow p-3">
 
                 <div id="${saida.id}" class="flex justify-between">
 
@@ -206,34 +266,35 @@ novaSaida.addEventListener("click", () => {
         }
         select.innerHTML += `<option data-id="${p.id}" value="${p.tipo_pagamento}">${p.tipo_pagamento}</option>`       
     })
+})
 
-  const btnCancelarModal = document.getElementById("cancelarModal")
+const btnCancelarModal = document.getElementById("cancelarModal")
 
   btnCancelarModal.addEventListener("click",()=>{
     modalSaida.classList.add('hidden');
     limparEdit();
   })
   
-  
-
-  elementsSaida.btnCadastraSaida.addEventListener("click", ()=>{
+  elementsSaida.btnCadastraSaida.addEventListener("click", async ()=>{
     
-    saidasList = {
+    const novaSaida = {
       nomeSaida: elementsSaida.nomeSaida.value,
       valorSaida: elementsSaida.valorSaida.value,
       tipoSaida: elementsSaida.tipoSaida.value,
       dataSaida: elementsSaida.dataSaida.value
-    }
-
+    };
+    
+    saidasAPI.salvar(novaSaida);
 
     modalSaida.classList.add('hidden');
     limparEdit();
     toast("Saida cadastrada com sucesso", "success")
-    console.log(saidasList);    
+      
+    await carregar();
 
   })
-})
 //-----------------FIM MODAL---------------//
+
 window.editar = (id) => {
     
   categoriaAtual = categoriaList.find(p => p.id == id);
@@ -244,24 +305,21 @@ window.editar = (id) => {
 
 window.excluir = async (id) => {
     
-  categoriaAtual = categoriaList.find(p => p.id == id);
-  console.log(categoriaAtual);
+  saidaAtual = saidaList.find(p => p.id == id);
+  //console.log(saidaAtual);
   
-  const confirma = confirm(
-      `Deseja excluir ${categoriaAtual.categorias}?`
-  );
+  const confirma = confirm(`Deseja excluir ${saidaAtual.nomeSaida}?`);
   
   if (!confirma) return;
   
-  showLoading();
+    showLoading();
     
   try{
     
-    await categoriaAPI.excluir(id);
-    
+    await saidasAPI.excluir(id);
+  
     toast("Item excluído","success");
     await carregar();   
-
 
   }catch{
 
@@ -271,19 +329,6 @@ window.excluir = async (id) => {
 
     hideLoading();
   }
-};
-
-window.status = async (id) => {
-    
-    const produto = categoriaList.find(p => p.id == id);
-
-    produto.status = produto.status === 'ativo'?'inativo':'ativo';
-
-    await ProdutoAPI.salvar(
-      produto
-    );
-
-    carregar();
 };
 
 function abrir() {
@@ -374,7 +419,6 @@ function abrirMenu() {
   menu.open();
   
 }
-
 
 function limparEdit(){
 
