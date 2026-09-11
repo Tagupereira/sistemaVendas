@@ -68,24 +68,40 @@
     </div>
 
 </main>
+<div id="loadingOverlay"
+        class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-3">
+
+            <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin">
+            </div>
+
+            <span>
+                Salvando Aguarde...
+            </span>
+
+        </div>
+
+    </div>
 
 <!-- MODAL OBSERVAÇÃO -->
   <div id="modalSaida" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
   
-    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+    <div  class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
   
         <div class="text-center mb-10">
-            <h2 class=" text-2xl font-bold">Registrar saida</h2>
+            <h2 id="tituloModal" class=" text-2xl font-bold">Registrar saida</h2>
         </div>
-  
-        <input id="nomeSaida" placeholder="Saida" class="w-full border rounded-xl p-3 mb-4" required />
-        <input id="valorSaida" type="text" placeholder="R$ 0,00" class="w-full border rounded-xl p-3 mb-5" required/>
         
-        <select id="tipoSaida" class="w-full border rounded-xl p-3 outline-none mb-5" required></select>
+            <input id="nomeSaida" placeholder="Saida" class="w-full border rounded-xl p-3 mb-4" required />
+            <input id="valorSaida" type="text" placeholder="R$ 0,00" class="w-full border rounded-xl p-3 mb-5" required/>
+            
+            <select id="tipoSaida" class="w-full border rounded-xl p-3 outline-none mb-5" required></select>
 
-        <input id="dataSaida" type="date" placeholder="Dinheiro" class="w-full border rounded-xl p-3 mb-5" required/>
-  
-        <div class=" flex justify-end gap-3 mt-6">
+            <input id="dataSaida" type="date" placeholder="Dinheiro" class="w-full border rounded-xl p-3 mb-5" required/>
+        
+        
+        <div class=" flex justify-around mt-6">
 
             <button id="cancelarModal" class=" px-5 py-3 rounded-xl bg-gray-500 text-white">
                 cancelar
@@ -96,6 +112,23 @@
     
         </div>
   
+    </div>
+  
+  </div>
+
+  <!-- MODAL excluir -->
+  <div id="modalExcluirSaida" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
+  
+    <div  class="bg-white rounded-3xl w-full max-w-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+  
+        <div  class="text-center mb-10">
+            <h2 id="tituloModal" class=" text-2xl font-bold">Excluir saida</h2>
+            <!-- <span id="cancelarModalExcluir" class="material-symbols-outlined">close</span> -->
+        </div>
+        <div id="contentModal">
+            
+        </div>
+        
     </div>
   
   </div>

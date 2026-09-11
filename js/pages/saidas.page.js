@@ -117,6 +117,8 @@ async function carregar() {
   const response = await saidasAPI.listarSaidas();
  
   const saidas = response.lista;
+  saidasList = saidas;
+  console.log(saidasList);
   
   render(saidas);
 
@@ -214,9 +216,9 @@ function render(saidas) {
 
 
               <!-- saída -->
-              <div class="bg-white rounded-2xl shadow p-3">
+              <div id="" class="bg-white rounded-2xl shadow p-3">
 
-                <div id="${saida.id}" class="flex justify-between">
+                <div data-id="${saida.id}" class="itemSaida flex justify-between">
 
                   <div class="w-[100%]">
 
@@ -250,7 +252,152 @@ function render(saidas) {
       </div>
 
     `;
+  
   });
+
+  document.querySelectorAll(".itemSaida").forEach(item => {
+
+    item.addEventListener("click", () => {
+
+      const id = item.dataset.id;
+
+      const saida = saidas.find(s => String(s.id) === String(id));
+
+      if (!saida) return;
+
+      abrirModalSaida(saida);
+      console.log(saida);
+      
+
+    });
+
+  });
+
+}
+
+function abrirModalSaida(saida) {
+
+  const modalExcluirSaida = document.getElementById("modalExcluirSaida");
+  const contentModal = document.getElementById("contentModal");
+
+  modalExcluirSaida.classList.remove("hidden");
+
+  const valor = Number(saida.valorSaida).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+
+  const data = saida.dataSaida.split("T")[0];
+
+  const dataFormatada = new Date(`${data}T00:00:00`).toLocaleDateString("pt-BR");
+
+  contentModal.innerHTML = `
+
+    <div class="space-y-5">
+
+      <!-- TÍTULO -->
+      <div class="text-center">
+        <div class="text-sm text-slate-400">
+          Saída registrada
+        </div>
+
+        <div class="text-xl font-bold text-slate-700 mt-1">
+          ${saida.nomeSaida}
+        </div>
+      </div>
+
+
+      <!-- VALOR -->
+      <div class="bg-red-50 rounded-2xl p-4 text-center">
+
+        <div class="text-sm text-slate-400">
+          Valor
+        </div>
+
+        <div class="text-2xl font-bold text-red-500">
+          - ${valor}
+        </div>
+
+      </div>
+
+
+      <!-- INFORMAÇÕES -->
+      <div class="space-y-3">
+
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-400">
+            Forma de pagamento
+          </span>
+
+          <span class="font-medium text-slate-700">
+            ${saida.tipoSaida}
+          </span>
+        </div>
+
+
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-400">
+            Data
+          </span>
+
+          <span class="font-medium text-slate-700">
+            ${dataFormatada}
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- AÇÕES -->
+      <div class="grid grid-cols-2 gap-3 pt-3">
+
+        <button
+          id="editarSaida"
+          class="rounded-xl p-3 bg-blue-500 text-white font-medium">
+          Cancelar
+        </button>
+
+        <button
+          id="excluirSaida"
+          class="rounded-xl p-3 bg-red-500 text-white font-medium">
+          Excluir
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  // CANCELAR / FECHAR
+  // const btnCancelarExcluir = document.getElementById("cancelarModalExcluir");
+
+  // btnCancelarExcluir.onclick = () => {
+  //   modalExcluirSaida.classList.add("hidden");
+  // };
+
+
+  // EDITAR
+  document.getElementById("editarSaida").onclick = () => {
+
+    console.log("Editar saída:", saida);
+    // depois colocamos a lógica de edição aqui
+    modalExcluirSaida.classList.add("hidden");
+
+  };
+
+
+  // EXCLUIR
+  document.getElementById("excluirSaida").onclick = () => {
+
+    console.log("Excluir saída:", saida);
+
+    // depois colocamos a lógica de exclusão aqui
+    toast("Ainda esta em desenvolvimento", "info")
+
+  };
+
 }
 
 //-------------- ABRE MODAL -------------//
@@ -276,21 +423,39 @@ const btnCancelarModal = document.getElementById("cancelarModal")
   })
   
   elementsSaida.btnCadastraSaida.addEventListener("click", async ()=>{
+ 
+    showLoading();
     
-    const novaSaida = {
-      nomeSaida: elementsSaida.nomeSaida.value,
-      valorSaida: elementsSaida.valorSaida.value,
-      tipoSaida: elementsSaida.tipoSaida.value,
-      dataSaida: elementsSaida.dataSaida.value
-    };
-    
-    saidasAPI.salvar(novaSaida);
-
-    modalSaida.classList.add('hidden');
-    limparEdit();
-    toast("Saida cadastrada com sucesso", "success")
+    try{
       
-    await carregar();
+      const novaSaida = {
+        nomeSaida: elementsSaida.nomeSaida.value,
+        valorSaida: elementsSaida.valorSaida.value,
+        tipoSaida: elementsSaida.tipoSaida.value,
+        dataSaida: elementsSaida.dataSaida.value
+      };
+  
+      saidasAPI.salvar(novaSaida);
+      showLoading();
+    
+      modalSaida.classList.add('hidden');
+      limparEdit();
+      
+      toast("Saida cadastrada com sucesso", "success");
+      
+      await carregar();
+
+
+    }catch{
+
+        toast("Erro ao cadastrar saida","error");
+
+    }finally{
+
+      hideLoading();
+    }
+    
+    
 
   })
 //-----------------FIM MODAL---------------//
