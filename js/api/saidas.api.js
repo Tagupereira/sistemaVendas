@@ -36,7 +36,7 @@ export const saidasAPI = {
     },
 
     async excluir(id){
-        
+               
         const usuario = JSON.parse(localStorage.getItem('usuario'));
         const tipoUser = usuario.tipo;
         

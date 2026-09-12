@@ -117,9 +117,7 @@ async function carregar() {
   const response = await saidasAPI.listarSaidas();
  
   const saidas = response.lista;
-  saidasList = saidas;
-  console.log(saidasList);
-  
+  saidasList = saidas;  
   render(saidas);
 
 }
@@ -265,9 +263,7 @@ function render(saidas) {
 
       if (!saida) return;
 
-      abrirModalSaida(saida);
-      console.log(saida);
-      
+      abrirModalSaida(saida);     
 
     });
 
@@ -370,14 +366,6 @@ function abrirModalSaida(saida) {
   `;
 
 
-  // CANCELAR / FECHAR
-  // const btnCancelarExcluir = document.getElementById("cancelarModalExcluir");
-
-  // btnCancelarExcluir.onclick = () => {
-  //   modalExcluirSaida.classList.add("hidden");
-  // };
-
-
   // EDITAR
   document.getElementById("editarSaida").onclick = () => {
 
@@ -389,14 +377,32 @@ function abrirModalSaida(saida) {
 
 
   // EXCLUIR
-  document.getElementById("excluirSaida").onclick = () => {
+  document.getElementById("excluirSaida").onclick = async() => {
+             
+    const confirma = confirm(`Deseja excluir ${saida.nomeSaida}?`);
 
-    console.log("Excluir saída:", saida);
+    if (!confirma) return;
+      modalExcluirSaida.classList.add("hidden");  
+      showLoading();
+      
+    try{
+      
+      await saidasAPI.excluir(saida.id);
+    
+      toast("Saida excluída","success");
+      
+      await carregar();   
 
-    // depois colocamos a lógica de exclusão aqui
-    toast("Ainda esta em desenvolvimento", "info")
+    }catch{
 
-  };
+        toast("Erro ao excluir","error");
+
+    }finally{
+
+      hideLoading();
+    }
+  }
+  
 
 }
 
@@ -459,14 +465,6 @@ const btnCancelarModal = document.getElementById("cancelarModal")
 
   })
 //-----------------FIM MODAL---------------//
-
-window.editar = (id) => {
-    
-  categoriaAtual = categoriaList.find(p => p.id == id);
-
-  abrir();
-
-};
 
 window.excluir = async (id) => {
     
