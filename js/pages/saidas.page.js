@@ -119,6 +119,8 @@ async function carregar() {
   const saidas = response.lista;
   saidasList = saidas;  
   render(saidas);
+  console.log(saidasList);
+  
 
 }
 
@@ -429,11 +431,11 @@ const btnCancelarModal = document.getElementById("cancelarModal")
   })
   
   elementsSaida.btnCadastraSaida.addEventListener("click", async ()=>{
- 
-    showLoading();
+     showLoading();
+     modalSaida.classList.add('hidden');
     
-    try{
-      
+     try{
+
       const novaSaida = {
         nomeSaida: elementsSaida.nomeSaida.value,
         valorSaida: elementsSaida.valorSaida.value,
@@ -441,17 +443,13 @@ const btnCancelarModal = document.getElementById("cancelarModal")
         dataSaida: elementsSaida.dataSaida.value
       };
   
-      saidasAPI.salvar(novaSaida);
-      showLoading();
+      await saidasAPI.salvar(novaSaida);
     
-      modalSaida.classList.add('hidden');
       limparEdit();
+      await carregar();
       
       toast("Saida cadastrada com sucesso", "success");
       
-      await carregar();
-
-
     }catch{
 
         toast("Erro ao cadastrar saida","error");
