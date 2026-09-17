@@ -3,129 +3,232 @@
 <html lang="pt-br">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+
     <meta name="theme-color" content="#3b82f6">
+
     <title>Análise de vendas</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
     <link rel="stylesheet" href="css/style.css">
 
 </head>
 
+
 <body class="bg-gray-100">
 
     <div id="menu"></div>
+
+
     <!-- CONTAINER -->
 
     <div>
 
+
         <!-- HEADER -->
+
         <header class="relative h-20 mb-10 overflow-hidden">
 
             <svg viewBox="0 0 10 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
 
-                <path id="temaTopo" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z">
-                </path>
+                <path id="temaTopo" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
 
             </svg>
 
+
             <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
 
-                <span id="btnMenu" class="material-symbols-outlined text-3xl">menu </span>
+                <span id="btnMenu" class="material-symbols-outlined text-3xl">
+                    menu
+                </span>
 
-                <h1 id="tituloPage" class="text-2xl font-semibold text-white">Análise de vendas</h1>
+
+                <h1 id="tituloPage" class="text-2xl font-semibold text-white">
+                    Análise de vendas
+                </h1>
+
 
                 <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
-                
+
             </div>
 
         </header>
-            
+
+
+
         <!-- FILTROS -->
 
-        <div class=" p-5 grid grid-cols-2 gap-3 ">
-            
+        <!-- <div class="p-5 grid grid-cols-2 gap-3">
 
-            <button class="periodo bg-white rounded-2xl p-4 transition-all duration-300" data-periodo="hoje">
+            <button
+                class="periodo bg-white rounded-2xl p-4 shadow-md transition-all duration-300"
+                data-periodo="hoje"
+            >
                 Hoje
             </button>
 
-            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300 " data-periodo="ontem">
+
+            <button
+                class="periodo bg-white rounded-2xl p-4 shadow-md transition-all duration-300"
+                data-periodo="ontem"
+            >
                 Ontem
             </button>
 
-            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300" data-periodo="semana">
+
+            <button
+                class="periodo bg-white rounded-2xl p-4 shadow-md transition-all duration-300"
+                data-periodo="semana"
+            >
                 Semana
             </button>
 
-            <button class="periodo bg-white rounded-2xl shadow-md p-4 transition-all duration-300" data-periodo="mes">
+
+            <button
+                class="periodo bg-white rounded-2xl p-4 shadow-md transition-all duration-300"
+                data-periodo="mes"
+            >
                 Mês
             </button>
 
-            <button class="periodo bg-white rounded-2xl shadow-md p-4 col-span-2 transition-all duration-300" data-periodo="ano">
+
+            <button
+                class="periodo bg-white rounded-2xl p-4 shadow-md col-span-2 transition-all duration-300"
+                data-periodo="ano"
+            >
                 Ano
             </button>
 
+        </div> -->
+        <!-- FILTRO DE PERÍODO -->
+        <div class="px-5 mb-5">
+            <div class="bg-white rounded-3xl shadow-xl p-6">
+                <h2 class="text-xl font-bold mb-5"> Período da análise </h2>
+                <div>
+                    <div class="grid grid-cols-2 gap-4">
+                    <!-- DATA INICIAL -->
+                    <div>
+                        <label for="dataInicio" class="block text-sm text-slate-500 mb-2"> Data inicial </label>
+                        <input id="dataInicio" type="date"
+                            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
+                    </div>
+                    <!-- DATA FINAL -->
+                    <div>
+                        <label for="dataFim" class="block text-sm text-slate-500 mb-2"> Data final </label>
+                        <input id="dataFim" type="date"
+                            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
+                    </div>
+                    </div>
+                    <!-- BOTÃO -->
+                    <button id="btnFiltrarPeriodo" class="w-full rounded-xl p-3 mt-5 font-semibold transition-all"> Analisar
+                        período
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- RESUMO -->
+        <!-- RESUMO FINANCEIRO -->
 
         <div class="px-5">
 
-            <div class="bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6">
+                <div class="flex justify-between">
 
-                <h2 class="text-2xl font-bold mb-6 ">
+                    <h2  class="text-2xl font-bold mb-6">
+                        Resumo
+                    </h2>
+                    <span id="tituloResumo"></span>
+                </div>
 
-                    Resumo
+                <!-- PEDIDOS -->
 
-                </h2>
+                <div class="flex justify-between items-center mb-5">
 
-                <div class="flex justify-between mb-5 ">
-
-                    <span>
-
+                    <span class="text-slate-600">
                         Pedidos
-
                     </span>
 
-                    <span id="totalPedidos" class=" font-bold text-xl ">
-
+                    <span id="totalPedidos" class="font-bold text-xl">
                         0
-
                     </span>
 
                 </div>
 
-                <div class="flex justify-between mb-5 ">
+                <!-- RECEBIDO -->
 
-                    <span>
+                <div class="flex justify-between items-center mb-5">
 
+                    <span class="text-slate-600">
                         Recebido
-
                     </span>
 
-                    <span id="totalRecebido" class=" font-bold text-green-600 text-xl ">
-
+                    <span id="totalRecebido" class="font-bold text-xl text-green-600">
                         R$ 0,00
-
                     </span>
 
                 </div>
 
-                <div class="flex justify-between ">
+                <!-- TICKET MÉDIO -->
 
-                    <span>
+                <div class="flex justify-between items-center mb-5">
 
+                    <span class="text-slate-600">
                         Ticket Médio
-
                     </span>
 
-                    <span id="ticketMedio" class=" font-bold text-xl ">
-
+                    <span id="ticketMedio" class="font-bold text-xl">
                         R$ 0,00
-
                     </span>
+
+                </div>
+
+                <!-- SEPARADOR -->
+
+                <div class="border-t border-slate-200 my-5"></div>
+
+                <!-- SAÍDAS -->
+
+                <div class="flex justify-between items-center mb-5">
+
+                    <div class="flex flex-col">
+
+                        <span class="text-slate-600">
+                            Saídas
+                        </span>
+
+                        <span id="quantidadeSaidas" class="text-xs text-slate-400">
+                            0 lançamentos
+                        </span>
+
+                    </div>
+
+                    <span id="totalSaidas" class="font-bold text-xl text-red-500">
+                        - R$ 0,00
+                    </span>
+
+                </div>
+
+                <!-- SALDO -->
+
+                <div class="border-t border-slate-200 pt-5">
+
+                    <div class="flex justify-between items-center">
+
+                        <span class="font-semibold text-slate-700">
+                            Saldo
+                        </span>
+
+                        <span id="saldo" class="font-bold text-2xl text-green-600">
+                            R$ 0,00
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -133,32 +236,30 @@
 
         </div>
 
-        <!-- FORMAS PAGAMENTO -->
+        <!-- FORMAS DE PAGAMENTO -->
 
         <div class="p-5">
 
-            <div class="bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6">
 
-                <h2 class="text-2xl font-bold mb-6 ">
-
+                <h2 class="text-2xl font-bold mb-6">
                     Formas de Pagamento
-
                 </h2>
 
-                <div id="formasPagamento" class=" space-y-4 ">
+                <div id="formasPagamento" class="space-y-4">
 
-                    <div class="flex justify-center ">
+                    <div class="flex justify-center">
 
                         <span class="text-center text-gray-400 py-8">
-
                             Buscando dados aguarde..
-
                         </span>
 
-                    </div>                   
+                    </div>
 
                 </div>
-                 <!-- PENDENTE -->
+
+                <!-- PENDENTE -->
+
                 <div class="border-t mt-5 pt-5 flex justify-between">
 
                     <span class="text-red-500 font-medium">
@@ -175,19 +276,17 @@
 
         </div>
 
-        <!-- TOP PRODUTOS -->
+        <!-- PRODUTOS MAIS VENDIDOS -->
 
         <div class="px-5 pb-8">
 
-            <div class="bg-white rounded-3xl shadow-xl p-6 ">
+            <div class="bg-white rounded-3xl shadow-xl p-6">
 
-                <h2 class="text-2xl font-bold mb-6 ">
-
+                <h2 class="text-2xl font-bold mb-6">
                     Produtos Mais Vendidos
-
                 </h2>
 
-                <div id="topProdutos" class=" space-y-3 ">
+                <div id="topProdutos" class="space-y-3">
 
                     <div class="text-center text-gray-400 py-8">
 
