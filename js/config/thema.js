@@ -160,12 +160,6 @@ export const temas = {
         text: "text-stone-700"
     },
 
-    mocha: {
-        hex: "#C4A484",
-        tailwind: "bg-amber-700",
-        text: "text-white"
-    },
-
     slateSoft: {
         hex: "#CBD5E1",
         tailwind: "bg-slate-300",
