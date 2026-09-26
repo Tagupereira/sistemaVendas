@@ -180,24 +180,28 @@ function abrirPendencias(dados) {
 
     dados.forEach(pendencia => {
 
-        
         valorTotalPend += pendencia.total;
 
         const itensHTML = pendencia.dados.pedido.itens.map(item => `
-            <div class="flex justify-between items-center border-b py-2 text-slate-700">
-                <div class="">
-                    <span class="font-semibold">
-                        ${item.quantidade}x
-                    </span>
-                    ${item.nome}
-                </div>
+            <div class="border-b">
+                <div class="flex justify-between items-center  py-2 text-slate-700">
+                    <div class="">
+                        <span class="font-semibold truncate">
+                            ${item.quantidade}x
+                        </span>
+                        ${item.nome}
+                    </div>
 
-                <div class="font-semibold">
-                    R$ ${Number(item.subtotal).toFixed(2).replace('.', ',')}
+                    <div class="flex justify-end font-semibold w-[100px]">
+                        R$ ${Number(item.subtotal).toFixed(2).replace('.', ',')}
+                    </div>
+                    
                 </div>
+                    <p class="text-slate-500">${item.observacao}</p>
+            
             </div>
-        `).join('');
-
+        `).join(''); 
+       
         content.innerHTML += `
             <div class="bg-white rounded-xl p-4 mb-3 shadow">
 
@@ -207,8 +211,7 @@ function abrirPendencias(dados) {
 
                 <div class="mb-3">
                     <span class="font-bold">Itens:</span> 
-                    <div class="mb-2">${itensHTML}</div>
-                    
+                    <div class="mb-2">${itensHTML}</div>   
                 </div>
 
                 <div class="flex justify-between items-center mb-3 font-bold">
@@ -216,7 +219,8 @@ function abrirPendencias(dados) {
                 </div>
 
                 <div>
-                    <span class="font-bold">Observação:</span>
+                    <span class="font-bold">${pendencia.dados.obsPedido ? "Observação: ": ""}</span>
+                    
                     <p>${pendencia.dados.obsPedido || ''}</p>
                 </div>
 
@@ -228,8 +232,7 @@ function abrirPendencias(dados) {
     document.getElementById('closePend').addEventListener('click', ()=>{
         document.getElementById('modalPendencia').classList.add('hidden');
         document.getElementById('content').innerHTML ="";
-     })
-
+    })
 }
 
 function abrirRecebimento(cliente,venda){
@@ -255,8 +258,8 @@ function abrirRecebimento(cliente,venda){
     select.innerHTML = '<option value="">Selecione...</option>';
     
     const idPg = pendenciaSelecionada.dados.pagamentos[0].idPagamento;
+
     pagamentos.payments.forEach(p => {
-        
         select.innerHTML += `<option data-id="${p.id}" data-pgId="${idPg}" value="${p.tipo_pagamento}">${p.tipo_pagamento}</option>`
     })
 

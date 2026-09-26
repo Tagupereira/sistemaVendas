@@ -23,8 +23,8 @@ let tiposPagamentos = [];
 
 const carrinho = validarPaginaPagamento();
 
-if(carrinho === false){
-        
+if (carrinho === false) {
+
     go("produtos");
 
 }
@@ -32,26 +32,26 @@ if(carrinho === false){
 const confirmar = document.getElementById("btnConfirmarVenda");
 const valorTotal = document.getElementById("valorTotal");
 
-confirmar.addEventListener("click", async()=>{
+confirmar.addEventListener("click", async () => {
 
-    if(getValorRestante() > 0){
+    if (getValorRestante() > 0) {
 
         const msg = "Pagamento incompleto";
         const cor = "error";
-         toast(msg, cor);
+        toast(msg, cor);
 
         return;
 
     }
 
-   await salvarVenda();
+    await salvarVenda();
 })
 
-document.getElementById("back").addEventListener("click",()=>{
-  go("produtos");
+document.getElementById("back").addEventListener("click", () => {
+    go("produtos");
 })
 
-function listaResumo(){
+function listaResumo() {
 
     const lista = JSON.parse(localStorage.getItem("resumoPedido"));
 
@@ -77,7 +77,7 @@ function listaResumo(){
                 
 
             </div>
-            ${item.observacao?`<p class="text-gray-500 text-sm">${item.observacao}</p>`:''}
+            ${item.observacao ? `<p class="text-gray-500 text-sm">${item.observacao}</p>` : ''}
             
             <hr>
         `;
@@ -96,7 +96,7 @@ function animarValor(elemento, valorFinal, duracao = 1000) {
 
         valorAtual += incremento;
 
-        if(valorAtual >= valorFinal){
+        if (valorAtual >= valorFinal) {
 
             valorAtual = valorFinal;
 
@@ -124,8 +124,8 @@ async function carregarTiposPagamento() {
         pendente: 'schedule'
     };
 
-    const payments = JSON.parse(localStorage.getItem("payments")); 
-    
+    const payments = JSON.parse(localStorage.getItem("payments"));
+
     const container = document.getElementById('tiposPagamento');
 
     container.innerHTML = '';
@@ -173,16 +173,16 @@ function iniciarEventosPagamento() {
                 'bg-green-50',
                 'text-green-700'
             );
-                
+
             const tipo =
                 tiposPagamentos.find(
                     t => t.id == card.dataset.id
                 );
 
-            
-            const pagamentoSelecionado =  tiposPagamentos.find(tipo => tipo.id == card.dataset.id);
-               
-            abrirModalPagamento(tipo);            
+
+            const pagamentoSelecionado = tiposPagamentos.find(tipo => tipo.id == card.dataset.id);
+
+            abrirModalPagamento(tipo);
             atualizarResumoPagamento();
 
         }
@@ -193,15 +193,15 @@ function iniciarEventosPagamento() {
     });
 }
 
-function atualizarResumoPagamento(){
+function atualizarResumoPagamento() {
 
     const pagamentos = getPagamentos();
 
     const container = document.getElementById('listaPagamentos');
-    
+
     container.innerHTML = '';
 
-    pagamentos.forEach((pagamento,index) => {
+    pagamentos.forEach((pagamento, index) => {
 
         container.innerHTML += `
 
@@ -218,12 +218,12 @@ function atualizarResumoPagamento(){
                     <div class="text-sm text-slate-500">
 
                         ${pagamento.recebido.toLocaleString(
-                            'pt-BR',
-                            {
-                                style:'currency',
-                                currency:'BRL'
-                            }
-                        )}
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL'
+            }
+        )}
 
                     </div>
 
@@ -239,11 +239,11 @@ function atualizarResumoPagamento(){
 
     });
 
-    atualizarTotais();  
+    atualizarTotais();
 
 }
 
-function atualizarTotais(){
+function atualizarTotais() {
 
     const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
 
@@ -255,27 +255,27 @@ function atualizarTotais(){
 
     document.getElementById('valorPago').textContent = totalPago.toLocaleString('pt-BR',
         {
-            style:'currency',
-            currency:'BRL'
+            style: 'currency',
+            currency: 'BRL'
         }
     );
 
-    document.getElementById('valorRestante').textContent =restante.toLocaleString('pt-BR',
+    document.getElementById('valorRestante').textContent = restante.toLocaleString('pt-BR',
         {
-            style:'currency',
-            currency:'BRL'
+            style: 'currency',
+            currency: 'BRL'
         }
     );
 
-     if(totalPedido-totalPago < 0){
-            document.getElementById("tituloTroco").innerText = "Troco";
-        }else{document.getElementById("tituloTroco").innerText = "Restante";}
+    if (totalPedido - totalPago < 0) {
+        document.getElementById("tituloTroco").innerText = "Troco";
+    } else { document.getElementById("tituloTroco").innerText = "Restante"; }
 
     validarPagamento();
 
 }
 
-function validarPagamento(){
+function validarPagamento() {
 
     const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
 
@@ -285,11 +285,11 @@ function validarPagamento(){
 
     const btn = document.getElementById('btnConfirmarVenda');
 
-    if(totalPago >= totalPedido){
-       
-        if(totalPedido-totalPago < 0){
+    if (totalPago >= totalPedido) {
+
+        if (totalPedido - totalPago < 0) {
             document.getElementById("tituloTroco").innerText = "Troco";
-        }else{
+        } else {
             document.getElementById("tituloTroco").innerText = "Restante";
         }
 
@@ -306,7 +306,7 @@ function validarPagamento(){
 
 document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 
-    if(e.target.classList.contains('removerPagamento')){
+    if (e.target.classList.contains('removerPagamento')) {
 
         removerPagamento(Number(e.target.dataset.index));
 
@@ -316,62 +316,62 @@ document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 
 });
 
-async function salvarVenda(){
-    
+async function salvarVenda() {
+
     showLoading();
     const troco = JSON.parse(localStorage.getItem("pagamentos"));
     const venda = getVenda(document.getElementById('nomeCliente').value.trim());
     const obsPedido = document.getElementById('obsPedido').value.trim();
     const pedido = {};
     venda.obsPedido = obsPedido;
-                             
+
     try {
-               
+
         const response = await vendasAPI.salvar(venda);
-                     
-        if(!response.success){
+
+        if (!response.success) {
 
             throw new Error(
                 'Erro ao salvar venda'
             );
         }
-                      
+
         pedido.id = response.idVenda,
-        pedido.pedido = response.pedido;
+            pedido.pedido = response.pedido;
         pedido.status = 1;
         pedido.carrinho = 1;
         pedido.data = venda.data;
         pedido.obsPedido = obsPedido;
         pedido.cliente = venda.cliente;
 
-        const valorTroco = troco.find(p => p.troco > 0);        
+        const valorTroco = troco.find(p => p.troco > 0);
         pedido.troco = valorTroco;
-                          
+
         localStorage.setItem("pedido", JSON.stringify(pedido));
-    
+
         limparPagamentos();
         localStorage.removeItem("carrinho");
         localStorage.removeItem("resumoPedido");
-       
+
         go("concluido");
 
-    } catch(error){
+    } catch (error) {
 
         console.error(error);
 
         hideLoading();
-        
+
         const msg = 'Venda salva localmente. Será enviada depois.';
         const cor = "warning";
         toast(msg, cor);
 
     }
-    
+
 }
 
 let pagamentoSelecionado = null;
 
-function abrirModalPagamento(tipo){
+function abrirModalPagamento(tipo) {
 
     pagamentoSelecionado = tipo;
 
@@ -380,7 +380,7 @@ function abrirModalPagamento(tipo){
     document.getElementById('tituloPagamento').textContent = `Pagamento - ${tipo.tipo_pagamento}`;
 
     document.getElementById('valorPagamento').value = restante.toFixed(2);
-    
+
     const boxTroco = document.getElementById('trocoPagamento');
 
     document.getElementById('modalPagamento').classList.remove('hidden');
@@ -393,7 +393,7 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
 
     const restante = getValorRestante();
 
-    if(valor <= 0){
+    if (valor <= 0) {
 
         toast(
             'Valor inválido',
@@ -403,10 +403,10 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
         return;
     }
 
-    if(
+    if (
         pagamentoSelecionado.tipo_pagamento !== 'dinheiro' &&
         valor > restante
-    ){
+    ) {
 
         toast(
             'Valor maior que o restante',
@@ -415,11 +415,11 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
 
         return;
     }
-    
+
     let valorFinal = valor;
-        
-    if(pagamentoSelecionado.type_pagamento === 'dinheiro' || pagamentoSelecionado.tipo_pagamento === 'dinheiro'){
-        
+
+    if (pagamentoSelecionado.type_pagamento === 'dinheiro' || pagamentoSelecionado.tipo_pagamento === 'dinheiro') {
+
         valorFinal = Math.min(valor, restante);
     }
 
@@ -427,37 +427,36 @@ document.getElementById('confirmarPagamento').addEventListener('click', () => {
     adicionarPagamento({
         ...pagamentoSelecionado,
         valorRecebido: valor,
-        troco: Math.max(0, valor-restante),
-        
+        troco: Math.max(0, valor - restante),
+
     }, valorFinal
-);
-   
+    );
+
     atualizarResumoPagamento();
 
     fecharModalPagamento();
 
 });
 
-function fecharModalPagamento(){
+function fecharModalPagamento() {
 
     document.getElementById('modalPagamento').classList.add('hidden');
     document.getElementById('trocoPagamento').classList.add('hidden');
 
 }
 
-document.getElementById('cancelarPagamento').addEventListener('click', ()=>{
+document.getElementById('cancelarPagamento').addEventListener('click', () => {
     fecharModalPagamento()
     document.getElementById("trocoTotal").classList.add('hidden')
     document.getElementById("troco").textContent = 'R$ 0,00'
 });
 
-function atualizarTroco(){
+function atualizarTroco() {
 
-        
-    if(
+    if (
         !pagamentoSelecionado ||
         pagamentoSelecionado.tipo_pagamento !== 'dinheiro'
-    ){
+    ) {
         return;
     }
 
@@ -472,34 +471,23 @@ function atualizarTroco(){
     const trocoTotal = document.getElementById("trocoTotal")
     const viewTroco = document.getElementById("troco")
 
-    if(troco > 0){
+    if (troco > 0) {
 
         boxTroco.textContent =
             `Troco: ${troco.toLocaleString(
                 'pt-BR',
                 {
-                    style:'currency',
-                    currency:'BRL'
+                    style: 'currency',
+                    currency: 'BRL'
                 }
             )}`;
-
-        // boxTroco.innerHTML=`
-        //     <div class="text-green-600 font-bold">
-        //     Troco: ${troco.toLocaleString(
-        //         'pt-BR', 
-        //         {
-        //             style:'currency',
-        //             currency:'BRL'
-        //         }
-        //     )}
-        //     </div>`;
 
         viewTroco.textContent =
             `${troco.toLocaleString(
                 'pt-BR',
                 {
-                    style:'currency',
-                    currency:'BRL'
+                    style: 'currency',
+                    currency: 'BRL'
                 }
             )}`;
 
@@ -509,7 +497,7 @@ function atualizarTroco(){
             'hidden'
         );
 
-    }else{
+    } else {
 
         boxTroco.classList.add(
             'hidden'
@@ -519,8 +507,8 @@ function atualizarTroco(){
 
 }
 
-function init(){
-    
+function init() {
+
     indicator();
 
     carregarPagamentos();
@@ -529,14 +517,14 @@ function init(){
 
     carregarTiposPagamento();
 
-    atualizarResumoPagamento();  
+    atualizarResumoPagamento();
 
     document.getElementById('valorPagamento').addEventListener('input', atualizarTroco);
 
 }
 setInterval(() => {
 
-    indicator();    
+    indicator();
 
 }, 10000);
 
