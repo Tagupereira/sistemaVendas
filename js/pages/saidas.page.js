@@ -413,6 +413,8 @@ function abrirModalSaida(saida) {
 novaSaida.addEventListener("click", () => {
 
   modalSaida.classList.remove('hidden');
+  
+  elementsSaida.dataSaida.value = new Date().toLocaleDateString('sv-SE');
 
   select.innerHTML = '<option class="text-slate-500" value="">Tipo Saida</option>';
 
@@ -509,71 +511,6 @@ function abrir() {
   elements.tipo.value = categoriaAtual.categorias;  
 
 }
-
-// elements.novaCategoria.onclick = () => {
-
-//   categoriaAtual = null;
-
-//   abrir();
-
-// };
-
-// elements.salvar.onclick = async () => {
-
-//   const novo = elements.tipo.value;
-
-//   const editID = elements.tipo.dataset.id;
-
-//   if(novo === ""){
-//     toast("Nao pode ser vazio", "warning");
-      
-//     return
-//   }
-
-//   try{
-
-//     showLoading();
-
-//     if(editID){
-
-//       await categoriaAPI.editar(novo, editID);
-
-//       elements.modalCategoria.classList.add('hidden');
-    
-//       toast("Editado com sucesso", "success");
-      
-//       categoriaAtual=null;
-      
-//       await carregar();
-
-//       return;
-
-//     }
-
-//     await categoriaAPI.salvar(novo);
-
-//     elements.modalCategoria.classList.add('hidden');
-    
-//     toast("Salvo com sucesso", "success");
-    
-//     categoriaAtual=null;
-    
-//     await carregar();
-    
-//   }
-//   catch{
-//     toast("Erro ao salvar", "error");
-
-//   }
-//   finally{
-//     hideLoading();
-//   }
-// };
-
-// elements.cancelar.onclick = () => {
-//   elements.modalCategoria.classList.add('hidden');
-//   categoriaAtual = null;
-// };
 
 const btn = document.getElementById('btnMenu');
 btn.addEventListener('click',abrirMenu);
