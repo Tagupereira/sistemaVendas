@@ -114,7 +114,7 @@ export function atualizarCarrinhoUI() {
                 <h3 class="font-semibold">
                     ${item.nome}
                 </h3>
-                <p class="text-xs text-gray-500 mb-1">${item.observacao}</p>
+                <p class="text-xs text-gray-500 mb-1">${item.observacao || ''}</p>
                 <span>
                     R$ ${item.preco.toFixed(2)}
                 </span>

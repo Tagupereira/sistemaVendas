@@ -6,6 +6,7 @@ import { auth } from '../guards/auth.guard.js';
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { elementsSaida } from "../elements/elementos.js";
 import { menu } from "../components/menu.component.js";
+import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -438,7 +439,8 @@ const btnCancelarModal = document.getElementById("cancelarModal")
 
       const novaSaida = {
         nomeSaida: elementsSaida.nomeSaida.value,
-        valorSaida: elementsSaida.valorSaida.value,
+        //valorSaida: elementsSaida.valorSaida.value,
+        valorSaida: valorDoInput(elementsSaida.valorSaida),
         tipoSaida: elementsSaida.tipoSaida.value,
         dataSaida: elementsSaida.dataSaida.value
       };
@@ -595,6 +597,7 @@ function init(){
   indicator();
   menu.createMenu();
   carregar(); 
+  mascaraMoeda(elementsSaida.valorSaida);
 }
 
 init();

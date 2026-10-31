@@ -6,6 +6,7 @@ import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
 import { menu } from "../components/menu.component.js";
+import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -197,7 +198,7 @@ function abrirPendencias(dados) {
                     </div>
                     
                 </div>
-                    <p class="text-slate-500">${item.observacao}</p>
+                    <p class="text-slate-500">${item.observacao || ''}</p>
             
             </div>
         `).join(''); 
@@ -271,9 +272,11 @@ document.getElementById('cancelarRecebimento').onclick=()=>{
 
 };
 
+mascaraMoeda(document.getElementById('valorRecebido'));
 document.getElementById('valorRecebido').addEventListener('input',()=>{
 
-    const valor = Number(document.getElementById('valorRecebido').value);
+    //const valor = Number(document.getElementById('valorRecebido').value);
+    const valor = valorDoInput(document.getElementById('valorRecebido'));
 
     const saldo = pendenciaSelecionada.dados.pagamentos.find(p=>p.tipo === "pendente").valor;
 
@@ -297,7 +300,8 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
        
         showLoading();
 
-        const recebido = Number(document.getElementById('valorRecebido').value);
+        //const recebido = Number(document.getElementById('valorRecebido').value);
+        const recebido = valorDoInput(document.getElementById('valorRecebido'));
         select
         
         const vendaJson = {

@@ -456,7 +456,7 @@ function geraCupom(venda){
                 currency:'BRL'
             }
         )}_
-        (${item.observacao})
+        ${item.observacao ? '(' + item.observacao + ')' : ''}
         
         *Total: ${(item.preco * item.quantidade).toLocaleString('pt-BR',
             {

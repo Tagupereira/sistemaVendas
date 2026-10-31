@@ -234,7 +234,9 @@ document.getElementById('confirmarAvulso').onclick=()=>{
 
     quantidade:1,
 
-    avulso:true
+    avulso:true,
+
+    observação:''
 
   });
 

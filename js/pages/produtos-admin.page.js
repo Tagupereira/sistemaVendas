@@ -6,6 +6,7 @@ import { excluirItem } from "../services/crud.service.js";
 import { ProdutoAPI } from '../api/produtos.api.js';
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { menu } from "../components/menu.component.js";
+import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -200,7 +201,8 @@ function abrir() {
 
   descricao.value = produtoAtual.descricao;
 
-  preco.value = produtoAtual.preco;
+  // preco.value = produtoAtual.preco;
+  preco.value = Number(produtoAtual.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   tipoVenda.value = produtoAtual.tipo_de_venda;
 
@@ -224,7 +226,8 @@ salvar.onclick = async () => {
 
     descricao: descricao.value,
 
-    preco: parseFloat(preco.value.replace(/\./g, "").replace(",", ".")),
+    //preco: parseFloat(preco.value.replace(/\./g, "").replace(",", ".")),
+    preco: valorDoInput(preco),
 
     tipo_de_venda: tipoVenda.value,
 
@@ -321,6 +324,7 @@ function init(){
   indicator()
   carregar(); 
   menu.createMenu();
+  mascaraMoeda(document.getElementById('preco'));
 }
 
 init();

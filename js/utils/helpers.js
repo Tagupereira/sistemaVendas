@@ -18,6 +18,7 @@ export function mascaraMoeda(input) {
     }
 
     input.addEventListener("input", formatar);
+    input.addEventListener("focus", () => setTimeout(() => input.select(), 0));
 }
 
 

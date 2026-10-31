@@ -4,6 +4,7 @@ import { adicionarPagamento, removerPagamento, getPagamentos, getTotalPago, getV
 import { toast } from "../components/toast.component.js";
 import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
+import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
 import { API_URL } from "../api/api.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
@@ -379,7 +380,8 @@ function abrirModalPagamento(tipo) {
 
     document.getElementById('tituloPagamento').textContent = `Pagamento - ${tipo.tipo_pagamento}`;
 
-    document.getElementById('valorPagamento').value = restante.toFixed(2);
+    //document.getElementById('valorPagamento').value = restante.toFixed(2);
+    document.getElementById('valorPagamento').value = restante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     const boxTroco = document.getElementById('trocoPagamento');
 
@@ -389,7 +391,8 @@ function abrirModalPagamento(tipo) {
 
 document.getElementById('confirmarPagamento').addEventListener('click', () => {
 
-    const valor = Number(document.getElementById('valorPagamento').value);
+    // const valor = Number(document.getElementById('valorPagamento').value);
+    const valor = valorDoInput(document.getElementById('valorPagamento'));
 
     const restante = getValorRestante();
 
@@ -460,7 +463,8 @@ function atualizarTroco() {
         return;
     }
 
-    const recebido = Number(document.getElementById('valorPagamento').value);
+    // const recebido = Number(document.getElementById('valorPagamento').value);
+    const recebido = valorDoInput(document.getElementById('valorPagamento'));
 
     const restante = getValorRestante();
 
@@ -518,6 +522,8 @@ function init() {
     carregarTiposPagamento();
 
     atualizarResumoPagamento();
+    
+    mascaraMoeda(document.getElementById('valorPagamento'));
 
     document.getElementById('valorPagamento').addEventListener('input', atualizarTroco);
 
