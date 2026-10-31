@@ -2,9 +2,10 @@ import { API_URL } from "../api/api.js";
 import { toast } from "../components/toast.component.js";
 import { go } from "../routes/routes.js";
 import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { confirmar } from "../components/confirm.component.js";
 //import { carregarPagina } from "../pages/index.page.js";
 
-export async function excluir(id) {
+export async function excluir(id, venda = {}) {
 
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const tipoUser = usuario.tipo
@@ -21,12 +22,18 @@ export async function excluir(id) {
         return;
     }
 
-    const confirmar = confirm('Excluir venda?');
+    const numero = venda.pedido ? `Pedido #${String(venda.pedido).padStart(4, '0')}` : 'Esta venda';
 
-    if (!confirmar) {
-        return;
+    const confirmou = await confirmar({
+        titulo: 'Excluir venda?',
+        mensagem: venda.cliente ? `${numero} — ${venda.cliente}` : numero,
+        detalhe: 'A venda e os pagamentos dela serão apagados. Essa ação não pode ser desfeita.',
+        textoConfirmar: 'Excluir',
+        perigo: true
+    });
 
-    }
+    if (!confirmou) return;
+    
     showLoading();
 
     document.getElementById("btnExcluirVenda").setAttribute("disabled","disabled")

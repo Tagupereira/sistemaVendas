@@ -7,6 +7,7 @@ import { ProdutoAPI } from '../api/produtos.api.js';
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { menu } from "../components/menu.component.js";
 import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
+import { confirmar } from "../components/confirm.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -104,9 +105,13 @@ window.confirmarExclusao = async(id)=>{
     if(!produto) return;
 
 
-    const confirma = confirm(
-        `Deseja excluir "${produto.nome}"?`
-    );
+    const confirma = await confirmar({
+        titulo: 'Excluir produto?',
+        mensagem: produto.nome,
+        detalhe: 'Essa ação não pode ser desfeita.',
+        textoConfirmar: 'Excluir',
+        perigo: true
+    });
 
     if (!confirma) return;
 

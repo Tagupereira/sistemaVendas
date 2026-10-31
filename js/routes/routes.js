@@ -24,7 +24,9 @@ export const Routes = {
 
     configuracoes: '/configuracoes.html',
 
-    conta: '/configConta.html'
+    conta: '/configConta.html',
+
+    sair: '/index.html'
 
 };
 

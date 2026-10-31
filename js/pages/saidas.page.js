@@ -2,11 +2,11 @@ import { saidasAPI } from "../api/saidas.api.js";
 import { indicator } from "../services/indicator.service.js";
 import { toast } from "../components/toast.component.js";
 import { auth } from '../guards/auth.guard.js';
-//import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { elementsSaida } from "../elements/elementos.js";
 import { menu } from "../components/menu.component.js";
 import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
+import { confirmar } from "../components/confirm.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -382,7 +382,13 @@ function abrirModalSaida(saida) {
   // EXCLUIR
   document.getElementById("excluirSaida").onclick = async() => {
              
-    const confirma = confirm(`Deseja excluir ${saida.nomeSaida}?`);
+    const confirma = await confirmar({
+        titulo: 'Excluir saída?',
+        mensagem: saida.nomeSaida,
+        detalhe: 'Essa ação não pode ser desfeita.',
+        textoConfirmar: 'Excluir',
+        perigo: true
+    });
 
     if (!confirma) return;
       modalExcluirSaida.classList.add("hidden");  

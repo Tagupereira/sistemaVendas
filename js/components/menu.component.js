@@ -1,4 +1,5 @@
 import { go } from '../routes/routes.js';
+import { confirmar } from './confirm.component.js';
 
 const pages = [
     {
@@ -105,6 +106,14 @@ export const menu = {
 
                     <div id="actionButtons" class="mt-5">
                         ${botoes}
+
+                        <hr class="my-3">
+
+                        <div id="btnSair" class="p-3 flex items-center cursor-pointer">
+                            <span class="material-symbols-outlined text-slate-500">logout</span>
+                            <span class="ml-2 text-2xl">Sair</span>
+                        </div>
+
                     </div>
 
                 </div>
@@ -131,6 +140,25 @@ export const menu = {
                 go(page);
 
             });
+
+        });
+
+        document.getElementById('btnSair').addEventListener('click', async () => {
+
+            menu.close();
+
+            const confirmou = await confirmar({
+                titulo: 'Sair da conta?',
+                mensagem: 'Você voltará para a tela de login.',
+                detalhe: 'A configuração da empresa continua salva neste aparelho.',
+                textoConfirmar: 'Sair'
+            });
+
+            if (!confirmou) return;
+
+            localStorage.removeItem('usuario');
+
+            go('login');
 
         });
 

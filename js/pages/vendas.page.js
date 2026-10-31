@@ -370,31 +370,57 @@ function abrirModalVenda(venda){
 
 /////////////////////////////////////////////
 
-    document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
-        try{
-            const msg = 'Imprimindo';
-            const cor = "info";
-            toast(msg, cor);
+    // document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
+    //     try{
+    //         const msg = 'Imprimindo';
+    //         const cor = "info";
+    //         toast(msg, cor);
 
-            //await imprimir(gerarSenhaEvento(venda));
-            // console.log(vendaSelecionada);
+    //         //await imprimir(gerarSenhaEvento(venda));
+    //         // console.log(vendaSelecionada);
             
+    //         await imprimir(gerarCupomESC(vendaSelecionada));
+
+    //     }catch(error){
+    //         console.log(error);
+            
+    //         const msg = "Não foi possivel conectar";
+    //         const cor = "error"
+    //         toast(msg, cor);
+
+    //     }
+        
+    // });
+
+    // const btnCompartilhar = document.getElementById("btnCompartilharVenda");
+
+    // btnCompartilhar.onclick = () => {
+
+    //     toast("Compartilhando", "success");
+
+    //     compartilharVenda(venda);
+
+    // };
+
+    // document.getElementById("btnExcluirVenda").addEventListener("click", async ()=>{
+        
+    //     await excluir(venda.id)
+        
+    // })
+    document.getElementById("btnImprimirVenda").onclick = async () => {
+        try{
+            toast('Imprimindo', 'info');
+
             await imprimir(gerarCupomESC(vendaSelecionada));
 
         }catch(error){
             console.log(error);
-            
-            const msg = "Não foi possivel conectar";
-            const cor = "error"
-            toast(msg, cor);
 
+            toast("Não foi possivel conectar", "error");
         }
-        
-    });
+    };
 
-    const btnCompartilhar = document.getElementById("btnCompartilharVenda");
-
-    btnCompartilhar.onclick = () => {
+    document.getElementById("btnCompartilharVenda").onclick = () => {
 
         toast("Compartilhando", "success");
 
@@ -402,11 +428,12 @@ function abrirModalVenda(venda){
 
     };
 
-    document.getElementById("btnExcluirVenda").addEventListener("click", async ()=>{
-        
-        await excluir(venda.id)
-        
-    })
+    document.getElementById("btnExcluirVenda").onclick = async () => {
+
+        await excluir(venda.id, venda);
+
+    };
+
 }
 let compartilhando = false;
 

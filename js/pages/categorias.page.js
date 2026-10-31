@@ -7,6 +7,7 @@ import { excluir } from "../services/crud.service.js";
 import { showLoading, hideLoading } from '../components/loading.component.js';
 import { elementsCategoria } from "../elements/elementos.js";
 import { menu } from "../components/menu.component.js";
+import { confirmar } from "../components/confirm.component.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -80,9 +81,13 @@ window.excluir = async (id) => {
   categoriaAtual = categoriaList.find(p => p.id == id);
   console.log(categoriaAtual);
   
-  const confirma = confirm(
-      `Deseja excluir ${categoriaAtual.categorias}?`
-  );
+  const confirma = await confirmar({
+      titulo: 'Excluir categoria?',
+      mensagem: categoriaAtual.categorias,
+      detalhe: 'Essa ação não pode ser desfeita.',
+      textoConfirmar: 'Excluir',
+      perigo: true
+  });
   
   if (!confirma) return;
   
