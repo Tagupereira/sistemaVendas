@@ -1,258 +1,155 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
-
     <meta name="theme-color" content="#3b82f6">
-
     <title>Análise de vendas</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-
     <link rel="stylesheet" href="css/style.css">
-
 </head>
-
 
 <body class="bg-gray-100">
 
     <div id="menu"></div>
 
-
-    <!-- CONTAINER -->
-
     <div>
 
-
         <!-- HEADER -->
-
         <header class="relative h-20 mb-10 overflow-hidden">
 
             <svg viewBox="0 0 10 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full">
-
                 <path id="temaTopo" d="M0,0 L500,0 L500,130 C350,220 150,40 0,130 Z"></path>
-
             </svg>
-
 
             <div class="relative z-10 px-6 pt-6 flex gap-4 items-center">
 
-                <span id="btnMenu" class="material-symbols-outlined text-3xl">
-                    menu
-                </span>
+                <span id="btnMenu" class="material-symbols-outlined text-3xl">menu</span>
 
-
-                <h1 id="tituloPage" class="text-2xl font-semibold text-white">
-                    Análise de vendas
-                </h1>
-
+                <h1 id="tituloPage" class="text-2xl font-semibold text-white">Análise de vendas</h1>
 
                 <div id="indResp" class="w-[15px] h-[15px] bg-blue-300 rounded-full ml-auto"></div>
 
             </div>
 
         </header>
-       
-        <!-- FILTRO DE PERÍODO -->
-        <div class="px-5 mb-5">
-            <div class="bg-white rounded-3xl shadow-xl p-6">
-                <h2 class="text-xl font-bold mb-5"> Período da análise </h2>
-                <div>
-                    <div class="grid grid-cols-2 gap-4">
-                    <!-- DATA INICIAL -->
-                    <div>
-                        <label for="dataInicio" class="block text-sm text-slate-500 mb-2"> Data inicial </label>
-                        <input id="dataInicio" type="date"
-                            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
-                    </div>
-                    <!-- DATA FINAL -->
-                    <div>
-                        <label for="dataFim" class="block text-sm text-slate-500 mb-2"> Data final </label>
-                        <input id="dataFim" type="date"
-                            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
-                    </div>
-                    </div>
-                    <!-- BOTÃO -->
-                    <button id="btnFiltrarPeriodo" class="w-full rounded-xl p-3 mt-5 font-semibold transition-all"> Analisar
-                        período
-                    </button>
-                </div>
-            </div>
-        </div>
 
-        <!-- RESUMO FINANCEIRO -->
+        <main class="px-5 pb-10 space-y-4">
 
-        <div class="px-5">
+            <!-- PERÍODO -->
+            <section class="bg-white rounded-3xl shadow p-5">
 
-            <div class="bg-white rounded-3xl shadow-xl p-6">
-                <div class="flex justify-between">
+                <h2 class="text-xs font-bold tracking-widest text-slate-600 mb-3">PERÍODO</h2>
 
-                    <h2  class="text-2xl font-bold mb-6">
-                        Resumo
-                    </h2>
-                    <span id="tituloResumo"></span>
+                <div class="flex gap-2 flex-wrap">
+                    <button data-atalho="hoje" class="atalho h-10 px-4 rounded-full text-sm font-bold border border-slate-300 bg-white text-slate-900">Hoje</button>
+                    <button data-atalho="7dias" class="atalho h-10 px-4 rounded-full text-sm font-bold border border-slate-300 bg-white text-slate-900">7 dias</button>
+                    <button data-atalho="mes" class="atalho h-10 px-4 rounded-full text-sm font-bold border border-slate-300 bg-white text-slate-900">Mês</button>
                 </div>
 
-                <!-- PEDIDOS -->
+                <details class="mt-4">
 
-                <div class="flex justify-between items-center mb-5">
+                    <summary class="cursor-pointer text-sm font-medium text-slate-600">Escolher datas</summary>
 
-                    <span class="text-slate-600">
-                        Pedidos
-                    </span>
-
-                    <span id="totalPedidos" class="font-bold text-xl">
-                        0
-                    </span>
-
-                </div>
-
-                <!-- RECEBIDO -->
-
-                <div class="flex justify-between items-center mb-5">
-
-                    <span class="text-slate-600">
-                        Recebido
-                    </span>
-
-                    <span id="totalRecebido" class="font-bold text-xl text-green-600">
-                        R$ 0,00
-                    </span>
-
-                </div>
-
-                <!-- TICKET MÉDIO -->
-
-                <div class="flex justify-between items-center mb-5">
-
-                    <span class="text-slate-600">
-                        Ticket Médio
-                    </span>
-
-                    <span id="ticketMedio" class="font-bold text-xl">
-                        R$ 0,00
-                    </span>
-
-                </div>
-
-                <!-- SEPARADOR -->
-
-                <div class="border-t border-slate-200 my-5"></div>
-
-                <!-- SAÍDAS -->
-
-                <div class="flex justify-between items-center mb-5">
-
-                    <div class="flex flex-col">
-
-                        <span class="text-slate-600">
-                            Saídas
-                        </span>
-
-                        <span id="quantidadeSaidas" class="text-xs text-slate-400">
-                            0 lançamentos
-                        </span>
-
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <div>
+                            <label for="dataInicio" class="block text-sm text-slate-600 mb-1">Data inicial</label>
+                            <input id="dataInicio" type="date" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="dataFim" class="block text-sm text-slate-600 mb-1">Data final</label>
+                            <input id="dataFim" type="date" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500">
+                        </div>
                     </div>
 
-                    <span id="totalSaidas" class="font-bold text-xl text-red-500">
-                        - R$ 0,00
-                    </span>
+                    <button id="btnFiltrarPeriodo" class="w-full rounded-xl p-3 mt-3 font-semibold">Analisar período</button>
 
+                </details>
+
+            </section>
+
+            <!-- SALDO -->
+            <section class="bg-white rounded-3xl shadow p-5">
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-600">Saldo (recebido − saídas)</span>
+                    <span id="tituloResumo" class="text-xs font-bold tracking-widest text-slate-600"></span>
                 </div>
 
-                <!-- SALDO -->
+                <div id="saldo" class="text-4xl font-bold font-mono mt-1 text-slate-900">R$ 0,00</div>
 
-                <div class="border-t border-slate-200 pt-5">
+                <div class="text-sm text-slate-600 mt-2">
+                    <b id="totalPedidos" class="text-slate-900">0</b> pedido(s) · Ticket médio
+                    <b id="ticketMedio" class="font-mono text-slate-900">R$ 0,00</b>
+                </div>
 
-                    <div class="flex justify-between items-center">
+            </section>
 
-                        <span class="font-semibold text-slate-700">
-                            Saldo
-                        </span>
+            <!-- CARTÕES -->
+            <div class="grid grid-cols-2 gap-3">
 
-                        <span id="saldo" class="font-bold text-2xl text-green-600">
-                            R$ 0,00
-                        </span>
+                <div class="bg-white rounded-2xl shadow p-4">
+                    <div class="text-xs text-slate-600">Vendido</div>
+                    <b id="totalVendido" class="text-lg font-mono">R$ 0,00</b>
+                </div>
 
-                    </div>
+                <div class="bg-white rounded-2xl shadow p-4">
+                    <div class="text-xs text-slate-600">Recebido</div>
+                    <b id="totalRecebido" class="text-lg font-mono text-green-700">R$ 0,00</b>
+                </div>
 
+                <div class="bg-white rounded-2xl shadow p-4">
+                    <div class="text-xs text-slate-600">A receber</div>
+                    <b id="totalPendente" class="text-lg font-mono text-red-700">R$ 0,00</b>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow p-4">
+                    <div class="text-xs text-slate-600">Saídas</div>
+                    <b id="totalSaidas" class="text-lg font-mono">R$ 0,00</b>
+                    <div id="quantidadeSaidas" class="text-xs text-slate-600">0 lançamento(s)</div>
                 </div>
 
             </div>
 
-        </div>
+            <!-- GRÁFICO 7 DIAS -->
+            <section class="bg-white rounded-3xl shadow p-5">
 
-        <!-- FORMAS DE PAGAMENTO -->
-
-        <div class="p-5">
-
-            <div class="bg-white rounded-3xl shadow-xl p-6">
-
-                <h2 class="text-2xl font-bold mb-6">
-                    Formas de Pagamento
-                </h2>
-
-                <div id="formasPagamento" class="space-y-4">
-
-                    <div class="flex justify-center">
-
-                        <span class="text-center text-gray-400 py-8">
-                            Buscando dados aguarde..
-                        </span>
-
-                    </div>
-
+                <div class="flex justify-between items-baseline">
+                    <h2 class="text-sm font-bold">Vendas dos últimos 7 dias</h2>
+                    <span id="totalSemana" class="text-xs text-slate-600 font-mono"></span>
                 </div>
 
-                <!-- PENDENTE -->
-
-                <div class="border-t mt-5 pt-5 flex justify-between">
-
-                    <span class="text-red-500 font-medium">
-                        Pendente
-                    </span>
-
-                    <span id="totalPendente" class="font-bold text-red-500">
-                        R$ 0,00
-                    </span>
-
+                <div id="grafico7dias" class="mt-4">
+                    <div class="text-center text-slate-500 py-6">Buscando dados aguarde..</div>
                 </div>
 
-            </div>
+            </section>
 
-        </div>
+            <!-- FORMAS DE PAGAMENTO -->
+            <section class="bg-white rounded-3xl shadow p-5">
 
-        <!-- PRODUTOS MAIS VENDIDOS -->
+                <h2 class="text-sm font-bold mb-2">Formas de pagamento</h2>
 
-        <div class="px-5 pb-8">
-
-            <div class="bg-white rounded-3xl shadow-xl p-6">
-
-                <h2 class="text-2xl font-bold mb-6">
-                    Produtos Mais Vendidos
-                </h2>
-
-                <div id="topProdutos" class="space-y-3">
-
-                    <div class="text-center text-gray-400 py-8">
-
-                        Buscando dados aguarde..
-
-                    </div>
-
+                <div id="formasPagamento">
+                    <div class="text-center text-slate-500 py-6">Buscando dados aguarde..</div>
                 </div>
 
-            </div>
+            </section>
 
-        </div>
+            <!-- MAIS VENDIDOS -->
+            <section class="bg-white rounded-3xl shadow p-5">
+
+                <h2 class="text-sm font-bold mb-2">Produtos mais vendidos</h2>
+
+                <div id="topProdutos">
+                    <div class="text-center text-slate-500 py-6">Buscando dados aguarde..</div>
+                </div>
+
+            </section>
+
+        </main>
 
     </div>
 

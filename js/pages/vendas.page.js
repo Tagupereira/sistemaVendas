@@ -282,147 +282,297 @@ document.addEventListener('click', (e) => {
     }
 );
 
-function abrirModalVenda(venda){
+// function abrirModalVenda(venda){
         
+//     vendaSelecionada = venda;
+
+//     const vendaCompleta = JSON.parse(venda.vendasJson);
+//     console.log(vendaCompleta);
+
+//     document.body.classList.add('overflow-hidden');
+
+//     document.getElementById('modalVenda').classList.remove('hidden');
+
+//     document.getElementById('modalPedido').textContent = `Pedido #${String(venda.pedido).padStart(4,'0')}`;
+
+//     document.getElementById('modalData').textContent = new Date(venda.data).toLocaleString('pt-BR');
+
+//     document.getElementById('modalCliente').textContent = `Cliente: ${venda.cliente || 'Não identificado'}`;
+
+//     document.getElementById('modalTotal').textContent = Number(venda.total).toLocaleString('pt-BR',
+//                     {
+//                         style:'currency',
+//                         currency:'BRL'
+//                     }
+//                 );
+
+//     const itens = document.getElementById('modalItens');
+
+//     itens.innerHTML = '';
+
+//     vendaCompleta.pedido.itens.forEach(item => {
+
+//         itens.innerHTML += `
+
+//             <div class="flex justify-between font-bold"">
+
+//                 <span >${item.quantidade}x ${item.nome}</span>
+
+//                 <span>
+//                     ${(item.quantidade * item.preco).toLocaleString('pt-BR',
+//                             {
+//                                 style:'currency',
+//                                 currency:'BRL'
+//                             }
+//                         )}
+//                 </span>
+                
+//             </div>
+//             <span class="mt-0">${item.observacao || ""}</span>
+            
+//         `;
+//     });
+
+//     const pagamentos = document.getElementById('modalPagamentos');
+
+//     pagamentos.innerHTML = '';
+
+//     vendaCompleta.pagamentos.forEach(pagamento => {
+
+//         pagamentos.innerHTML += `
+
+//             <div class="flex justify-between">
+
+//                 <span>${pagamento.tipo.toUpperCase()}</span>
+
+//                 <span>
+//                      ${Number(pagamento.tipo === 'pendente'? 
+//                         pagamento.valor : pagamento.recebido).toLocaleString('pt-BR', {
+//                         style:'currency',
+//                         currency:'BRL'
+//                     })}
+//                 </span>
+//             </div>
+//         `;
+//     });
+
+// /////////////////////// informação total
+//     const infoPedidoPg = document.getElementById("totalPedido")
+//     const obs = document.getElementById("obs")
+//     obs.innerText="";
+        
+//     infoPedidoPg.innerHTML = '';
+
+//     let totalPedido = 0;
+
+//     vendaCompleta.pagamentos.forEach(pagamento => {
+
+//         if (pagamento.tipo !== 'pendente') {
+//             totalPedido += Number(pagamento.recebido || 0);
+//         }
+
+//     });
+    
+    
+//     infoPedidoPg.innerHTML += `
+            
+//         <div class="flex justify-between">
+
+//             <span class="font-bold">Total Recebido</span>
+
+//             <span>
+//                 ${Number(totalPedido).toLocaleString('pt-BR', {
+//                         style:'currency',
+//                         currency:'BRL'
+//                     }
+//                 )}
+//             </span>
+//         </div>
+
+//     `;
+
+//     obs.innerHTML += `
+//         <div class="flex flex-col">
+
+//             <span class="font-bold">Observação do pedido</span>
+//                 ${vendaCompleta.obsPedido || ''}
+//         </div>
+//     `
+
+// /////////////////////// informação do troco
+
+//     vendaCompleta.pagamentos.forEach(pagamento => {
+
+//         if(pagamento.troco > 0){
+//             infoPedidoPg.innerHTML += `
+
+//             <div class="flex justify-between">
+
+//                 <span>Troco dinheiro</span>
+
+//                 <span>
+//                     ${Number(pagamento.troco).toLocaleString('pt-BR', {
+//                             style:'currency',
+//                             currency:'BRL'
+//                         }
+//                     )}
+//                 </span>
+//             </div>
+//         `;
+
+//         }
+        
+//     });
+
+//     document.getElementById("btnImprimirVenda").onclick = async () => {
+//         try{
+//             toast('Imprimindo', 'info');
+
+//             await imprimir(gerarCupomESC(vendaSelecionada));
+
+//         }catch(error){
+//             console.log(error);
+
+//             toast("Não foi possivel conectar", "error");
+//         }
+//     };
+
+//     document.getElementById("btnCompartilharVenda").onclick = () => {
+
+//         toast("Compartilhando", "success");
+
+//         compartilharVenda(venda);
+
+//     };
+
+//     document.getElementById("btnExcluirVenda").onclick = async () => {
+
+//         await excluir(venda.id, venda);
+
+//     };
+
+// }
+
+function abrirModalVenda(venda){
+
     vendaSelecionada = venda;
 
-    const vendaCompleta = JSON.parse(venda.vendasJson);
-    console.log(vendaCompleta);
+    const vendaCompleta = venda._json || JSON.parse(venda.vendasJson);
+
+    const moeda = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     document.body.classList.add('overflow-hidden');
-
     document.getElementById('modalVenda').classList.remove('hidden');
 
-    document.getElementById('modalPedido').textContent = `Pedido #${String(venda.pedido).padStart(4,'0')}`;
+    // topo com a cor do tema
+    document.getElementById('topoComprovante').className = `h-32 px-5 pt-5 flex justify-between items-start ${thema.tailwind}`;
+    document.getElementById('tituloComprovante').className = `text-2xl font-semibold mt-2 ${thema.text}`;
 
-    document.getElementById('modalData').textContent = new Date(venda.data).toLocaleString('pt-BR');
+    // pagamentos
+    const pagamentos = vendaCompleta.pagamentos || [];
 
-    document.getElementById('modalCliente').textContent = `Cliente: ${venda.cliente || 'Não identificado'}`;
+    const pendente = pagamentos
+        .filter(p => p.tipo === 'pendente')
+        .reduce((soma, p) => soma + Number(p.valor || 0), 0);
 
-    document.getElementById('modalTotal').textContent = Number(venda.total).toLocaleString('pt-BR',
-                    {
-                        style:'currency',
-                        currency:'BRL'
-                    }
-                );
+    const pago = pagamentos
+        .filter(p => p.tipo !== 'pendente')
+        .reduce((soma, p) => soma + Number(p.valor || 0), 0);
 
-    const itens = document.getElementById('modalItens');
+    const temPendente = Math.round(pendente * 100) > 0;
 
-    itens.innerHTML = '';
+    // etiqueta de situação
+    const status = document.getElementById('statusVenda');
+    const baseStatus = 'inline-block rounded-full px-3 py-1 text-xs font-bold';
 
-    vendaCompleta.pedido.itens.forEach(item => {
+    if (!temPendente) {
+        status.textContent = 'PAGO';
+        status.className = `${baseStatus} bg-green-100 text-green-800`;
+    } else if (pago > 0) {
+        status.textContent = `PARCIAL · falta ${moeda(pendente)}`;
+        status.className = `${baseStatus} bg-amber-100 text-amber-800`;
+    } else {
+        status.textContent = `PENDENTE · ${moeda(pendente)}`;
+        status.className = `${baseStatus} bg-red-100 text-red-700`;
+    }
 
-        itens.innerHTML += `
+    // cabeçalho do cartão
+    document.getElementById('nomeCupom').textContent = (empresa.nome || '').toUpperCase();
 
-            <div class="flex justify-between font-bold"">
+    document.getElementById('modalPedido').textContent = `Pedido #${String(venda.pedido).padStart(4, '0')}`;
 
-                <span >${item.quantidade}x ${item.nome}</span>
+    const d = new Date(venda.data);
+    const atendente = venda.usuario || vendaCompleta.usuario || '';
 
-                <span>
-                    ${(item.quantidade * item.preco).toLocaleString('pt-BR',
-                            {
-                                style:'currency',
-                                currency:'BRL'
-                            }
-                        )}
-                </span>
-                
+    document.getElementById('modalData').textContent =
+        `${d.toLocaleDateString('pt-BR')} · ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+        + (atendente ? ` · Atendente: ${atendente}` : '');
+
+    document.getElementById('modalCliente').innerHTML =
+        `Cliente: <b>${esc(venda.cliente || 'Não identificado')}</b>`;
+
+    // itens
+    document.getElementById('modalItens').innerHTML = (vendaCompleta.pedido.itens || []).map(item => `
+        <div class="flex justify-between gap-2">
+            <div class="min-w-0">
+                <div class="font-bold text-sm">${esc(item.quantidade)}× ${esc(item.nome)}</div>
+                <div class="font-mono text-xs text-slate-600">${moeda(item.preco)} cada${item.observacao ? ' · ' + esc(item.observacao) : ''}</div>
             </div>
-            <span class="mt-0">${item.observacao || ""}</span>
-            
-        `;
-    });
-
-    const pagamentos = document.getElementById('modalPagamentos');
-
-    pagamentos.innerHTML = '';
-
-    vendaCompleta.pagamentos.forEach(pagamento => {
-
-        pagamentos.innerHTML += `
-
-            <div class="flex justify-between">
-
-                <span>${pagamento.tipo.toUpperCase()}</span>
-
-                <span>
-                     ${Number(pagamento.tipo === 'pendente'? 
-                        pagamento.valor : pagamento.recebido).toLocaleString('pt-BR', {
-                        style:'currency',
-                        currency:'BRL'
-                    })}
-                </span>
-            </div>
-        `;
-    });
-
-/////////////////////// informação total
-    const infoPedidoPg = document.getElementById("totalPedido")
-    const obs = document.getElementById("obs")
-    obs.innerText="";
-        
-    infoPedidoPg.innerHTML = '';
-
-    let totalPedido = 0;
-
-    vendaCompleta.pagamentos.forEach(pagamento => {
-
-        if (pagamento.tipo !== 'pendente') {
-            totalPedido += Number(pagamento.recebido || 0);
-        }
-
-    });
-    
-    
-    infoPedidoPg.innerHTML += `
-            
-        <div class="flex justify-between">
-
-            <span class="font-bold">Total Recebido</span>
-
-            <span>
-                ${Number(totalPedido).toLocaleString('pt-BR', {
-                        style:'currency',
-                        currency:'BRL'
-                    }
-                )}
-            </span>
+            <div class="font-mono font-bold text-sm whitespace-nowrap">${moeda(item.quantidade * item.preco)}</div>
         </div>
+    `).join('');
 
+    document.getElementById('modalTotal').textContent = moeda(venda.total);
+
+    // pagamentos na tela
+    document.getElementById('modalPagamentos').innerHTML = pagamentos.map(p => {
+
+        const ePendente = p.tipo === 'pendente';
+
+        const extra = (!ePendente && Number(p.troco) > 0)
+            ? `<div class="text-xs text-slate-600 font-mono ml-5">Recebido ${moeda(p.recebido)} · Troco ${moeda(p.troco)}</div>`
+            : '';
+
+        return `
+            <div>
+                <div class="flex justify-between text-sm">
+                    <span class="flex items-center gap-2 capitalize">
+                        <i class="w-2.5 h-2.5 rounded-full ${ePendente ? 'bg-red-700' : 'bg-green-700'}"></i>${esc(p.tipo)}
+                    </span>
+                    <b class="font-mono ${ePendente ? 'text-red-700' : ''}">${moeda(p.valor)}</b>
+                </div>
+                ${extra}
+            </div>
+        `;
+
+    }).join('');
+
+    // resumo de recebimento
+    document.getElementById('totalPedido').innerHTML = `
+        <div class="flex justify-between">
+            <span class="font-bold">Total recebido</span>
+            <span class="font-mono">${moeda(pago)}</span>
+        </div>
+        ${temPendente ? `
+        <div class="flex justify-between text-red-700">
+            <span class="font-bold">Falta receber</span>
+            <span class="font-mono font-bold">${moeda(pendente)}</span>
+        </div>` : ''}
     `;
 
-    obs.innerHTML += `
-        <div class="flex flex-col">
+    // observação do pedido
+    const obsTexto = vendaCompleta.obsPedido;
+    document.getElementById('obsBox').classList.toggle('hidden', !obsTexto);
+    document.getElementById('obs').textContent = obsTexto || '';
 
-            <span class="font-bold">Observação do pedido</span>
-                ${vendaCompleta.obsPedido || ''}
-        </div>
-    `
+    // botões
+    const menuMais = document.getElementById('menuMaisVenda');
 
-/////////////////////// informação do troco
-
-    vendaCompleta.pagamentos.forEach(pagamento => {
-
-        if(pagamento.troco > 0){
-            infoPedidoPg.innerHTML += `
-
-            <div class="flex justify-between">
-
-                <span>Troco dinheiro</span>
-
-                <span>
-                    ${Number(pagamento.troco).toLocaleString('pt-BR', {
-                            style:'currency',
-                            currency:'BRL'
-                        }
-                    )}
-                </span>
-            </div>
-        `;
-
-        }
-        
-    });
+    document.getElementById('btnMaisVenda').onclick = () => menuMais.classList.remove('hidden');
+    document.getElementById('btnFecharMais').onclick = () => menuMais.classList.add('hidden');
+    menuMais.onclick = (e) => { if (e.target === menuMais) menuMais.classList.add('hidden'); };
 
     document.getElementById("btnImprimirVenda").onclick = async () => {
         try{
@@ -447,11 +597,14 @@ function abrirModalVenda(venda){
 
     document.getElementById("btnExcluirVenda").onclick = async () => {
 
+        menuMais.classList.add('hidden');
+
         await excluir(venda.id, venda);
 
     };
 
 }
+
 let compartilhando = false;
 
 async function compartilharVenda(venda){

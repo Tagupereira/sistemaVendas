@@ -1,15 +1,14 @@
 import { vendasAPI } from '../api/vendas.api.js';
 import { saidasAPI } from '../api/saidas.api.js';
-import { go, goto } from "../routes/routes.js";
 import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
 import { menu } from "../components/menu.component.js";
 import { toast } from "../components/toast.component.js";
 
-
 const thema = JSON.parse(localStorage.getItem("tema"));
 
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
+document.querySelector('meta[name="theme-color"]').setAttribute("content", thema.hex);
 document.getElementById('btnMenu').classList.add(`${thema.text}`);
 document.getElementById('tituloPage').classList.add(`${thema.text}`);
 document.getElementById('btnFiltrarPeriodo').classList.add(...`${thema.tailwind} ${thema.text}`.split(' '));
@@ -18,6 +17,72 @@ auth();
 
 let vendas = [];
 let saidas = [];
+let vendasFiltradasAtual = [];
+
+const dataInicio = document.getElementById("dataInicio");
+const dataFim = document.getElementById("dataFim");
+const btnFiltrarPeriodo = document.getElementById("btnFiltrarPeriodo");
+
+
+// =====================================================
+// AJUDANTES
+// =====================================================
+
+const moeda = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// aceita número ou texto como "50", "50,00" ou "R$ 1.050,00"
+function paraNumero(valor) {
+
+    if (typeof valor === 'number') {
+        return valor;
+    }
+
+    const limpo = String(valor ?? '')
+        .replace(/\s/g, '')
+        .replace('R$', '')
+        .replace(/\./g, '')
+        .replace(',', '.');
+
+    return Number(limpo) || 0;
+
+}
+
+function dataLocalISO(d) {
+
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, "0");
+    const dia = String(d.getDate()).padStart(2, "0");
+
+    return `${ano}-${mes}-${dia}`;
+
+}
+
+// converte para YYYY-MM-DD
+function obterDataISO(data) {
+
+    if (!data) {
+        return "";
+    }
+
+    if (typeof data === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data)) {
+        return data;
+    }
+
+    if (typeof data === "string" && data.includes("T")) {
+        return data.split("T")[0];
+    }
+
+    const dataObj = new Date(data);
+
+    if (isNaN(dataObj.getTime())) {
+        return "";
+    }
+
+    return dataLocalISO(dataObj);
+
+}
 
 
 // =====================================================
@@ -30,44 +95,30 @@ window.addEventListener('load', async () => {
 
 });
 
-
-// =====================================================
-// CARREGAR VENDAS E SAÍDAS
-// =====================================================
-
 async function carregarDados() {
 
     try {
 
         const response = await vendasAPI.listar();
-        vendas = response.vendas || [];
 
+        // lê o JSON de cada venda uma única vez; ignora as que não abrem
+        vendas = (response.vendas || []).filter(v => {
+
+            try {
+                v._json = JSON.parse(v.vendasJson);
+                return true;
+            } catch (e) {
+                return false;
+            }
+
+        });
 
         const responseSaidas = await saidasAPI.listarSaidas();
         saidas = responseSaidas.lista || [];
 
+        aplicarAtalho('hoje');
 
-        // =============================================
-        // INICIAR COM O PERÍODO DE HOJE
-        // =============================================
-
-        const hoje = new Date();
-
-        const ano = hoje.getFullYear();
-        const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-        const dia = String(hoje.getDate()).padStart(2, "0");
-
-        const dataHoje = `${ano}-${mes}-${dia}`;
-
-
-        // Preenche os campos
-        dataInicio.value = dataHoje;
-        dataFim.value = dataHoje;
-
-
-        // Executa a análise automaticamente
-        selecionarPeriodo(dataHoje, dataHoje);
-        document.getElementById("tituloResumo").innerText = "HOJE"
+        renderGrafico();
 
     } catch (e) {
 
@@ -81,89 +132,49 @@ async function carregarDados() {
 
 
 // =====================================================
-// FILTRO DE PERÍODO
+// PERÍODO
 // =====================================================
 
-const dataInicio = document.getElementById("dataInicio");
-const dataFim = document.getElementById("dataFim");
-const btnFiltrarPeriodo = document.getElementById("btnFiltrarPeriodo");
+function marcarAtalho(chave) {
 
+    document.querySelectorAll('.atalho').forEach(b => {
 
-btnFiltrarPeriodo.addEventListener("click", () => {
+        const ativo = b.dataset.atalho === chave;
 
-    const inicio = dataInicio.value;
-    const fim = dataFim.value;
+        b.classList.toggle('bg-slate-900', ativo);
+        b.classList.toggle('text-white', ativo);
+        b.classList.toggle('border-slate-900', ativo);
 
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-    const dia = String(hoje.getDate()).padStart(2, "0");
+        b.classList.toggle('bg-white', !ativo);
+        b.classList.toggle('text-slate-900', !ativo);
+        b.classList.toggle('border-slate-300', !ativo);
 
-    const dataHoje = `${ano}-${mes}-${dia}`;
+    });
 
+}
 
-    if (!inicio || !fim) {
+function aplicarPeriodo(inicio, fim, titulo) {
 
-        toast(
-            "Informe a data inicial e a data final",
-            "warning"
-        );
+    dataInicio.value = inicio;
+    dataFim.value = fim;
 
-        return;
-    }
+    vendasFiltradasAtual = vendas.filter(v => {
 
-    if (inicio > fim) {
+        const d = obterDataISO(v._json.data);
 
-        toast(
-            "A data inicial não pode ser maior que a data final",
-            "warning"
-        );
+        return d >= inicio && d <= fim;
 
-        return;
+    });
 
-    }
-    if (inicio && fim > dataHoje) {
+    const saidasFiltradas = saidas.filter(s => {
 
-        toast(
-            "O filtro não pode estar no futuro",
-            "warning"
-        );
+        const d = obterDataISO(s.dataSaida);
 
-        return;
+        return d >= inicio && d <= fim;
 
-    }
+    });
 
-    selecionarPeriodo(inicio, fim);
-
-    if((inicio === dataHoje)&& (fim === dataHoje)){
-        document.getElementById("tituloResumo").innerText = "HOJE"
-        toast(
-            "filtro aplicado",
-            "success"
-        );
-
-        return;
-    }
-
-    document.getElementById("tituloResumo").innerText = "PERÍODO"
-    toast(
-            "filtro aplicado",
-            "success"
-        );
-
-});
-
-
-// =====================================================
-// SELECIONAR PERÍODO
-// =====================================================
-
-function selecionarPeriodo(inicio, fim) {
-
-    vendasFiltradasAtual = filtrarVendas(inicio, fim);
-
-    const saidasFiltradas = filtrarSaidas(inicio, fim);
-
+    document.getElementById("tituloResumo").innerText = titulo;
 
     renderResumo(vendasFiltradasAtual);
 
@@ -171,111 +182,117 @@ function selecionarPeriodo(inicio, fim) {
 
 }
 
+function aplicarAtalho(chave) {
 
-// =====================================================
-// CONVERTER DATA PARA YYYY-MM-DD
-// =====================================================
+    const fim = dataLocalISO(new Date());
 
-function obterDataISO(data) {
+    let inicio = fim;
+    let titulo = 'HOJE';
 
-    if (!data) {
-        return "";
-    }
+    if (chave === '7dias') {
 
+        const d = new Date();
+        d.setDate(d.getDate() - 6);
 
-    // Caso já seja YYYY-MM-DD
-    if (
-        typeof data === "string" &&
-        /^\d{4}-\d{2}-\d{2}$/.test(data)
-    ) {
-
-        return data;
+        inicio = dataLocalISO(d);
+        titulo = '7 DIAS';
 
     }
 
+    if (chave === 'mes') {
 
-    // Caso seja ISO: 2026-09-10T...
-    if (
-        typeof data === "string" &&
-        data.includes("T")
-    ) {
-
-        return data.split("T")[0];
+        inicio = `${fim.slice(0, 8)}01`;
+        titulo = 'MÊS';
 
     }
 
+    aplicarPeriodo(inicio, fim, titulo);
 
-    const dataObj = new Date(data);
-
-
-    if (isNaN(dataObj.getTime())) {
-
-        return "";
-
-    }
-
-
-    const ano = dataObj.getFullYear();
-
-    const mes = String(dataObj.getMonth() + 1).padStart(2, "0");
-
-    const dia = String(dataObj.getDate()).padStart(2, "0");
-
-
-    return `${ano}-${mes}-${dia}`;
+    marcarAtalho(chave);
 
 }
 
+document.querySelectorAll('.atalho').forEach(b => {
+
+    b.addEventListener('click', () => aplicarAtalho(b.dataset.atalho));
+
+});
+
+btnFiltrarPeriodo.addEventListener("click", () => {
+
+    const inicio = dataInicio.value;
+    const fim = dataFim.value;
+
+    const dataHoje = dataLocalISO(new Date());
+
+    if (!inicio || !fim) {
+
+        toast("Informe a data inicial e a data final", "warning");
+
+        return;
+
+    }
+
+    if (inicio > fim) {
+
+        toast("A data inicial não pode ser maior que a data final", "warning");
+
+        return;
+
+    }
+
+    if (fim > dataHoje) {
+
+        toast("O filtro não pode estar no futuro", "warning");
+
+        return;
+
+    }
+
+    const ehHoje = inicio === dataHoje && fim === dataHoje;
+
+    aplicarPeriodo(inicio, fim, ehHoje ? 'HOJE' : 'PERÍODO');
+
+    marcarAtalho(ehHoje ? 'hoje' : null);
+
+    toast("filtro aplicado", "success");
+
+});
+
 
 // =====================================================
-// FILTRAR VENDAS
+// CONTAS
 // =====================================================
 
-function filtrarVendas(inicio, fim) {
+function totais(lista) {
 
-    return vendas.filter(v => {
+    let vendido = 0;
+    let recebido = 0;
+    let pendente = 0;
 
-        try {
+    lista.forEach(v => {
 
-            const venda = JSON.parse(v.vendasJson);
+        vendido += Number(v.total || 0);
 
-            const dataVenda = obterDataISO(venda.data);
+        (v._json.pagamentos || []).forEach(p => {
 
+            if (p.tipo === 'pendente') {
+                pendente += Number(p.valor || 0);
+            } else {
+                recebido += Number(p.valor || 0);
+            }
 
-            return (
-                dataVenda >= inicio &&
-                dataVenda <= fim
-            );
-
-
-        } catch (e) {
-
-            return false;
-
-        }
+        });
 
     });
 
-}
+    const centavos = (n) => Math.round(n * 100) / 100;
 
-
-// =====================================================
-// FILTRAR SAÍDAS
-// =====================================================
-
-function filtrarSaidas(inicio, fim) {
-
-    return saidas.filter(saida => {
-
-        const dataSaida = obterDataISO(saida.dataSaida);
-
-
-        return (
-            dataSaida >= inicio &&
-            dataSaida <= fim
-        );
-
-    });
+    return {
+        vendido: centavos(vendido),
+        recebido: centavos(recebido),
+        pendente: centavos(pendente)
+    };
 
 }
 
@@ -284,122 +301,27 @@ function filtrarSaidas(inicio, fim) {
 // RESUMO
 // =====================================================
 
-function renderResumo(vendas) {
+function renderResumo(lista) {
 
-    const totalPedidos = document.getElementById('totalPedidos');
-    const totalRecebido = document.getElementById('totalRecebido');
-    const ticketMedio = document.getElementById('ticketMedio');
-    const formasPagamento = document.getElementById('formasPagamento');
-    const topProdutos = document.getElementById('topProdutos');
-    const totalPendente = document.getElementById('totalPendente');
+    const set = (id, texto) => {
+        document.getElementById(id).innerText = texto;
+    };
 
+    const { vendido, recebido, pendente } = totais(lista);
 
-    // -------------------------------------------------
-    // NENHUMA VENDA
-    // -------------------------------------------------
+    const pedidos = lista.length;
 
-    if (vendas.length === 0) {
+    const ticket = pedidos ? recebido / pedidos : 0;
 
-        totalPedidos.innerText = '0';
+    set('totalPedidos', pedidos);
+    set('totalVendido', moeda(vendido));
+    set('totalRecebido', moeda(recebido));
+    set('totalPendente', moeda(pendente));
+    set('ticketMedio', moeda(ticket));
 
-        totalRecebido.innerText = 'R$ 0,00';
+    renderFormasPagamento(lista);
 
-        ticketMedio.innerText = 'R$ 0,00';
-
-
-        formasPagamento.innerHTML = `
-            <div class="text-center text-gray-400 py-8">
-                Nenhuma venda encontrada
-            </div>
-        `;
-
-
-        topProdutos.innerHTML = `
-            <div class="text-center text-gray-400 py-8">
-                Nenhum produto vendido
-            </div>
-        `;
-
-
-        totalPendente.innerText = 'R$ 0,00';
-
-
-        return;
-
-    }
-
-
-    // -------------------------------------------------
-    // TOTAL DE PEDIDOS
-    // -------------------------------------------------
-
-    const pedidos = vendas.length;
-
-
-    // -------------------------------------------------
-    // TOTAL RECEBIDO
-    // -------------------------------------------------
-
-    const recebido = vendas.reduce((total, v) => {
-
-        try {
-
-            const venda = JSON.parse(v.vendasJson);
-
-
-            const totalRecebido = venda.pagamentos
-                .filter(p => p.tipo !== 'pendente')
-                .reduce(
-                    (soma, p) => soma + Number(p.valor || 0),
-                    0
-                );
-
-
-            return total + totalRecebido;
-
-
-        } catch (e) {
-
-            return total;
-
-        }
-
-    }, 0);
-
-
-    // -------------------------------------------------
-    // TICKET MÉDIO
-    // -------------------------------------------------
-
-    const ticket = pedidos
-        ? recebido / pedidos
-        : 0;
-
-
-    // -------------------------------------------------
-    // MOSTRAR RESUMO
-    // -------------------------------------------------
-
-    totalPedidos.innerText = pedidos;
-
-
-    totalRecebido.innerText =
-        `R$ ${recebido.toFixed(2).replace('.', ',')}`;
-
-
-    ticketMedio.innerText =
-        `R$ ${ticket.toFixed(2).replace('.', ',')}`;
-
-
-    // -------------------------------------------------
-    // OUTROS RESUMOS
-    // -------------------------------------------------
-
-    renderFormasPagamento(vendas);
-
-    renderProdutos(vendas);
-
-    renderPendentes(vendas);
+    renderProdutos(lista);
 
 }
 
@@ -408,60 +330,32 @@ function renderResumo(vendas) {
 // FORMAS DE PAGAMENTO
 // =====================================================
 
-function renderFormasPagamento(vendas) {
+function renderFormasPagamento(lista) {
 
     const formas = {};
 
+    lista.forEach(v => {
 
-    vendas.forEach(v => {
+        (v._json.pagamentos || []).forEach(p => {
 
-        try {
+            if (p.tipo === 'pendente') {
+                return;
+            }
 
-            const venda = JSON.parse(v.vendasJson);
+            formas[p.tipo] = (formas[p.tipo] || 0) + Number(p.valor || 0);
 
-
-            venda.pagamentos.forEach(p => {
-
-                if (p.tipo === 'pendente') {
-                    return;
-                }
-
-
-                if (!formas[p.tipo]) {
-
-                    formas[p.tipo] = 0;
-
-                }
-
-
-                formas[p.tipo] += Number(p.valor || 0);
-
-            });
-
-
-        } catch (e) {
-
-            console.error(e);
-
-        }
+        });
 
     });
 
+    const container = document.getElementById('formasPagamento');
 
-    const container =
-        document.getElementById('formasPagamento');
-
-
-    container.innerHTML = '';
-
-
-    const entradas = Object.entries(formas);
-
+    const entradas = Object.entries(formas).sort((a, b) => b[1] - a[1]);
 
     if (entradas.length === 0) {
 
         container.innerHTML = `
-            <div class="text-center text-gray-400 py-8">
+            <div class="text-center text-slate-500 py-6">
                 Nenhum pagamento encontrado
             </div>
         `;
@@ -470,147 +364,61 @@ function renderFormasPagamento(vendas) {
 
     }
 
+    container.innerHTML = entradas.map(([tipo, valor]) => `
 
-    entradas.forEach(([tipo, valor]) => {
+        <div class="flex justify-between items-center py-2 border-t border-slate-100 first:border-t-0">
 
-        container.innerHTML += `
+            <span class="flex items-center gap-2 capitalize">
+                <i class="w-2.5 h-2.5 rounded-full bg-green-700"></i>${esc(tipo)}
+            </span>
 
-            <div class="flex justify-between mb-4">
+            <b class="font-mono">${moeda(valor)}</b>
 
-                <span>
-                    ${tipo.toUpperCase()}
-                </span>
+        </div>
 
-                <span class="font-bold">
-                    R$ ${valor.toFixed(2).replace('.', ',')}
-                </span>
-
-            </div>
-
-        `;
-
-    });
+    `).join('');
 
 }
 
 
 // =====================================================
-// PENDENTES
+// PRODUTOS MAIS VENDIDOS
 // =====================================================
 
-function renderPendentes(vendas) {
-
-    let totalPendente = 0;
-
-
-    vendas.forEach(v => {
-
-        try {
-
-            const venda = JSON.parse(v.vendasJson);
-
-
-            venda.pagamentos.forEach(p => {
-
-                if (p.tipo !== 'pendente') {
-                    return;
-                }
-
-
-                totalPendente += Number(p.valor || 0);
-
-            });
-
-
-        } catch (e) {
-
-            console.error(e);
-
-        }
-
-    });
-
-
-    const elemento =
-        document.getElementById('totalPendente');
-
-
-    elemento.innerText =
-        `R$ ${totalPendente.toFixed(2).replace('.', ',')}`;
-
-}
-
-
-// =====================================================
-// PRODUTOS
-// =====================================================
-
-function renderProdutos(vendas) {
+function renderProdutos(lista) {
 
     const produtos = {};
 
+    lista.forEach(v => {
 
-    vendas.forEach(v => {
+        const itens = (v._json.pedido && v._json.pedido.itens) || [];
 
-        try {
+        itens.forEach(item => {
 
-            const venda = JSON.parse(v.vendasJson);
+            if (!produtos[item.nome]) {
 
+                produtos[item.nome] = { quantidade: 0, receita: 0 };
 
-            venda.pedido.itens.forEach(item => {
+            }
 
-                if (!produtos[item.nome]) {
+            produtos[item.nome].quantidade += Number(item.quantidade || 0);
 
-                    produtos[item.nome] = {
-                        quantidade: 0,
-                        receita: 0
-                    };
+            produtos[item.nome].receita += Number(item.preco || 0) * Number(item.quantidade || 0);
 
-                }
-
-
-                produtos[item.nome].quantidade +=
-                    Number(item.quantidade || 0);
-
-
-                produtos[item.nome].receita +=
-                    Number(item.preco || 0) *
-                    Number(item.quantidade || 0);
-
-            });
-
-
-        } catch (e) {
-
-            console.error(e);
-
-        }
+        });
 
     });
 
-
     const ranking = Object.entries(produtos)
-
-        .sort(
-            (a, b) =>
-                b[1].quantidade -
-                a[1].quantidade
-        )
-
+        .sort((a, b) => b[1].quantidade - a[1].quantidade)
         .slice(0, 50);
 
-
-    const container =
-        document.getElementById('topProdutos');
-
-
-    container.innerHTML = '';
-
+    const container = document.getElementById('topProdutos');
 
     if (ranking.length === 0) {
 
         container.innerHTML = `
-            <div class="text-center text-gray-400 py-8">
+            <div class="text-center text-slate-500 py-6">
                 Nenhum produto vendido
             </div>
         `;
@@ -619,178 +427,131 @@ function renderProdutos(vendas) {
 
     }
 
+    container.innerHTML = ranking.map(([nome, dados], i) => `
 
-    ranking.forEach(([nome, dados], index) => {
+        <div class="flex items-center gap-3 py-2 border-t border-slate-100 first:border-t-0">
 
-        container.innerHTML += `
+            <span class="w-7 h-7 shrink-0 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">${i + 1}</span>
 
-            <div class="mb-4">
-
-                <div class="flex justify-between">
-
-                    <div>
-                        ${index + 1}° ${nome}
-                    </div>
-
-                    <div>
-                        ${dados.quantidade} un
-                    </div>
-
-                </div>
-
-
-                <div class="text-green-600 font-semibold text-right">
-
-                    R$ ${dados.receita
-                        .toFixed(2)
-                        .replace('.', ',')}
-
-                </div>
-
+            <div class="flex-1 min-w-0">
+                <div class="font-medium truncate">${esc(nome)}</div>
+                <div class="text-xs text-slate-600">${dados.quantidade} un</div>
             </div>
 
-        `;
+            <b class="font-mono text-green-700">${moeda(dados.receita)}</b>
 
-    });
+        </div>
+
+    `).join('');
 
 }
 
 
 // =====================================================
-// SAÍDAS
+// SAÍDAS E SALDO
 // =====================================================
 
 function renderSaidas(saidasFiltradas) {
 
-    const totalSaidas =
-        saidasFiltradas.reduce(
-            (total, saida) => {
+    const totalSaidas = saidasFiltradas.reduce(
+        (total, saida) => total + paraNumero(saida.valorSaida),
+        0
+    );
 
-                return total +
-                    Number(saida.valorSaida || 0);
+    document.getElementById('totalSaidas').innerText = moeda(totalSaidas);
 
-            },
-            0
-        );
+    document.getElementById('quantidadeSaidas').innerText = `${saidasFiltradas.length} lançamento(s)`;
 
+    const resultado = totais(vendasFiltradasAtual).recebido - totalSaidas;
 
-    const elemento =
-        document.getElementById('totalSaidas');
+    const saldo = document.getElementById('saldo');
 
+    saldo.innerText = moeda(resultado);
 
-    elemento.innerText =
-        `-R$ ${totalSaidas.toFixed(2).replace('.', ',')}`;
-
-
-    // Quantidade de saídas, caso exista no HTML
-    const quantidade =
-        document.getElementById('quantidadeSaidas');
-
-
-    if (quantidade) {
-
-        quantidade.innerText =
-            saidasFiltradas.length;
-
-    }
-
-
-    // Saldo, caso exista no HTML
-    const saldo =
-        document.getElementById('saldo');
-
-
-    if (saldo) {
-
-        // Aqui usamos o valor recebido das vendas
-        // menos as saídas.
-
-        const recebido =
-            obterTotalRecebido(vendasFiltradasAtual);
-
-
-        const resultado =
-            recebido - totalSaidas;
-
-        if(resultado < 0){
-            saldo.classList.add("text-red-500")
-        }
-        saldo.innerText = `R$ ${resultado.toFixed(2).replace('.', ',')}`;
-
-    }
+    saldo.classList.toggle('text-red-500', resultado < 0);
+    saldo.classList.toggle('text-slate-900', resultado >= 0);
 
 }
 
 
 // =====================================================
-// TOTAL RECEBIDO AUXILIAR
+// GRÁFICO DOS ÚLTIMOS 7 DIAS
 // =====================================================
 
-function obterTotalRecebido(vendas) {
+function renderGrafico() {
 
-    return vendas.reduce((total, v) => {
+    const dias = [];
 
-        try {
+    for (let i = 6; i >= 0; i--) {
 
-            const venda =
-                JSON.parse(v.vendasJson);
+        const d = new Date();
+        d.setDate(d.getDate() - i);
 
+        dias.push(d);
 
-            const recebido =
-                venda.pagamentos
+    }
 
-                    .filter(p => p.tipo !== 'pendente')
+    const porDia = {};
 
-                    .reduce(
-                        (soma, p) =>
-                            soma + Number(p.valor || 0),
-                        0
-                    );
+    vendas.forEach(v => {
 
+        const chave = obterDataISO(v._json.data);
 
-            return total + recebido;
+        porDia[chave] = (porDia[chave] || 0) + Number(v.total || 0);
 
+    });
 
-        } catch (e) {
+    const valores = dias.map(d => porDia[dataLocalISO(d)] || 0);
 
-            return total;
+    const maior = Math.max(...valores, 1);
 
-        }
+    const soma = valores.reduce((a, b) => a + b, 0);
 
-    }, 0);
+    document.getElementById('totalSemana').innerText = moeda(soma);
+
+    const barras = dias.map((d, i) => {
+
+        const altura = Math.max(4, Math.round((valores[i] / maior) * 96));
+
+        const hoje = i === dias.length - 1;
+
+        const cor = hoje ? thema.tailwind : 'bg-slate-200';
+
+        return `
+            <div class="flex-1 flex flex-col justify-end h-24" title="${d.toLocaleDateString('pt-BR')}: ${moeda(valores[i])}">
+                <div class="${cor} rounded-t-md" style="height:${altura}px"></div>
+            </div>
+        `;
+
+    }).join('');
+
+    const rotulos = dias.map((d, i) => {
+
+        const nome = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+
+        const hoje = i === dias.length - 1;
+
+        return `<span class="flex-1 text-center capitalize ${hoje ? 'font-bold text-slate-900' : ''}">${nome}</span>`;
+
+    }).join('');
+
+    document.getElementById('grafico7dias').innerHTML = `
+        <div class="flex items-end gap-2">${barras}</div>
+        <div class="flex gap-2 mt-1 text-[11px] text-slate-600">${rotulos}</div>
+    `;
 
 }
 
 
 // =====================================================
-// VENDAS DO PERÍODO ATUAL
+// MENU E INICIO
 // =====================================================
 
-let vendasFiltradasAtual = [];
-
-
-// =====================================================
-// MENU
-// =====================================================
-
-const btn = document.getElementById('btnMenu');
-
-btn.addEventListener(
-    'click',
-    abrirMenu
-);
-
-
-function abrirMenu() {
+document.getElementById('btnMenu').addEventListener('click', () => {
 
     menu.open();
 
-}
-
-
-// =====================================================
-// INIT
-// =====================================================
+});
 
 function init() {
 
@@ -802,12 +563,10 @@ function init() {
 
 }
 
-
 setInterval(() => {
 
     indicator();
 
 }, 10000);
-
 
 init();
