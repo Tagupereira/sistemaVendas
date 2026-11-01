@@ -72,6 +72,62 @@ function prepararVenda(venda){
 
 }
 
+// function renderizarVendas(vendas){
+
+//     if (vendas.length === 0) {
+//         container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500">Nenhuma venda encontrada</div>';
+//         return;
+//     }
+
+//     const grupos = {};
+
+//     vendas.forEach(venda => {
+//         (grupos[venda._dataLonga] = grupos[venda._dataLonga] || []).push(venda);
+//     });
+
+//     let html = '';
+
+//     Object.entries(grupos).forEach(([data, lista]) => {
+
+//         html += `
+//             <div class="mb-6">
+
+//                 <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 ${thema.text} text-sm font-bold text-slate-500 mb-3 text-center">
+//                     ${data}
+//                 </h2>
+//         `;
+
+//         lista.forEach(venda => {
+
+//             html += `
+//                 <button class="w-full bg-white rounded-2xl shadow p-4 mb-2 text-left venda-card" data-id="${venda.id}">
+
+//                     <div class="flex justify-between">
+//                         <span class="font-bold">#${String(venda.pedido).padStart(4, '0')}</span>
+//                         <span>${new Date(venda.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+//                     </div>
+
+//                     <div class="mt-2 font-medium">
+//                         ${venda.cliente || 'Não identificado'}
+//                     </div>
+
+//                     <div class="flex justify-between text-sm text-slate-500 mt-2">
+//                         <span>${venda._forma} • ${venda._json.pedido.quantidadeItens} item(s)</span>
+//                         <span>${Number(venda.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+//                     </div>
+
+//                 </button>
+//             `;
+
+//         });
+
+//         html += '</div>';
+
+//     });
+
+//     container.innerHTML = html;
+
+// }
 function renderizarVendas(vendas){
 
     if (vendas.length === 0) {
@@ -87,41 +143,70 @@ function renderizarVendas(vendas){
 
     let html = '';
 
-    Object.entries(grupos).forEach(([data, lista]) => {
+    Object.values(grupos).forEach(lista => {
+
+        const d = new Date(lista[0].data);
+
+        const dia = d.toLocaleDateString('pt-BR', { day: '2-digit' });
+        const semana = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+        const mes = d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+        const ano = d.toLocaleDateString('pt-BR', { year: '2-digit' });
+
+        const totalDia = lista.reduce((soma, v) => soma + Number(v.total || 0), 0);
 
         html += `
-            <div class="mb-6">
+            <div class="flex gap-4 mb-5">
 
-                <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 ${thema.text} text-sm font-bold text-slate-500 mb-3 text-center">
-                    ${data}
-                </h2>
+                <div class="w-10 shrink-0 text-center pt-3">
+                    <div class="text-sm text-slate-400 uppercase">${semana}</div>
+                    <div class="text-2xl font-bold text-slate-600">${dia}</div>
+                    <div class="text-sm text-slate-400 uppercase">${mes}</div>
+                    <div class="text-sm text-slate-400 uppercase">${ano}</div>
+                </div>
+
+                <div class="relative flex-1 min-w-0 pl-6 pb-2">
+
+                    <div class="absolute left-0 top-3 bottom-0 w-px bg-slate-200"></div>
+
+                    <div class="text-xs text-slate-400 mb-2">
+                        ${lista.length} venda(s) • ${totalDia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    </div>
         `;
 
         lista.forEach(venda => {
 
+            const hora = new Date(venda.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const total = Number(venda.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
             html += `
-                <button class="w-full bg-white rounded-2xl shadow p-4 mb-2 text-left venda-card" data-id="${venda.id}">
+                <div class="relative mb-3">
 
-                    <div class="flex justify-between">
-                        <span class="font-bold">#${String(venda.pedido).padStart(4, '0')}</span>
-                        <span>${new Date(venda.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
+                    <div class="absolute -left-[30px] top-5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
 
-                    <div class="mt-2 font-medium">
-                        ${venda.cliente || 'Não identificado'}
-                    </div>
+                    <button class="venda-card w-full bg-white rounded-2xl shadow p-3 text-left" data-id="${venda.id}">
 
-                    <div class="flex justify-between text-sm text-slate-500 mt-2">
-                        <span>${venda._forma} • ${venda._json.pedido.quantidadeItens} item(s)</span>
-                        <span>${Number(venda.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                    </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">#${String(venda.pedido).padStart(4, '0')}</span>
+                            <span class="text-sm text-slate-500">${hora}</span>
+                        </div>
 
-                </button>
+                        <div class="font-medium truncate">
+                            ${venda.cliente || 'Não identificado'}
+                        </div>
+
+                        <div class="flex justify-between text-sm text-slate-500 mt-1">
+                            <span>${venda._forma} • ${venda._json.pedido.quantidadeItens} item(s)</span>
+                            <span class="font-bold text-slate-700">${total}</span>
+                        </div>
+
+                    </button>
+
+                </div>
             `;
 
         });
 
-        html += '</div>';
+        html += '</div></div>';
 
     });
 
