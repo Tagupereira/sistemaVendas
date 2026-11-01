@@ -39,9 +39,27 @@ export function getPagamentos() {
     return pagamentos;
 }
 
+// export function getTotalPago(){
+
+//     return pagamentos.reduce((soma, pagamento) => soma + pagamento.valor, 0);
+
+// }
+
+// export function getValorRestante(){
+
+//     const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
+
+//     return (resumoPedido.total - getTotalPago());
+
+// }
 export function getTotalPago(){
 
-    return pagamentos.reduce((soma, pagamento) => soma + pagamento.valor, 0);
+    const centavos = pagamentos.reduce(
+        (soma, pagamento) => soma + Math.round(Number(pagamento.valor) * 100),
+        0
+    );
+
+    return centavos / 100;
 
 }
 
@@ -49,7 +67,9 @@ export function getValorRestante(){
 
     const resumoPedido = JSON.parse(localStorage.getItem('resumoPedido'));
 
-    return (resumoPedido.total - getTotalPago());
+    const restante = Math.round(Number(resumoPedido.total) * 100) - Math.round(getTotalPago() * 100);
+
+    return restante / 100;
 
 }
 

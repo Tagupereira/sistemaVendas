@@ -440,6 +440,14 @@ const btnCancelarModal = document.getElementById("cancelarModal")
   })
   
   elementsSaida.btnCadastraSaida.addEventListener("click", async ()=>{
+
+    const valor = valorDoInput(elementsSaida.valorSaida);
+
+     if (!elementsSaida.nomeSaida.value.trim() || valor <= 0 || !elementsSaida.tipoSaida.value || !elementsSaida.dataSaida.value) {
+         toast('Preencha nome, valor, tipo e data da saída', 'warning');
+         return;
+     }
+
      showLoading();
      modalSaida.classList.add('hidden');
     

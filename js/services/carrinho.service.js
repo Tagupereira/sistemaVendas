@@ -276,7 +276,7 @@ export function getResumoPedido() {
 
         preco: item.preco,
 
-        subtotal: item.quantidade * item.preco
+        subtotal: Math.round(item.quantidade * item.preco * 100) / 100
 
     }));
 
@@ -292,7 +292,7 @@ export function getResumoPedido() {
 
         itens,
 
-        total,
+        total: Math.round(total * 100) / 100,
 
         quantidadeItens:
             itens.reduce(
