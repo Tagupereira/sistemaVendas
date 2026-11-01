@@ -45,6 +45,16 @@ confirmar.addEventListener("click", async () => {
 
     }
 
+    const temPendente = getPagamentos().some(p => p.tipo === 'pendente');
+    const nomeCliente = document.getElementById('nomeCliente');
+
+    if (temPendente && !nomeCliente.value.trim()) {
+        toast('Informe o nome do cliente para vendas pendentes', 'warning');
+        nomeCliente.scrollIntoView({ block: 'center' });
+        nomeCliente.focus();
+        return;
+    }
+
     await salvarVenda();
 })
 

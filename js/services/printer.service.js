@@ -185,7 +185,8 @@ export function gerarCupomESC(venda) {
 
     const dia = dataVenda.toLocaleDateString('pt-BR', { weekday: 'long' }).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     
-    const obs = venda.obsPedido;
+    // const obs = venda.obsPedido;
+    const obs = venda.obsPedido ?? vendaCompleta.obsPedido ?? '';
 
     let recebeTroco = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );
     let dimRecebido = alinhar('Troco:', `RS ${Number(0).toFixed(2).replace('.', ',')}` );

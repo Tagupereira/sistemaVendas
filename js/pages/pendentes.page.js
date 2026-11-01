@@ -296,6 +296,11 @@ document.getElementById('valorRecebido').addEventListener('input',()=>{
 
 document.getElementById('confirmarRecebimento').onclick=async()=>{
  
+    if (!select.value) {
+        toast('Escolha a forma de pagamento', 'warning');
+        return;
+    }
+
     try{
        
         showLoading();
