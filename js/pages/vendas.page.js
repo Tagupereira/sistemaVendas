@@ -26,10 +26,10 @@ container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-c
 
 async function carregarVendas(){
 
-    const response = await vendasAPI.listar();                 
-        
+    const response = await vendasAPI.listar();
+
     if(!response.success){
-    
+
         container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500 ">Erro ao carregar...</div>';
         return
     }
@@ -42,69 +42,69 @@ async function carregarVendas(){
     vendasCarregadas.sort(
         (a,b) => new Date(b.data) - new Date(a.data)
     );
-    
+
+    vendasCarregadas.forEach(prepararVenda);
+
     renderizarVendas(vendasCarregadas);
-    
+
+}
+
+function prepararVenda(venda){
+
+    venda._json = JSON.parse(venda.vendasJson);
+
+    const pagamentos = venda._json.pagamentos || [];
+
+    venda._forma = pagamentos.length > 1
+        ? 'PARCIAL'
+        : (pagamentos[0] ? pagamentos[0].tipo.toUpperCase() : '—');
+
+    venda._dataLonga = new Date(venda.data).toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    venda._busca = normalizar(
+        `${venda.cliente || ''} ${venda._dataLonga} ${venda._forma} ${venda.pedido}`
+    );
+
 }
 
 function renderizarVendas(vendas){
-       
-    const agrupadas = agruparPorData(vendas);
 
-    container.innerHTML = '';
-    
-    Object.entries(agrupadas).forEach(([data, vendas]) => {
+    if (vendas.length === 0) {
+        container.innerHTML = '<div class="w-[100%] h-[100px] flex text-center justify-center items-center text-slate-500">Nenhuma venda encontrada</div>';
+        return;
+    }
 
-        container.innerHTML += `
+    const grupos = {};
 
+    vendas.forEach(venda => {
+        (grupos[venda._dataLonga] = grupos[venda._dataLonga] || []).push(venda);
+    });
+
+    let html = '';
+
+    Object.entries(grupos).forEach(([data, lista]) => {
+
+        html += `
             <div class="mb-6">
 
                 <h2 class="w-full h-10 ${thema.tailwind} rounded-xl p-2 ${thema.text} text-sm font-bold text-slate-500 mb-3 text-center">
-
                     ${data}
-
                 </h2>
-
-                <div id="grupo-${data.replaceAll('/','-')}">
-
-                </div>
-
-            </div>
-
         `;
 
-        const grupo = document.getElementById(`grupo-${data.replaceAll('/','-')}`);
+        lista.forEach(venda => {
 
-        vendas.forEach(venda => {
-                       
-            const vendaCompleta = JSON.parse(venda.vendasJson);
-                    
-            const quantidadeItens = vendaCompleta.pedido.quantidadeItens;  
-           
-            const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'PARCIAL' : vendaCompleta.pagamentos[0].tipo.toUpperCase();
-            
-            grupo.innerHTML += `
-
+            html += `
                 <button class="w-full bg-white rounded-2xl shadow p-4 mb-2 text-left venda-card" data-id="${venda.id}">
 
                     <div class="flex justify-between">
-
-                        <span class="font-bold">
-
-                            #${String(venda.pedido).padStart(4, '0')}
-
-                        </span>
-
-                        <span>
-
-                            ${new Date(venda.data).toLocaleTimeString('pt-BR',{
-                                    hour:'2-digit',
-                                    minute:'2-digit'
-                                }
-                            )}
-
-                        </span>
-
+                        <span class="font-bold">#${String(venda.pedido).padStart(4, '0')}</span>
+                        <span>${new Date(venda.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
 
                     <div class="mt-2 font-medium">
@@ -112,31 +112,21 @@ function renderizarVendas(vendas){
                     </div>
 
                     <div class="flex justify-between text-sm text-slate-500 mt-2">
-
-                        <span>
-                            ${formaPagamento} • ${quantidadeItens} item(s)
-                        </span>
-
-                        <span>
-
-                            ${Number(venda.total).toLocaleString('pt-BR',
-                                    {
-                                        style:'currency',
-                                        currency:'BRL'
-                                    }
-                                )}
-
-                        </span>
-
+                        <span>${venda._forma} • ${venda._json.pedido.quantidadeItens} item(s)</span>
+                        <span>${Number(venda.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                     </div>
 
                 </button>
-
             `;
 
         });
 
+        html += '</div>';
+
     });
+
+    container.innerHTML = html;
+
 }
 
 function agruparPorData(vendas){
@@ -174,36 +164,22 @@ function normalizar(texto) {
   .replace(/[\u0300-\u036f]/g, '');
 }
 
-document.getElementById('buscarVenda').addEventListener('input', (e) => {
-  
-    const termo = normalizar(e.target.value);
-  
-    const filtradas = vendasCarregadas.filter(venda => {
+let timerBusca;
 
-    const vendaCompleta = JSON.parse(venda.vendasJson);
-        
-    const formaPagamento = vendaCompleta.pagamentos.length > 1 ? 'parcial' : vendaCompleta.pagamentos[0].tipo;
-    
-    const dataFormatada = new Date(venda.data).toLocaleDateString('pt-BR',
-            {
-                weekday: 'long',
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            }
+document.getElementById('buscarVenda').addEventListener('input', (e) => {
+
+    clearTimeout(timerBusca);
+
+    timerBusca = setTimeout(() => {
+
+        const termo = normalizar(e.target.value);
+
+        renderizarVendas(
+            vendasCarregadas.filter(venda => venda._busca.includes(termo))
         );
-    
-    return ( 
-      normalizar(venda.cliente).includes(termo) ||
-      normalizar(dataFormatada).includes(termo) ||
-      normalizar(formaPagamento).includes(termo) ||
-      String(venda.pedido).includes(termo)
-    );
-    
-  });
-  
-  renderizarVendas(filtradas);
-  
+
+    }, 250);
+
 });
 
 document.addEventListener('click', (e) => {
@@ -302,11 +278,6 @@ function abrirModalVenda(venda){
         
     infoPedidoPg.innerHTML = '';
 
-    // let totalPedido= 0;
-    // vendaCompleta.pagamentos.forEach(pagamento => {
-    //     totalPedido += pagamento.recebido
-        
-    // });
     let totalPedido = 0;
 
     vendaCompleta.pagamentos.forEach(pagamento => {
@@ -339,7 +310,7 @@ function abrirModalVenda(venda){
         <div class="flex flex-col">
 
             <span class="font-bold">Observação do pedido</span>
-                ${vendaCompleta.obsPedido}
+                ${vendaCompleta.obsPedido || ''}
         </div>
     `
 
@@ -368,45 +339,6 @@ function abrirModalVenda(venda){
         
     });
 
-/////////////////////////////////////////////
-
-    // document.getElementById("btnImprimirVenda").addEventListener("click", async() => {
-    //     try{
-    //         const msg = 'Imprimindo';
-    //         const cor = "info";
-    //         toast(msg, cor);
-
-    //         //await imprimir(gerarSenhaEvento(venda));
-    //         // console.log(vendaSelecionada);
-            
-    //         await imprimir(gerarCupomESC(vendaSelecionada));
-
-    //     }catch(error){
-    //         console.log(error);
-            
-    //         const msg = "Não foi possivel conectar";
-    //         const cor = "error"
-    //         toast(msg, cor);
-
-    //     }
-        
-    // });
-
-    // const btnCompartilhar = document.getElementById("btnCompartilharVenda");
-
-    // btnCompartilhar.onclick = () => {
-
-    //     toast("Compartilhando", "success");
-
-    //     compartilharVenda(venda);
-
-    // };
-
-    // document.getElementById("btnExcluirVenda").addEventListener("click", async ()=>{
-        
-    //     await excluir(venda.id)
-        
-    // })
     document.getElementById("btnImprimirVenda").onclick = async () => {
         try{
             toast('Imprimindo', 'info');
@@ -528,7 +460,7 @@ ${pagamentos}
 VALOR TOTAL: *${Number(venda.total).toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}*
 ========================
 obs:
-${vendaCompleta.obsPedido}
+${vendaCompleta.obsPedido || ''}
 
 ✨ Obrigado pela preferência!
 
