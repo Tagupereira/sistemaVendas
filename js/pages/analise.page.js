@@ -4,6 +4,7 @@ import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
 import { menu } from "../components/menu.component.js";
 import { toast } from "../components/toast.component.js";
+import { animarNumero } from '../utils/animacao.js';
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 
@@ -99,7 +100,11 @@ async function carregarDados() {
 
     try {
 
-        const response = await vendasAPI.listar();
+        // const response = await vendasAPI.listar();
+        const [response, responseSaidas] = await Promise.all([
+            vendasAPI.listar(),
+            saidasAPI.listarSaidas()
+        ]);
 
         // lê o JSON de cada venda uma única vez; ignora as que não abrem
         vendas = (response.vendas || []).filter(v => {
@@ -113,7 +118,7 @@ async function carregarDados() {
 
         });
 
-        const responseSaidas = await saidasAPI.listarSaidas();
+        // const responseSaidas = await saidasAPI.listarSaidas();
         saidas = responseSaidas.lista || [];
 
         aplicarAtalho('hoje');
@@ -322,8 +327,8 @@ function totais(lista) {
 
 function renderResumo(lista) {
 
-    const set = (id, texto) => {
-        document.getElementById(id).innerText = texto;
+    const animar = (id, valor, formatar = moeda) => {
+        animarNumero(document.getElementById(id), valor, formatar);
     };
 
     const { vendido, recebido, pendente } = totais(lista);
@@ -332,11 +337,11 @@ function renderResumo(lista) {
 
     const ticket = pedidos ? recebido / pedidos : 0;
 
-    set('totalPedidos', pedidos);
-    set('totalVendido', moeda(vendido));
-    set('totalRecebido', moeda(recebido));
-    set('totalPendente', moeda(pendente));
-    set('ticketMedio', moeda(ticket));
+    animar('totalPedidos', pedidos, n => String(Math.round(n)));
+    animar('totalVendido', vendido);
+    animar('totalRecebido', recebido);
+    animar('totalPendente', pendente);
+    animar('ticketMedio', ticket);
 
     renderFormasPagamento(lista);
 
@@ -477,7 +482,7 @@ function renderSaidas(saidasFiltradas) {
         0
     );
 
-    document.getElementById('totalSaidas').innerText = moeda(totalSaidas);
+     animarNumero(document.getElementById('totalSaidas'), totalSaidas, moeda);
 
     document.getElementById('quantidadeSaidas').innerText = `${saidasFiltradas.length} lançamento(s)`;
 
@@ -485,7 +490,7 @@ function renderSaidas(saidasFiltradas) {
 
     const saldo = document.getElementById('saldo');
 
-    saldo.innerText = moeda(resultado);
+    animarNumero(saldo, resultado, moeda);
 
     saldo.classList.toggle('text-red-500', resultado < 0);
     saldo.classList.toggle('text-slate-900', resultado >= 0);
