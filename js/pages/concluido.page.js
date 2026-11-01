@@ -11,10 +11,9 @@ document.getElementById("btnCompartilhar").addEventListener("click", ()=>{
     toast("Em desenvolvimento...","warning")
 })
 
-
-
 auth();
 
+const usuario = JSON.parse(localStorage.getItem('usuario'));
 const carrinho = validarCarrinho();
 const status = validaCompra();
 
@@ -73,7 +72,7 @@ btnPrint.addEventListener("click", async ()=>{
 
         venda.vendasJson = recebeVendaJson.vendasJson;
         venda.total = recebeVendaJson.total;
-
+        
         btnPrint.textContent = "Imprimir Comprovante"
                       
         //console.log(gerarCupomESC(venda));

@@ -3,6 +3,7 @@ import { API_URL } from "./api.js";
 export const vendasAPI = {
 
     async salvar(venda){
+       console.log(venda);
        
         const vendaJson =
             encodeURIComponent(

@@ -6,7 +6,7 @@ import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
 import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
 import { API_URL } from "../api/api.js";
-import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
 
 const thema = JSON.parse(localStorage.getItem("tema"));
@@ -18,6 +18,7 @@ document.getElementById('tituloPage').classList.add(`${thema.text}`);
 document.getElementById('back').classList.add(`${thema.text}`);
 
 auth();
+const usuario = JSON.parse(localStorage.getItem('usuario'));
 
 let tiposPagamentos = [];
 
@@ -83,8 +84,6 @@ function listaResumo() {
                 <span>
                     ${(item.preco * item.quantidade).toFixed(2)}
                 </span> 
-
-                
 
             </div>
             ${item.observacao ? `<p class="text-gray-500 text-sm">${item.observacao}</p>` : ''}
@@ -334,6 +333,7 @@ async function salvarVenda() {
     const obsPedido = document.getElementById('obsPedido').value.trim();
     const pedido = {};
     venda.obsPedido = obsPedido;
+    venda.usuario = usuario.user;
 
     try {
 
@@ -347,7 +347,7 @@ async function salvarVenda() {
         }
 
         pedido.id = response.idVenda,
-            pedido.pedido = response.pedido;
+        pedido.pedido = response.pedido;
         pedido.status = 1;
         pedido.carrinho = 1;
         pedido.data = venda.data;
@@ -535,6 +535,7 @@ function init() {
     mascaraMoeda(document.getElementById('valorPagamento'));
 
     document.getElementById('valorPagamento').addEventListener('input', atualizarTroco);
+    
 
 }
 setInterval(() => {
