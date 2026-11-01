@@ -118,7 +118,7 @@ async function carregarDados() {
 
         aplicarAtalho('hoje');
 
-        renderGrafico();
+        // renderGrafico();
 
     } catch (e) {
 
@@ -180,6 +180,7 @@ function aplicarPeriodo(inicio, fim, titulo) {
 
     renderSaidas(saidasFiltradas);
 
+    renderGrafico(inicio === fim ? inicio : null);
 }
 
 function aplicarAtalho(chave) {
@@ -259,6 +260,24 @@ btnFiltrarPeriodo.addEventListener("click", () => {
 
 });
 
+function selecionarDia(chave) {
+
+    const hojeISO = dataLocalISO(new Date());
+
+    const titulo = chave === hojeISO
+        ? 'HOJE'
+        : new Date(`${chave}T00:00:00`)
+            .toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })
+            .replace('.', '')
+            .toUpperCase();
+
+    aplicarPeriodo(chave, chave, titulo);
+
+    marcarAtalho(chave === hojeISO ? 'hoje' : null);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+}
 
 // =====================================================
 // CONTAS
@@ -478,7 +497,7 @@ function renderSaidas(saidasFiltradas) {
 // GRÁFICO DOS ÚLTIMOS 7 DIAS
 // =====================================================
 
-function renderGrafico() {
+function renderGrafico(selecionado = null) {
 
     const dias = [];
 
@@ -511,16 +530,21 @@ function renderGrafico() {
 
     const barras = dias.map((d, i) => {
 
+        const chave = dataLocalISO(d);
+
         const altura = Math.max(4, Math.round((valores[i] / maior) * 96));
 
-        const hoje = i === dias.length - 1;
+        const cor = i === dias.length - 1 ? thema.tailwind : 'bg-slate-200';
 
-        const cor = hoje ? thema.tailwind : 'bg-slate-200';
+        const ativo = chave === selecionado;
 
         return `
-            <div class="flex-1 flex flex-col justify-end h-24" title="${d.toLocaleDateString('pt-BR')}: ${moeda(valores[i])}">
-                <div class="${cor} rounded-t-md" style="height:${altura}px"></div>
-            </div>
+            <button class="barra-dia flex-1 flex flex-col justify-end h-24 rounded-lg ${ativo ? 'ring-2 ring-slate-900' : ''}"
+                    data-dia="${chave}"
+                    title="${d.toLocaleDateString('pt-BR')}: ${moeda(valores[i])}"
+                    aria-label="Ver ${d.toLocaleDateString('pt-BR')}: ${moeda(valores[i])}">
+                <div class="${cor} rounded-t-md w-full" style="height:${altura}px"></div>
+            </button>
         `;
 
     }).join('');
@@ -529,18 +553,90 @@ function renderGrafico() {
 
         const nome = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
 
-        const hoje = i === dias.length - 1;
+        const destaque = selecionado
+            ? dataLocalISO(d) === selecionado
+            : i === dias.length - 1;
 
-        return `<span class="flex-1 text-center capitalize ${hoje ? 'font-bold text-slate-900' : ''}">${nome}</span>`;
+        return `<span class="flex-1 text-center capitalize ${destaque ? 'font-bold text-slate-900' : ''}">${nome}</span>`;
 
     }).join('');
 
     document.getElementById('grafico7dias').innerHTML = `
         <div class="flex items-end gap-2">${barras}</div>
         <div class="flex gap-2 mt-1 text-[11px] text-slate-600">${rotulos}</div>
+        <p class="text-xs text-slate-600 mt-3">Toque num dia para ver só ele.</p>
     `;
 
+    document.querySelectorAll('.barra-dia').forEach(b => {
+
+        b.addEventListener('click', () => selecionarDia(b.dataset.dia));
+
+    });
+
 }
+// function renderGrafico() {
+
+//     const dias = [];
+
+//     for (let i = 6; i >= 0; i--) {
+
+//         const d = new Date();
+//         d.setDate(d.getDate() - i);
+
+//         dias.push(d);
+
+//     }
+
+//     const porDia = {};
+
+//     vendas.forEach(v => {
+
+//         const chave = obterDataISO(v._json.data);
+
+//         porDia[chave] = (porDia[chave] || 0) + Number(v.total || 0);
+
+//     });
+
+//     const valores = dias.map(d => porDia[dataLocalISO(d)] || 0);
+
+//     const maior = Math.max(...valores, 1);
+
+//     const soma = valores.reduce((a, b) => a + b, 0);
+
+//     document.getElementById('totalSemana').innerText = moeda(soma);
+
+//     const barras = dias.map((d, i) => {
+
+//         const altura = Math.max(4, Math.round((valores[i] / maior) * 96));
+
+//         const hoje = i === dias.length - 1;
+
+//         const cor = hoje ? thema.tailwind : 'bg-slate-200';
+
+//         return `
+//             <div class="flex-1 flex flex-col justify-end h-24" title="${d.toLocaleDateString('pt-BR')}: ${moeda(valores[i])}">
+//                 <div class="${cor} rounded-t-md" style="height:${altura}px"></div>
+//             </div>
+//         `;
+
+//     }).join('');
+
+//     const rotulos = dias.map((d, i) => {
+
+//         const nome = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+
+//         const hoje = i === dias.length - 1;
+
+//         return `<span class="flex-1 text-center capitalize ${hoje ? 'font-bold text-slate-900' : ''}">${nome}</span>`;
+
+//     }).join('');
+
+//     document.getElementById('grafico7dias').innerHTML = `
+//         <div class="flex items-end gap-2">${barras}</div>
+//         <div class="flex gap-2 mt-1 text-[11px] text-slate-600">${rotulos}</div>
+//     `;
+
+// }
 
 
 // =====================================================
