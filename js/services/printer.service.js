@@ -375,7 +375,8 @@ export function gerarCupomESC(venda) {
 
     const blocos = [];
 
-    blocos.push(centralizarTexto(empresa.nome || '', largura));
+    blocos.push(centralizarTexto(empresa.nome + '\n \n' || '', largura));
+    
     blocos.push(`Realizado em ${data} - ${hora}`);
     blocos.push(`Pedido: #${String(venda.pedido).padStart(4, '0')}`);
     blocos.push(linha);
