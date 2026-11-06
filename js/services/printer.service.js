@@ -596,8 +596,8 @@ export function gerarCupomESC(venda) {
 
     blocos.push(centralizarTexto(empresa.nome || '', largura) + '\n\n');
     
-    blocos.push(`Realizado em ${data} - ${hora}`);
     blocos.push(`Pedido: #${String(venda.pedido).padStart(4, '0')}`);
+    blocos.push(`Realizado em ${data} - ${hora}`);
     blocos.push(linha);
     blocos.push(itens);
     blocos.push(linha);
