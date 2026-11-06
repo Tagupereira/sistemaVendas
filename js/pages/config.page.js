@@ -5,6 +5,7 @@ import { indicator } from "../services/indicator.service.js";
 import { auth } from '../guards/auth.guard.js';
 import { temas } from "../config/thema.js";
 import { menu } from "../components/menu.component.js";
+import { nomeImpressoraSalva, esquecerImpressora } from "../services/printer.service.js";
 
 const thema = JSON.parse(localStorage.getItem("tema"));
 document.getElementById("temaTopo").setAttribute("fill", thema.hex);
@@ -46,6 +47,28 @@ function abrirMenu() {
   
 }
 
+const statusImpressora = document.getElementById('statusImpressora');
+
+function mostrarImpressora() {
+
+    const nome = nomeImpressoraSalva();
+
+    statusImpressora.textContent = nome ? `Salva neste aparelho: ${nome}` : 'Nenhuma impressora salva';
+
+}
+
+document.getElementById('btnTrocarImpressora').onclick = async () => {
+
+    await esquecerImpressora();
+
+    mostrarImpressora();
+
+    toast('Na próxima impressão, escolha a nova impressora', 'info');
+
+};
+
+mostrarImpressora();
+
 function init(){
     auth();
     indicator();
@@ -57,5 +80,7 @@ setInterval(() => {
     indicator();    
 
 }, 10000);
+
+
 
 init();

@@ -3,106 +3,323 @@ let printerChar = null;
 let printer = null;
 const empresa = JSON.parse(localStorage.getItem("empresa"));
 
-export async function conectar() {
+// export async function conectar() {
 
-    // 1. se já tem tudo pronto na memória da página atual, ok
-    if (
-        printerDevice && printerChar
-    ) {
+//     // 1. se já tem tudo pronto na memória da página atual, ok
+//     if (
+//         printerDevice && printerChar
+//     ) {
 
-        try {
+//         try {
 
-            await printerDevice.gatt.connect();
+//             await printerDevice.gatt.connect();
 
-            return;
+//             return;
 
-        } catch {
+//         } catch {
 
-            printerDevice = null;
-            printerChar = null;
+//             printerDevice = null;
+//             printerChar = null;
 
-        }
+//         }
 
-    }
+//     }
 
-    // [NOVO] 2. Se mudou de página e as variáveis sumiram, tenta recuperar o histórico
-    if (!printerDevice) {
-        try {
-            // Pede ao navegador a lista de aparelhos já autorizados antes
-            const devices = await navigator.bluetooth.getDevices();
+//     // [NOVO] 2. Se mudou de página e as variáveis sumiram, tenta recuperar o histórico
+//     if (!printerDevice) {
+//         try {
+//             // Pede ao navegador a lista de aparelhos já autorizados antes
+//             const devices = await navigator.bluetooth.getDevices();
             
-            const device = devices.find( d => d.name === 'MPT-II' );
+//             const device = devices.find( d => d.name === 'MPT-II' );
 
-            if (device) {
+//             if (device) {
 
-                printerDevice = device;
+//                 printerDevice = device;
 
+//             }
+
+//         } catch (e) {
+//             console.warn("Erro ao buscar histórico de dispositivos:", e);
+//         }
+//     }
+
+//     // 3. se já tem o device (seja da memória ou do histórico do getDevices) → conecta direto
+//     if (printerDevice) {
+//         try {
+//             const server =
+//                 await printerDevice.gatt.connect();
+
+//             const service =
+//                 await server.getPrimaryService(0x18F0);
+
+//             const chars =
+//                 await service.getCharacteristics();
+
+//             printerChar =
+//                 chars.find(c =>
+//                     c.properties.write ||
+//                     c.properties.writeWithoutResponse
+//                 );
+
+//             printer =
+//                 printerDevice;
+
+//             return;
+
+//         } catch (e) {
+//             // se falhar (ex: impressora desligou), limpa tudo para forçar o pop-up
+//             printerDevice = null;
+//             printerChar = null;
+//         }
+//     }
+
+//     // 4. Primeira conexão da vida (abre popup só se não houver histórico)
+//     const device =
+//         await navigator.bluetooth.requestDevice({
+//             acceptAllDevices: true,
+//             //optionalServices: [0x18F0]
+//             optionalServices: ['e7810a71-73ae-499d-8c15-faa9aef0c3f2']
+//         });
+
+//     printerDevice = device;
+
+//     const server =
+//         await device.gatt.connect();
+
+//     const service =
+//         await server.getPrimaryService('e7810a71-73ae-499d-8c15-faa9aef0c3f2');
+//     // const service =
+//     //     await server.getPrimaryService(0x18F0);
+
+//     const chars =
+//         await service.getCharacteristics();
+
+//     printerChar =
+//         chars.find(c =>
+//             c.properties.write ||
+//             c.properties.writeWithoutResponse
+//         );
+
+//     printer = device;
+// };
+
+const CHAVE_IMPRESSORA = 'impressora';
+
+// serviços Bluetooth que as impressoras térmicas costumam usar para receber os dados
+const SERVICOS = [
+    'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+    0x18F0,
+    '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+    0xFFE0
+];
+
+function lerImpressoraSalva() {
+
+    try {
+        return JSON.parse(localStorage.getItem(CHAVE_IMPRESSORA)) || null;
+    } catch {
+        return null;
+    }
+
+}
+
+function salvarImpressora(device) {
+
+    localStorage.setItem(CHAVE_IMPRESSORA, JSON.stringify({
+        id: device.id,
+        name: device.name || ''
+    }));
+
+}
+
+export function nomeImpressoraSalva() {
+
+    const salva = lerImpressoraSalva();
+
+    return salva ? (salva.name || 'Impressora sem nome') : '';
+
+}
+
+// esquece a impressora salva, para escolher outra na próxima impressão
+export async function esquecerImpressora() {
+
+    localStorage.removeItem(CHAVE_IMPRESSORA);
+
+    try {
+        if (printerDevice && printerDevice.gatt && printerDevice.gatt.connected) {
+            printerDevice.gatt.disconnect();
+        }
+    } catch { }
+
+    try {
+
+        const devices = navigator.bluetooth.getDevices
+            ? await navigator.bluetooth.getDevices()
+            : [];
+
+        for (const d of devices) {
+            if (d.forget) {
+                await d.forget();
             }
-
-        } catch (e) {
-            console.warn("Erro ao buscar histórico de dispositivos:", e);
         }
+
+    } catch { }
+
+    printerDevice = null;
+    printerChar = null;
+    printer = null;
+
+}
+
+// espera o aparelho "avisar que está por perto" (até 4 segundos)
+async function esperarAnuncio(device, tempo = 4000) {
+
+    if (!device.watchAdvertisements) {
+        return;
     }
 
-    // 3. se já tem o device (seja da memória ou do histórico do getDevices) → conecta direto
-    if (printerDevice) {
-        try {
-            const server =
-                await printerDevice.gatt.connect();
+    const controle = new AbortController();
 
-            const service =
-                await server.getPrimaryService(0x18F0);
+    try {
 
-            const chars =
-                await service.getCharacteristics();
+        await new Promise(resolve => {
 
-            printerChar =
-                chars.find(c =>
-                    c.properties.write ||
-                    c.properties.writeWithoutResponse
-                );
+            const timer = setTimeout(resolve, tempo);
 
-            printer =
-                printerDevice;
+            device.addEventListener('advertisementreceived', () => {
+                clearTimeout(timer);
+                resolve();
+            }, { once: true });
 
-            return;
+            device.watchAdvertisements({ signal: controle.signal }).catch(resolve);
 
-        } catch (e) {
-            // se falhar (ex: impressora desligou), limpa tudo para forçar o pop-up
-            printerDevice = null;
-            printerChar = null;
-        }
-    }
-
-    // 4. Primeira conexão da vida (abre popup só se não houver histórico)
-    const device =
-        await navigator.bluetooth.requestDevice({
-            acceptAllDevices: true,
-            //optionalServices: [0x18F0]
-            optionalServices: ['e7810a71-73ae-499d-8c15-faa9aef0c3f2']
         });
 
-    printerDevice = device;
+    } finally {
 
-    const server =
-        await device.gatt.connect();
+        controle.abort();
 
-    const service =
-        await server.getPrimaryService('e7810a71-73ae-499d-8c15-faa9aef0c3f2');
-    // const service =
-    //     await server.getPrimaryService(0x18F0);
+    }
 
-    const chars =
-        await service.getCharacteristics();
+}
 
-    printerChar =
-        chars.find(c =>
-            c.properties.write ||
-            c.properties.writeWithoutResponse
+// conecta e procura o canal onde a impressora recebe os dados
+async function abrirCanal(device) {
+
+    const server = await device.gatt.connect();
+
+    const servicos = await server.getPrimaryServices();
+
+    for (const servico of servicos) {
+
+        const caracteristicas = await servico.getCharacteristics();
+
+        const escrita = caracteristicas.find(c =>
+            c.properties.write || c.properties.writeWithoutResponse
         );
 
-    printer = device;
+        if (escrita) {
+
+            printerDevice = device;
+            printerChar = escrita;
+            printer = device;
+
+            return true;
+
+        }
+
+    }
+
+    return false;
+
+}
+
+async function conectarComTentativas(device) {
+
+    try {
+        return await abrirCanal(device);
+    } catch (e) {
+        console.warn('Primeira tentativa de conexão falhou:', e);
+    }
+
+    await esperarAnuncio(device);
+
+    try {
+        return await abrirCanal(device);
+    } catch (e) {
+        console.warn('Segunda tentativa de conexão falhou:', e);
+        return false;
+    }
+
+}
+
+// procura, entre os aparelhos já autorizados, a impressora usada antes
+async function buscarImpressoraPermitida() {
+
+    if (!navigator.bluetooth || !navigator.bluetooth.getDevices) {
+        return null;
+    }
+
+    try {
+
+        const devices = await navigator.bluetooth.getDevices();
+
+        const salva = lerImpressoraSalva();
+
+        return (
+            devices.find(d => salva && d.id === salva.id) ||
+            devices.find(d => salva && salva.name && d.name === salva.name) ||
+            devices.find(d => d.name === 'MPT-II') ||
+            devices[0] ||
+            null
+        );
+
+    } catch (e) {
+
+        console.warn('Não foi possível listar impressoras já autorizadas:', e);
+
+        return null;
+
+    }
+
+}
+
+export async function conectar() {
+
+    // 1. já está conectada nesta página
+    if (printerDevice && printerDevice.gatt && printerDevice.gatt.connected && printerChar) {
+        return;
+    }
+
+    // 2. conexão que caiu, ou impressora já autorizada em outra tela: reconecta sem abrir a lista
+    const conhecida = printerDevice || await buscarImpressoraPermitida();
+
+    if (conhecida && await conectarComTentativas(conhecida)) {
+
+        salvarImpressora(conhecida);
+
+        return;
+
+    }
+
+    // 3. última opção: abre a lista, mostrando só a impressora conhecida (se houver)
+    const salva = lerImpressoraSalva();
+
+    const opcoes = (salva && salva.name)
+        ? { filters: [{ name: salva.name }], optionalServices: SERVICOS }
+        : { acceptAllDevices: true, optionalServices: SERVICOS };
+
+    const device = await navigator.bluetooth.requestDevice(opcoes);
+
+    if (!(await conectarComTentativas(device))) {
+        throw new Error('Nao foi possivel abrir o canal de impressao');
+    }
+
+    salvarImpressora(device);
+
 };
+
 
 export function impressoraConectada() {
 
@@ -143,10 +360,12 @@ export async function imprimir(texto) {
                 i + tamanhoBloco
             );
 
-        await printerChar
-            .writeValueWithoutResponse(
-                bloco
-            );
+        //await printerChar.writeValueWithoutResponse(bloco);
+        if (printerChar.properties.writeWithoutResponse) {
+            await printerChar.writeValueWithoutResponse(bloco);
+        } else {
+            await printerChar.writeValue(bloco);
+        }
 
         await esperar(
             80
@@ -375,7 +594,7 @@ export function gerarCupomESC(venda) {
 
     const blocos = [];
 
-    blocos.push(centralizarTexto(empresa.nome + '\n \n' || '', largura));
+    blocos.push(centralizarTexto(empresa.nome || '', largura) + '\n\n');
     
     blocos.push(`Realizado em ${data} - ${hora}`);
     blocos.push(`Pedido: #${String(venda.pedido).padStart(4, '0')}`);
@@ -394,7 +613,8 @@ export function gerarCupomESC(venda) {
 
     blocos.push('Forma de pagamento\n' + textoPagamentos);
     blocos.push(linha);
-    blocos.push('Cliente\n' + quebrarTexto(cliente, largura));
+    //blocos.push('Cliente\n' + quebrarTexto(cliente, largura));
+    blocos.push(quebrarTexto('Cliente: ' + cliente, largura));
     blocos.push(linha);
     blocos.push(centralizar('Cupom nao fiscal', largura) + '\n' + centralizar('Obrigado pela preferencia', largura));
 
