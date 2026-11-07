@@ -6,6 +6,7 @@ import { conectar, imprimir, gerarCupomESC, gerarSenhaEvento } from "../services
 import { auth } from '../guards/auth.guard.js';
 import { excluir } from "../services/crud.service.js";
 import { menu } from "../components/menu.component.js";
+import { showLoading, hideLoading } from '../components/loading.component.js';
 
 const empresa = JSON.parse(localStorage.getItem("empresa"));
 const nomecupom = document.getElementById("nomeCupom").innerText = empresa.nome;
@@ -630,6 +631,108 @@ function abrirModalVenda(venda){
         await excluir(venda.id, venda);
 
     };
+
+    document.getElementById('btnEditarNome').onclick = () => {
+
+        menuMais.classList.add('hidden');
+
+        abrirEditarNome(venda);
+
+    };
+
+}
+
+function abrirEditarNome(venda) {
+
+    const modal = document.getElementById('modalEditarNome');
+    const input = document.getElementById('inputNomeCliente');
+
+    document.getElementById('editarNomePedido').textContent = `Pedido #${String(venda.pedido).padStart(4, '0')}`;
+
+    document.getElementById('salvarNomeCliente').className = `h-12 rounded-xl font-bold ${thema.tailwind} ${thema.text}`;
+
+    input.value = venda.cliente || '';
+
+    modal.classList.remove('hidden');
+
+    input.focus();
+    input.select();
+
+    document.getElementById('cancelarEditarNome').onclick = () => modal.classList.add('hidden');
+
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+    };
+
+    document.getElementById('salvarNomeCliente').onclick = () => salvarNomeCliente(venda, input.value.trim());
+
+}
+
+async function salvarNomeCliente(venda, novoNome) {
+
+    const modal = document.getElementById('modalEditarNome');
+
+    // nada mudou
+    if (novoNome === (venda.cliente || '')) {
+        modal.classList.add('hidden');
+        return;
+    }
+
+    const temPendente = (venda._json.pagamentos || [])
+        .some(p => p.tipo === 'pendente' && Number(p.valor) > 0);
+
+    if (temPendente && !novoNome) {
+        toast('Informe o nome do cliente para vendas com pendência', 'warning');
+        return;
+    }
+
+    modal.classList.add('hidden');
+
+    showLoading();
+
+    try {
+
+        const novoJson = { ...venda._json, cliente: novoNome };
+
+        const resposta = await vendasAPI.editar({
+            id: venda.id,
+            data: venda.data,
+            cliente: novoNome,
+            total: venda.total,
+            status: venda.status,
+            pedido: venda.pedido,
+            vendasJson: JSON.stringify(novoJson)
+        });
+
+        if (!resposta.success) {
+            throw new Error(resposta.message || 'Falha ao gravar');
+        }
+
+        venda.cliente = novoNome;
+        venda.vendasJson = JSON.stringify(novoJson);
+
+        prepararVenda(venda);
+
+        toast('Nome atualizado', 'success');
+
+        // atualiza a lista (mantendo a busca) e o comprovante aberto
+        const termo = normalizar(document.getElementById('buscarVenda').value);
+
+        renderizarVendas(vendasCarregadas.filter(v => v._busca.includes(termo)));
+
+        abrirModalVenda(venda);
+
+    } catch (e) {
+
+        console.error(e);
+
+        toast('Erro ao atualizar: ' + (e.message || e), 'error');
+
+    } finally {
+
+        hideLoading();
+
+    }
 
 }
 

@@ -136,7 +136,6 @@ async function carregarDados() {
 
 }
 
-
 // =====================================================
 // PERÍODO
 // =====================================================
@@ -158,36 +157,6 @@ function marcarAtalho(chave) {
     });
 
 }
-
-// function aplicarPeriodo(inicio, fim, titulo) {
-
-//     dataInicio.value = inicio;
-//     dataFim.value = fim;
-
-//     vendasFiltradasAtual = vendas.filter(v => {
-
-//         const d = obterDataISO(v._json.data);
-
-//         return d >= inicio && d <= fim;
-
-//     });
-
-//     const saidasFiltradas = saidas.filter(s => {
-
-//         const d = obterDataISO(s.dataSaida);
-
-//         return d >= inicio && d <= fim;
-
-//     });
-
-//     document.getElementById("tituloResumo").innerText = titulo;
-
-//     renderResumo(vendasFiltradasAtual);
-
-//     renderSaidas(saidasFiltradas);
-
-//     renderGrafico(inicio === fim ? inicio : null);
-// }
 
 function aplicarPeriodo(inicio, fim, titulo) {
 

@@ -135,6 +135,7 @@
     <!-- Menu "mais ações" -->
     <div id="menuMaisVenda" class="hidden fixed inset-0 bg-black/40 z-[60] flex items-end">
         <div class="bg-white w-full rounded-t-3xl p-4 pb-6">
+            <button id="btnEditarNome" class="w-full h-[52px] rounded-2xl bg-slate-100 text-slate-800 font-bold mb-2">Editar nome do cliente</button>
             <button id="btnExcluirVenda" class="w-full h-[52px] rounded-2xl bg-red-50 text-red-700 font-bold">Excluir venda</button>
             <button id="btnFecharMais" class="w-full h-[52px] rounded-2xl bg-slate-100 text-slate-700 font-bold mt-2">Cancelar</button>
         </div>
@@ -143,7 +144,27 @@
 </div>
 
 
+    <!-- MODAL EDITAR NOME DO CLIENTE -->
+    <div id="modalEditarNome" class="hidden fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-5">
 
+        <div class="bg-white rounded-3xl w-full max-w-sm p-6">
+
+            <h2 class="text-xl font-bold">Editar nome do cliente</h2>
+
+            <p id="editarNomePedido" class="text-sm text-slate-600 mt-1"></p>
+
+            <label for="inputNomeCliente" class="block text-sm text-slate-600 mt-4 mb-1">Nome do cliente</label>
+
+            <input id="inputNomeCliente" type="text" maxlength="60" class="w-full border border-slate-300 rounded-xl p-3 outline-none focus:border-blue-500">
+
+            <div class="grid grid-cols-2 gap-3 mt-5">
+                <button id="cancelarEditarNome" class="h-12 rounded-xl bg-slate-200 text-slate-700 font-bold">Cancelar</button>
+                <button id="salvarNomeCliente" class="h-12 rounded-xl font-bold">Salvar</button>
+            </div>
+
+        </div>
+
+    </div>
 
 
     <div id="loadingOverlay" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -152,7 +173,7 @@
 
             <div class="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
 
-            <span>Aguarde Excluindo venda...</span>
+            <span>Aguarde...</span>
 
         </div>
 
