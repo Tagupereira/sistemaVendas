@@ -236,6 +236,12 @@ function abrirPendencias(dados) {
     })
 }
 
+function dataLocalISO(d) {
+
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+}
+
 function abrirRecebimento(cliente,venda){
 
     pendenciaSelecionada=venda;
@@ -251,6 +257,12 @@ function abrirRecebimento(cliente,venda){
     );
 
     document.getElementById('valorRecebido').value='';
+
+        const campoData = document.getElementById('dataRecebimento');
+
+        campoData.max = dataLocalISO(new Date());
+        campoData.min = dataLocalISO(new Date(venda.dados.data || venda.data));
+        campoData.value = campoData.max;
 
     document.getElementById('modalReceber').classList.remove('hidden');
     pagamentos = JSON.parse(localStorage.getItem("payments"));   
@@ -301,6 +313,30 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
         return;
     }
 
+        const dataEscolhida = document.getElementById('dataRecebimento').value;
+        const hojeISO = dataLocalISO(new Date());
+        const vendaISO = dataLocalISO(new Date(pendenciaSelecionada.dados.data || pendenciaSelecionada.data));
+
+        if (!dataEscolhida) {
+            toast('Informe a data do recebimento', 'warning');
+            return;
+        }
+
+        if (dataEscolhida > hojeISO) {
+            toast('A data do recebimento não pode ser no futuro', 'warning');
+            return;
+        }
+
+        if (dataEscolhida < vendaISO) {
+            toast('A data do recebimento não pode ser anterior à venda', 'warning');
+            return;
+        }
+
+        // hoje: guarda a hora de agora; outro dia: meio-dia daquela data
+        const dataPagamento = dataEscolhida === hojeISO
+            ? new Date().toLocaleString('sv-SE').replace(' ', 'T')
+            : `${dataEscolhida}T12:00:00`;
+
     try{
        
         showLoading();
@@ -309,12 +345,18 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
         const recebido = valorDoInput(document.getElementById('valorRecebido'));
         select
         
-        const vendaJson = {
+        // const vendaJson = {
 
-            cliente: pendenciaSelecionada.dados.cliente,
-            pedido: pendenciaSelecionada.dados.pedido,
-            pagamentos: [...pendenciaSelecionada.dados.pagamentos],
-            data: new Date().toLocaleString('sv-SE').replace(' ', 'T')
+        //     cliente: pendenciaSelecionada.dados.cliente,
+        //     pedido: pendenciaSelecionada.dados.pedido,
+        //     pagamentos: [...pendenciaSelecionada.dados.pagamentos],
+        //     data: new Date().toLocaleString('sv-SE').replace(' ', 'T')
+        // };
+        
+        // cópia completa da venda (mantém data, observação, atendente etc.)
+        const vendaJson = {
+            ...pendenciaSelecionada.dados,
+            pagamentos: pendenciaSelecionada.dados.pagamentos.map(p => ({ ...p }))
         };
 
         const pendente = vendaJson.pagamentos.find(p=>p.tipo==='pendente');
@@ -339,10 +381,13 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
         const option = select.options[select.selectedIndex];
 
         vendaJson.pagamentos.push({
-            idPagamento: option.dataset.pgid,
+            //idPagamento: option.dataset.pgid,
+            idPagamento: crypto.randomUUID(),
             id: option.dataset.id,
             tipo: document.getElementById('formaRecebimento').value,
-            valor: recebidoCentavos / 100,
+            //valor: recebidoCentavos / 100,
+            recebido: recebidoCentavos / 100,
+            data: dataPagamento,
             troco: 0,
             recebido: recebidoCentavos / 100
         });
@@ -365,8 +410,13 @@ document.getElementById('confirmarRecebimento').onclick=async()=>{
             vendasJson: JSON.stringify(vendaJson)
         };
           
-        await vendasAPI.editar(vendaAtualizada);
-        
+        // await vendasAPI.editar(vendaAtualizada);
+        const resposta = await vendasAPI.editar(vendaAtualizada);
+
+        if (!resposta.success) {
+            throw new Error(resposta.message || 'Falha ao gravar o recebimento');
+        }
+        ///////////////////////////////////////////
         toast('Pagamento recebido','success');
         
         document.getElementById('modalReceber').classList.add('hidden');

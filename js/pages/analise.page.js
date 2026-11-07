@@ -19,6 +19,7 @@ auth();
 let vendas = [];
 let saidas = [];
 let vendasFiltradasAtual = [];
+let pagamentosFiltradosAtual = [];
 
 const dataInicio = document.getElementById("dataInicio");
 const dataFim = document.getElementById("dataFim");
@@ -158,11 +159,42 @@ function marcarAtalho(chave) {
 
 }
 
+// function aplicarPeriodo(inicio, fim, titulo) {
+
+//     dataInicio.value = inicio;
+//     dataFim.value = fim;
+
+//     vendasFiltradasAtual = vendas.filter(v => {
+
+//         const d = obterDataISO(v._json.data);
+
+//         return d >= inicio && d <= fim;
+
+//     });
+
+//     const saidasFiltradas = saidas.filter(s => {
+
+//         const d = obterDataISO(s.dataSaida);
+
+//         return d >= inicio && d <= fim;
+
+//     });
+
+//     document.getElementById("tituloResumo").innerText = titulo;
+
+//     renderResumo(vendasFiltradasAtual);
+
+//     renderSaidas(saidasFiltradas);
+
+//     renderGrafico(inicio === fim ? inicio : null);
+// }
+
 function aplicarPeriodo(inicio, fim, titulo) {
 
     dataInicio.value = inicio;
     dataFim.value = fim;
 
+    // vendas feitas no período (pela data da venda)
     vendasFiltradasAtual = vendas.filter(v => {
 
         const d = obterDataISO(v._json.data);
@@ -170,6 +202,9 @@ function aplicarPeriodo(inicio, fim, titulo) {
         return d >= inicio && d <= fim;
 
     });
+
+    // pagamentos recebidos no período (pela data do pagamento)
+    pagamentosFiltradosAtual = pagamentosRecebidos(inicio, fim);
 
     const saidasFiltradas = saidas.filter(s => {
 
@@ -186,8 +221,35 @@ function aplicarPeriodo(inicio, fim, titulo) {
     renderSaidas(saidasFiltradas);
 
     renderGrafico(inicio === fim ? inicio : null);
+
 }
 
+// pagamentos sem data própria (feitos na hora da venda) contam na data da venda
+function pagamentosRecebidos(inicio, fim) {
+
+    const lista = [];
+
+    vendas.forEach(v => {
+
+        (v._json.pagamentos || []).forEach(p => {
+
+            if (p.tipo === 'pendente') {
+                return;
+            }
+
+            const d = obterDataISO(p.data || v._json.data);
+
+            if (d >= inicio && d <= fim) {
+                lista.push(p);
+            }
+
+        });
+
+    });
+
+    return lista;
+
+}
 function aplicarAtalho(chave) {
 
     const fim = dataLocalISO(new Date());
@@ -288,10 +350,41 @@ function selecionarDia(chave) {
 // CONTAS
 // =====================================================
 
+// function totais(lista) {
+
+//     let vendido = 0;
+//     let recebido = 0;
+//     let pendente = 0;
+
+//     lista.forEach(v => {
+
+//         vendido += Number(v.total || 0);
+
+//         (v._json.pagamentos || []).forEach(p => {
+
+//             if (p.tipo === 'pendente') {
+//                 pendente += Number(p.valor || 0);
+//             } else {
+//                 recebido += Number(p.valor || 0);
+//             }
+
+//         });
+
+//     });
+
+//     const centavos = (n) => Math.round(n * 100) / 100;
+
+//     return {
+//         vendido: centavos(vendido),
+//         recebido: centavos(recebido),
+//         pendente: centavos(pendente)
+//     };
+
+// }
+
 function totais(lista) {
 
     let vendido = 0;
-    let recebido = 0;
     let pendente = 0;
 
     lista.forEach(v => {
@@ -302,8 +395,6 @@ function totais(lista) {
 
             if (p.tipo === 'pendente') {
                 pendente += Number(p.valor || 0);
-            } else {
-                recebido += Number(p.valor || 0);
             }
 
         });
@@ -312,11 +403,15 @@ function totais(lista) {
 
     const centavos = (n) => Math.round(n * 100) / 100;
 
-    return {
-        vendido: centavos(vendido),
-        recebido: centavos(recebido),
-        pendente: centavos(pendente)
-    };
+    return { vendido: centavos(vendido), pendente: centavos(pendente) };
+
+}
+
+function somarValores(pagamentos) {
+
+    const total = pagamentos.reduce((soma, p) => soma + Number(p.valor || 0), 0);
+
+    return Math.round(total * 100) / 100;
 
 }
 
@@ -325,17 +420,43 @@ function totais(lista) {
 // RESUMO
 // =====================================================
 
+// function renderResumo(lista) {
+
+//     const animar = (id, valor, formatar = moeda) => {
+//         animarNumero(document.getElementById(id), valor, formatar);
+//     };
+
+//     const { vendido, recebido, pendente } = totais(lista);
+
+//     const pedidos = lista.length;
+
+//     const ticket = pedidos ? recebido / pedidos : 0;
+
+//     animar('totalPedidos', pedidos, n => String(Math.round(n)));
+//     animar('totalVendido', vendido);
+//     animar('totalRecebido', recebido);
+//     animar('totalPendente', pendente);
+//     animar('ticketMedio', ticket);
+
+//     renderFormasPagamento(lista);
+
+//     renderProdutos(lista);
+
+// }
+
 function renderResumo(lista) {
 
     const animar = (id, valor, formatar = moeda) => {
         animarNumero(document.getElementById(id), valor, formatar);
     };
 
-    const { vendido, recebido, pendente } = totais(lista);
+    const { vendido, pendente } = totais(lista);
+
+    const recebido = somarValores(pagamentosFiltradosAtual);
 
     const pedidos = lista.length;
 
-    const ticket = pedidos ? recebido / pedidos : 0;
+    const ticket = pedidos ? vendido / pedidos : 0;
 
     animar('totalPedidos', pedidos, n => String(Math.round(n)));
     animar('totalVendido', vendido);
@@ -343,32 +464,75 @@ function renderResumo(lista) {
     animar('totalPendente', pendente);
     animar('ticketMedio', ticket);
 
-    renderFormasPagamento(lista);
+    renderFormasPagamento(pagamentosFiltradosAtual);
 
     renderProdutos(lista);
 
 }
 
 
+
 // =====================================================
 // FORMAS DE PAGAMENTO
 // =====================================================
 
-function renderFormasPagamento(lista) {
+// function renderFormasPagamento(lista) {
+
+//     const formas = {};
+
+//     lista.forEach(v => {
+
+//         (v._json.pagamentos || []).forEach(p => {
+
+//             if (p.tipo === 'pendente') {
+//                 return;
+//             }
+
+//             formas[p.tipo] = (formas[p.tipo] || 0) + Number(p.valor || 0);
+
+//         });
+
+//     });
+
+//     const container = document.getElementById('formasPagamento');
+
+//     const entradas = Object.entries(formas).sort((a, b) => b[1] - a[1]);
+
+//     if (entradas.length === 0) {
+
+//         container.innerHTML = `
+//             <div class="text-center text-slate-500 py-6">
+//                 Nenhum pagamento encontrado
+//             </div>
+//         `;
+
+//         return;
+
+//     }
+
+//     container.innerHTML = entradas.map(([tipo, valor]) => `
+
+//         <div class="flex justify-between items-center py-2 border-t border-slate-100 first:border-t-0">
+
+//             <span class="flex items-center gap-2 capitalize">
+//                 <i class="w-2.5 h-2.5 rounded-full bg-green-700"></i>${esc(tipo)}
+//             </span>
+
+//             <b class="font-mono">${moeda(valor)}</b>
+
+//         </div>
+
+//     `).join('');
+
+// }
+
+function renderFormasPagamento(pagamentos) {
 
     const formas = {};
 
-    lista.forEach(v => {
+    pagamentos.forEach(p => {
 
-        (v._json.pagamentos || []).forEach(p => {
-
-            if (p.tipo === 'pendente') {
-                return;
-            }
-
-            formas[p.tipo] = (formas[p.tipo] || 0) + Number(p.valor || 0);
-
-        });
+        formas[p.tipo] = (formas[p.tipo] || 0) + Number(p.valor || 0);
 
     });
 
@@ -486,7 +650,8 @@ function renderSaidas(saidasFiltradas) {
 
     document.getElementById('quantidadeSaidas').innerText = `${saidasFiltradas.length} lançamento(s)`;
 
-    const resultado = totais(vendasFiltradasAtual).recebido - totalSaidas;
+    //const resultado = totais(vendasFiltradasAtual).recebido - totalSaidas;
+    const resultado = somarValores(pagamentosFiltradosAtual) - totalSaidas;
 
     const saldo = document.getElementById('saldo');
 

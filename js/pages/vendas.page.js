@@ -527,9 +527,36 @@ function abrirModalVenda(venda){
     document.getElementById('modalTotal').textContent = moeda(venda.total);
 
     // pagamentos na tela
+
+    // document.getElementById('modalPagamentos').innerHTML = pagamentos.map(p => {
+
+    //     const ePendente = p.tipo === 'pendente';
+
+    //     const extra = (!ePendente && Number(p.troco) > 0)
+    //         ? `<div class="text-xs text-slate-600 font-mono ml-5">Recebido ${moeda(p.recebido)} · Troco ${moeda(p.troco)}</div>`
+    //         : '';
+
+    //     return `
+    //         <div>
+    //             <div class="flex justify-between text-sm">
+    //                 <span class="flex items-center gap-2 capitalize">
+    //                     <i class="w-2.5 h-2.5 rounded-full ${ePendente ? 'bg-red-700' : 'bg-green-700'}"></i>${esc(p.tipo)}
+    //                 </span>
+    //                 <b class="font-mono ${ePendente ? 'text-red-700' : ''}">${moeda(p.valor)}</b>
+    //             </div>
+    //             ${extra}
+    //         </div>
+    //     `;
+
+    // }).join('');
+
     document.getElementById('modalPagamentos').innerHTML = pagamentos.map(p => {
 
         const ePendente = p.tipo === 'pendente';
+
+        const pagoEm = (!ePendente && p.data)
+            ? `<div class="text-xs text-slate-600 ml-5">Pago em ${new Date(p.data).toLocaleDateString('pt-BR')}</div>`
+            : '';
 
         const extra = (!ePendente && Number(p.troco) > 0)
             ? `<div class="text-xs text-slate-600 font-mono ml-5">Recebido ${moeda(p.recebido)} · Troco ${moeda(p.troco)}</div>`
@@ -543,6 +570,7 @@ function abrirModalVenda(venda){
                     </span>
                     <b class="font-mono ${ePendente ? 'text-red-700' : ''}">${moeda(p.valor)}</b>
                 </div>
+                ${pagoEm}
                 ${extra}
             </div>
         `;
