@@ -839,12 +839,50 @@ Cupom de compra - Não é documento fiscal. `;
 
 }
 
-document.getElementById('fecharModalVenda').addEventListener('click',() => {
+// document.getElementById('fecharModalVenda').addEventListener('click',() => {
 
-        document.getElementById('modalVenda').classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
+//         document.getElementById('modalVenda').classList.add('hidden');
+//         document.body.classList.remove('overflow-hidden');
+//     }
+// );
+
+document.getElementById('fecharModalVenda').addEventListener('click', () => {
+
+    document.getElementById('modalVenda').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+
+    // se o pedido foi aberto a partir de outra tela (ex.: Pendentes), volta para ela
+    const voltar = sessionStorage.getItem('voltarPara');
+
+    if (voltar) {
+        sessionStorage.removeItem('voltarPara');
+        go(voltar);
     }
-);
+
+});
+
+function abrirVendaPedida() {
+
+    const pedido = JSON.parse(sessionStorage.getItem('abrirVenda') || 'null');
+
+    sessionStorage.removeItem('abrirVenda');
+
+    if (!pedido) {
+        // sobra de uma visita anterior: não deve redirecionar
+        sessionStorage.removeItem('voltarPara');
+        return;
+    }
+
+    const venda = vendasCarregadas.find(v => v.id == pedido.id);
+
+    if (venda) {
+        abrirModalVenda(venda);
+    } else {
+        sessionStorage.removeItem('voltarPara');
+        toast('Pedido não encontrado', 'warning');
+    }
+
+}
 
 const btn = document.getElementById('btnMenu');
 btn.addEventListener('click',abrirMenu);
@@ -858,6 +896,7 @@ async function init(){
     auth();
     indicator();
     await carregarVendas();
+    abrirVendaPedida();
     
 }
 menu.createMenu();

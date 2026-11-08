@@ -43,6 +43,38 @@ function resumoPagamentos(venda) {
 
 }
 
+// function htmlPedidoPendente(v, cliente) {
+
+//     const { pago, falta } = resumoPagamentos(v);
+
+//     return `
+//         <div class="border-t pt-2 mt-2">
+
+//             <div class="flex justify-between">
+//                 <strong>Pedido: ${v.pedido}</strong>
+//                 <span>${new Date(v.data).toLocaleString('pt-BR')}</span>
+//             </div>
+
+//             <div class="flex justify-between items-center mt-3">
+
+//                 <div class="w-[50%] text-sm">
+//                     <div class="text-slate-600">Total ${moeda(v.total)}</div>
+//                     ${pago > 0 ? `<div class="text-green-700">Já pago ${moeda(pago)}</div>` : ''}
+//                     <div class="font-bold text-red-600">Falta ${moeda(falta)}</div>
+//                 </div>
+
+//                 <button data-cliente="${esc(cliente)}" data-id="${v.id}"
+//                     class="w-[50%] btnReceber bg-green-500 text-white rounded-xl px-4 py-2">
+//                     Receber
+//                 </button>
+
+//             </div>
+
+//         </div>
+//     `;
+
+// }
+
 function htmlPedidoPendente(v, cliente) {
 
     const { pago, falta } = resumoPagamentos(v);
@@ -50,10 +82,18 @@ function htmlPedidoPendente(v, cliente) {
     return `
         <div class="border-t pt-2 mt-2">
 
-            <div class="flex justify-between">
-                <strong>Pedido: ${v.pedido}</strong>
-                <span>${new Date(v.data).toLocaleString('pt-BR')}</span>
-            </div>
+            <button class="btnVerPedido w-full flex justify-between items-center text-left" data-id="${v.id}" aria-label="Ver pedido ${v.pedido}">
+
+                <span>
+                    <strong>Pedido: ${v.pedido}</strong>
+                    <span class="block text-sm text-slate-600">${new Date(v.data).toLocaleString('pt-BR')}</span>
+                </span>
+
+                <span class="flex items-center text-sm text-slate-600">
+                    Ver pedido <span class="material-symbols-outlined">chevron_right</span>
+                </span>
+
+            </button>
 
             <div class="flex justify-between items-center mt-3">
 
@@ -72,7 +112,6 @@ function htmlPedidoPendente(v, cliente) {
 
         </div>
     `;
-
 }
 
 
@@ -556,6 +595,21 @@ function abrirMenu() {
   menu.open();
   
 }
+
+container.addEventListener('click', (e) => {
+
+    const botao = e.target.closest('.btnVerPedido');
+
+    if (!botao) {
+        return;
+    }
+
+    sessionStorage.setItem('abrirVenda', JSON.stringify({ id: botao.dataset.id }));
+    sessionStorage.setItem('voltarPara', 'pendentes');
+
+    go('vendas');
+
+});
 
 async function init() {
     auth();

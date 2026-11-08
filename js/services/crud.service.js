@@ -48,7 +48,11 @@ export async function excluir(id, venda = {}) {
             'success'
         );
 
-        go('vendas')
+        //go('vendas')
+        const voltar = sessionStorage.getItem('voltarPara');
+        sessionStorage.removeItem('voltarPara');
+        go(voltar || 'vendas');
+        
         return;
     }
     
