@@ -325,7 +325,14 @@ document.getElementById('listaPagamentos').addEventListener('click', (e) => {
 
 });
 
+let salvando = false;
 async function salvarVenda() {
+
+        if (salvando) {
+        return;
+    }
+
+    salvando = true;
 
     showLoading();
     const troco = JSON.parse(localStorage.getItem("pagamentos"));
@@ -333,6 +340,20 @@ async function salvarVenda() {
     const obsPedido = document.getElementById('obsPedido').value.trim();
     const pedido = {};
     venda.obsPedido = obsPedido;
+        // identificador da venda: o mesmo em todas as tentativas, para o servidor não duplicar
+    const assinatura = JSON.stringify([venda.pedido, venda.pagamentos, venda.cliente, venda.obsPedido]);
+
+    let tentativa = JSON.parse(localStorage.getItem('tentativaVenda') || 'null');
+
+    if (!tentativa || tentativa.assinatura !== assinatura) {
+
+        tentativa = { id: crypto.randomUUID(), assinatura };
+
+        localStorage.setItem('tentativaVenda', JSON.stringify(tentativa));
+
+    }
+
+    venda.idVenda = tentativa.id;
     venda.usuario = usuario.user;
 
     try {
@@ -362,6 +383,7 @@ async function salvarVenda() {
         limparPagamentos();
         localStorage.removeItem("carrinho");
         localStorage.removeItem("resumoPedido");
+        localStorage.removeItem('tentativaVenda');
 
         go("concluido");
 
@@ -371,8 +393,10 @@ async function salvarVenda() {
 
         hideLoading();
 
-        const msg = 'Venda salva localmente. Será enviada depois.';
-        const cor = "warning";
+        salvando = false;
+
+        const msg = 'Venda NÃO salva. Verifique a internet e toque em Confirmar de novo (não duplica).';
+        const cor = "error";
         toast(msg, cor);
 
     }
