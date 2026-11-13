@@ -1,5 +1,6 @@
 import { go } from '../routes/routes.js';
 import { confirmar } from './confirm.component.js';
+import { API_URL } from '../api/api.js';
 
 const pages = [
     {
@@ -157,6 +158,13 @@ export const menu = {
             if (!confirmou) return;
 
             localStorage.removeItem('usuario');
+
+            try {
+                    await Promise.race([
+                    fetch(`${API_URL}?action=logout`),
+                    new Promise(resolve => setTimeout(resolve, 1500))
+                ]);
+            } catch { }
 
             go('login');
 

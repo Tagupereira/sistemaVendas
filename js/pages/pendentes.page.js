@@ -1,9 +1,8 @@
-import { go, goto } from "../routes/routes.js";
+import { go } from "../routes/routes.js";
 import { toast } from "../components/toast.component.js";
 import { indicator } from "../services/indicator.service.js";
 import { vendasAPI } from "../api/vendas.api.js";
-import { API_URL } from "../api/api.js";
-import { startLoading, stopLoading, showLoading, hideLoading } from '../components/loading.component.js';
+import { showLoading, hideLoading } from '../components/loading.component.js';
 import { auth } from '../guards/auth.guard.js';
 import { menu } from "../components/menu.component.js";
 import { mascaraMoeda, valorDoInput } from "../utils/helpers.js";
@@ -233,79 +232,6 @@ function renderPendencias() {
     })
 }
 
-// function abrirPendencias(dados) {
-
-//     const modal = document.getElementById('modalPendencia');
-//     const content = document.getElementById('content');
-//     const totalPend = document.getElementById('totalPend');
-
-//     let valorTotalPend = 0;
-
-//     modal.classList.remove('hidden');
-
-//     content.innerHTML = '';
-
-//     content.innerHTML = `
-//         <div class="font-bold">
-//             <h1 class="text-xl m-3">${dados[0].cliente.toUpperCase()}</h1>
-//         </div>`
-
-//     dados.forEach(pendencia => {
-
-//         valorTotalPend += pendencia.total;
-
-//         const itensHTML = pendencia.dados.pedido.itens.map(item => `
-//             <div class="border-b">
-//                 <div class="flex justify-between items-center  py-2 text-slate-700">
-//                     <div class="">
-//                         <span class="font-semibold truncate">
-//                             ${item.quantidade}x
-//                         </span>
-//                         ${item.nome}
-//                     </div>
-
-//                     <div class="flex justify-end font-semibold w-[100px]">
-//                         R$ ${Number(item.subtotal).toFixed(2).replace('.', ',')}
-//                     </div>
-                    
-//                 </div>
-//                     <p class="text-slate-500">${item.observacao || ''}</p>
-            
-//             </div>
-//         `).join(''); 
-       
-//         content.innerHTML += `
-//             <div class="bg-white rounded-xl p-4 mb-3 shadow">
-
-//                 <div class="mb-3">
-//                     <span class="font-bold">Data:</span> ${new Date(pendencia.data).toLocaleString('pt-BR')}
-//                 </div>
-
-//                 <div class="mb-3">
-//                     <span class="font-bold">Itens:</span> 
-//                     <div class="mb-2">${itensHTML}</div>   
-//                 </div>
-
-//                 <div class="flex justify-between items-center mb-3 font-bold">
-//                     <span>Total:</span> <span class="text-red-500">R$ ${Number(pendencia.total).toFixed(2).replace('.', ',')}</span>
-//                 </div>
-
-//                 <div>
-//                     <span class="font-bold">${pendencia.dados.obsPedido ? "Observação: ": ""}</span>
-                    
-//                     <p>${pendencia.dados.obsPedido || ''}</p>
-//                 </div>
-
-//             </div>
-//         `;
-//         totalPend.innerText = `R$ ${Number(valorTotalPend).toFixed(2).replace('.', ',')}`;        
-//     });
-
-//     document.getElementById('closePend').addEventListener('click', ()=>{
-//         document.getElementById('modalPendencia').classList.add('hidden');
-//         document.getElementById('content').innerHTML ="";
-//     })
-// }
 function abrirPendencias(dados) {
 
     const modal = document.getElementById('modalPendencia');
